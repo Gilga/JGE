@@ -2,3 +2,17 @@
 *.jl.*.cov
 *.jl.mem
 deps/deps.jl
+
+build/
+logs/
+
+*.docx
+*.dll
+*.db
+
+*/.vs/
+*/build/
+*/bin/
+
+out.log
+error.log

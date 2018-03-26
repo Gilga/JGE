@@ -1,0 +1,4 @@
+module SzeneManager
+
+
+end #SzeneManager

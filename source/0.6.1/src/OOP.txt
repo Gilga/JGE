@@ -1,0 +1,33 @@
+module OOP
+
+function create(name::Symbol, derivate::DataType, base::DataType)
+    #name = string(derivate.name.name,"_",base.name.name)
+    
+    base_obj=base()
+    derivate_obj=derivate()
+    #types = base.types
+    
+    d = Dict{Symbol,Any}()
+
+    for n in fieldnames(base_obj)
+        d[n] =  getfield(base_obj, n)
+    end
+
+    for n in fieldnames(derivate_obj)
+        d[n] = getfield(derivate_obj, n)
+    end
+
+    declstr = ""
+    initstr = ""
+    count=0
+    for (k,v) in d
+        t=typeof(v)
+        declstr = string(declstr, "$k::$t;")
+        initstr = string(initstr, (count==0 ? "" : ",") , t == String ? "\"$v\"" : v)
+        count += 1
+    end
+    
+    eval(derivate.name.module, parse("type $name; $declstr; $name() = new($initstr); end;"))
+end
+
+end # OOP

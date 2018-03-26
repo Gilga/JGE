@@ -1,0 +1,41 @@
+#=
+ERROR: LoadError: InexactError()
+ in convert(::Type{Bool}, ::Int32) at .\bool.jl:6
+ in ##WindowFocusCallbackWrapper#278(::Ptr{Void}, ::Int32) at C:\Users\Mario\.julia\v0.5\GLFW\src\callback.jl:50
+ in loop(::WindowManager.WindowHandler, ::App.##5#11{App.##4#10{JLScriptManager.JLScript,Module,GLManager.Mesh,GLManager.Storage}}) at C:\Users\Mario\Desktop\Desktop\vulian\App\src\WindowManager.jl:231
+ in start() at C:\Users\Mario\Desktop\Desktop\vulian\App\src\App.jl:244
+ in main() at C:\Users\Mario\Desktop\Desktop\vulian\App\main.jl:4
+ in include_from_node1(::String) at .\loading.jl:488
+ in process_options(::Base.JLOptions) at .\client.jl:265
+ in _start() at .\client.jl:321
+while loading C:\Users\Mario\Desktop\Desktop\vulian\main.jl, in expression starting on line 2
+=#
+
+#=
+immutable IterOrScalar{T}
+  val::T
+end
+
+minlenght(a::Tuple{Vararg{IterOrScalar}}) = foldl(typemax(Int), a) do len, elem
+    isa(elem.val, AbstractArray) && len > length(elem.val) && return length(elem.val)
+    len
+end
+getindex{T<:AbstractArray}(A::IterOrScalar{T}, i::Integer) = A.val[i]
+getindex(A::IterOrScalar, i::Integer) = A.va
+
+foreach(func::Union{Function, DataType}, args...) = foreach(func, map(IterOrScalar, args)...)
+
+# Applies a function over multiple args
+# staged, so it can specialize on the arguments being scalar or iterable
+@generated function foreach(func::Function, args::IterOrScalar...)
+    args_access = [:(args[$i][i]) for i=1:length(args)]
+    quote
+        len = minlenght(args)
+        for i=1:len
+            func($(args_access...))
+        end
+    end
+end
+=#
+
+import Base: getindex
