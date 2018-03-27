@@ -1,4 +1,4 @@
-function readShadersFromSource(program::AbstractGraphicsShaderProgram)
+function readShaders(program::AbstractGraphicsShaderProgram, fileSource::FileSource)
 	if program == nothing end
 
 	global shaderAttributes = []
@@ -12,7 +12,6 @@ function readShadersFromSource(program::AbstractGraphicsShaderProgram)
 
 	#o.logShader.Info("Shader %s\n", path)
 	
-	fileSource = getSource(program)
 	clear(program)
 
 	shaderCatch = function()

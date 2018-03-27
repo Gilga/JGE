@@ -431,7 +431,7 @@ function OnStart()
 	global cube=robj_cube_sphere
 	
 	println("Reload Shaders...")
-	listenOnShaderReload = (p)->OnShaderReload(p.source.path)
+	listenOnShaderReload = (p)->OnShaderReload(ShaderManager.getSource(p).path)
 	ShaderManager.setListenerOnShaderPropertyUpdate(:OnShaderPropertyUpdate, OnShaderPropertyUpdate)
 
 	shader_tess = ShaderManager.create(:Prog1, "shaders/tess.glsl", listenOnShaderReload)

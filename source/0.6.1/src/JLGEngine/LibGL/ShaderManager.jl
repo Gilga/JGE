@@ -74,11 +74,12 @@ type ShaderProgram <: IGraphicsShaderProgram
 	linked	::Bool
 	bound		::Bool
 
-	source	::FileSource
+	#source	::FileSource
 	shaders ::Dict{Symbol,Shader}
 	properties ::Dict{String, ShaderProperty}
 
-	ShaderProgram() = new(0,true,false,false,false,FileSource(),Dict(),Dict())
+	#ShaderProgram() = new(0,true,false,false,false,FileSource(),Dict(),Dict())
+  ShaderProgram() = new(0,true,false,false,false,Dict(),Dict())
 end
 
 #listShaderProgramListener = createSortedDict(Dict{String,Function})
@@ -117,7 +118,7 @@ function compile(this::Shader)
 	r
 end
 
-function reload(this::AbstractGraphicsShaderProgram)
+function reload(this::AbstractGraphicsShaderProgram, source::FileSource)
 	if this == nothing return end
 
 	clear(this)
@@ -125,7 +126,7 @@ function reload(this::AbstractGraphicsShaderProgram)
 	if printError("Before readShadersFromSource") end
 
 	println("[ readShadersFromSource ]")
-	readShadersFromSource(this)
+	readShaders(this,source)
 	println("---------------------------------------")
 	println("[ setUp ]")
 	setUp(this)
@@ -152,8 +153,8 @@ end
 createShaderProgram() = ShaderProgram()
 createShader(program::ShaderProgram, typ::Symbol, file::FileSourcePart) = (this=Shader(typ, file); program.shaders[typ]=this; this)
 
-getSource(this::AbstractGraphicsShaderProgram) = this.source
-setPath(this::AbstractGraphicsShaderProgram, path::String) = (this.source.path = path)
+#getSource(this::AbstractGraphicsShaderProgram) = this.source
+#setPath(this::AbstractGraphicsShaderProgram, path::String) = (this.source.path = path)
 
 clear(this::AbstractGraphicsShaderProgram) = this.shaders = Dict()
 
