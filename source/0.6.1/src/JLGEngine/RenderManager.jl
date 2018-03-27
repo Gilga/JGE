@@ -78,7 +78,7 @@ end
 function link(this::Renderer)
 	ModelManager.linkTo(this.model)
 	ShaderManager.linkTo(this.shaderProgram)
-	CameraManager.update(this.camera, this.transform)
+	if this.camera != nothing CameraManager.update(this.camera, this.transform) end
 end
 
 #createTransform(this::Renderer) = this.transform = TransformManager.create(this.id)
