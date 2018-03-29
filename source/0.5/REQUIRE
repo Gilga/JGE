@@ -1,12 +1,10 @@
-julia 0.4
+julia 0.5
 Quaternions
-Mustache
-FixedSizeArrays
-GeometryTypes
 ModernGL
-Reactive
-FixedPointNumbers
-ColorTypes
+GLFW
 Compat
 FileIO
+Images
+ImageMagick
+Suppressor
 Logging
