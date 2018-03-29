@@ -5,10 +5,10 @@ if length(ARGS) > 0 && ARGS[1] != ""
 	println("params:")
 	for x in ARGS; @printf("%s%s",index>0 ? ", " : "", x); index+=1 end
 	println()
-	version=ARGS[1]
+	version=replace(ARGS[1],r"[.][0-9]+$","")
 else
 	println("No Parameters given.")
 end
 
-include(string("source/",version,"/main.jl"))
+include(string("source/$version/main.jl"))
 main()

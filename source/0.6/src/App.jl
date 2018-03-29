@@ -6,8 +6,8 @@ importall LoggerManager
 
 module App
 
-export start
-
+using Images
+using ImageMagick
 using Quaternions
 using Mustache
 using ModernGL
