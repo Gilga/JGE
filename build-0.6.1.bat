@@ -1,3 +1,3 @@
 @echo off
-"build.bat" "0.6.1" "JuliaEngie"
+"C:/Users/%username%/AppData/Local/Julia-0.6.1/bin/julia.exe" "build.jl" "0.6.1" "JuliaEngie" "build" "source" "main.jl"
 pause
