@@ -16,6 +16,8 @@ Julia Grafik Engine
 * Quaternions
 * StaticArrays (used by Images)
 * WinRPM (used by ImageMagick)
+* FileIO
+* Suppressor
 
 # Compiling
 see [Compiling with BuildExecutable.jl](https://github.com/Gilga/BuildExecutable.jl#compiling)
