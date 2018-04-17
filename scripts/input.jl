@@ -44,7 +44,7 @@ old_cursorpos = Vec2f(0,0)
 windowsize = Vec2f(800,600)
 fullscreen = false
 keyPressed = false
-rightMouseKeyPressed = false
+mouseKeyPressed = false
 modelID = 0
 planeModel = nothing
 cubeModel = nothing
@@ -123,9 +123,9 @@ function OnKey(key::Number, scancode::Number, action::Number, mods::Number, unic
 	elseif unicode == UInt32('a')
 		global keyLR = (action > 0)?-1:0
 	elseif unicode == UInt32(32)
-		global keyUP = (action > 0)?1:0
-	elseif unicode == UInt32('c')
-		global keyUP = (action > 0)?-1:0
+		global keyUD = (action > 0)?1:0
+	elseif unicode == UInt32('c') || key == 341
+		global keyUD = (action > 0)?-1:0
 
 	elseif unicode == UInt32('m') && action > 0
 		global modelID += 1
@@ -143,17 +143,18 @@ end
 
 function OnMouseKey(key::Number, action::Number, mods::Number)
 	#println("Mouse: ", key, ", ", action)
-	global keyPressed = action != 0
+	global mouseKeyPressed = action != 0
+  global mouseKeyReleased = action == 0
 
-	global rightMouseKeyPressed = (key == 1 && action == 1)
-	rightMouseKeyReleased = (key == 1 && action == 0)
+	#global rightMouseKeyPressed = (key == 1 && action == 1)
+	#rightMouseKeyReleased = (key == 1 && action == 0)
 
-	if rightMouseKeyPressed
+	if mouseKeyPressed #rightMouseKeyPressed
 		WindowManager.cursor(WINDOW, :CURSOR_DISABLED)
 		global old_cursorpos = cursorpos
 	end
 
-	if rightMouseKeyReleased
+	if mouseKeyReleased #rightMouseKeyReleased
 		WindowManager.cursor(WINDOW, :CURSOR_NORMAL)
 	end
 
@@ -164,7 +165,7 @@ function OnMousePos(pos::AbstractVector)
 
 	#println("Mouse: ", cursorpos)
 
-	if rightMouseKeyPressed	OnCamRotate() end
+	if mouseKeyPressed OnCamRotate() end #rightMouseKeyPressed
 end
 
 function OnMouseMove(pos::AbstractVector)
@@ -199,7 +200,7 @@ OnShaderPropertyUpdate = (
 	"iDummy" => () -> 0
 	,"iResolution" => () -> windowsize
 	,"cursorpos" => () -> cursorpos
-	,"key" => () -> keyPressed
+	,"key" => () -> keyPressed || mouseKeyPressed
 	,"iTessLevel" => () -> UInt32(65)
 	,"iGlobalTime" => () -> Float32(programTime())
 	,"programTime" => () -> Float32(scriptTime())
