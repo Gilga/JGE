@@ -24,8 +24,11 @@ end
 lastMessage = (0, 0, 0, 0, 0)
 
 #hasDuplicates(msg) = (for i=1:length(lastMessage) if msg[i] != lastMessage[i] return false end end; true)
+
+""" TODO """
 hasDuplicates(msg) = (for (i,j) in zip(msg,lastMessage) if i != j return false end end; true)
 
+""" TODO """
 function openglerrorcallback(
                 source::GLenum, typ::GLenum,
                 id::GLuint, severity::GLenum,
@@ -55,16 +58,19 @@ function openglerrorcallback(
     nothing
 end
 
+""" TODO """
 const _openglerrorcallback = cfunction(openglerrorcallback, Void,
                                         (GLenum, GLenum,
                                         GLuint, GLenum,
                                         GLsizei, Ptr{GLchar},
                                         Ptr{Void}))
 
+""" TODO """
 function SetDebugging(debug::Bool)
   if debug SetErrorCallBack() end
 end
 
+""" TODO """
 function SetErrorCallBack()
   @static if is_apple()
 			warn("OpenGL debug message callback not available on osx")
@@ -78,14 +84,18 @@ function SetErrorCallBack()
 	end
 end
 
+""" TODO """
 function init()
 	SetErrorCallBack()
 end
 
+""" TODO """
 GetVersion(key::Symbol) = haskey(LIST_INFO,key) ? string("OpenGL ",glString(LIST_INFO[key])) : ""
 
 const PREFIX = :(GL_)
 const MOD = current_module()
+
+""" TODO """
 function getMode(key::Symbol, value::Any)
 	global MOD
 	if key == :POLYGONMODE
@@ -102,8 +112,10 @@ end
 #	Shader(get(SHADER_FILE_TYPE, typ, :FRAGMENT),FileSourcePart(source,range))
 #end
 
+""" TODO """
 function resetBuffers()	StorageManager.unbindStorages() end
 
+""" TODO """
 function resetRegisters()
 	#StorageManager.unbindStorages()
 	ShaderManager.reset()

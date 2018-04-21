@@ -1,5 +1,6 @@
 #struct Vertex { union { struct { _float x, y, z; }; _float pos[3]; }; };
 
+""" TODO """
 type ShapeCoordinates
 	#std::string& name
 	positions::AVec3f
@@ -13,6 +14,7 @@ type ShapeCoordinates
 	ShapeCoordinates(positions,normals,texcoords,indicies,origin,scale) = new(positions,normals,texcoords,indicies,origin,scale)
 end
 
+""" TODO """
 type VertexIndex
 	v::Integer
 	vt::Integer
@@ -27,6 +29,7 @@ AVertexIndex = Array{VertexIndex,1}
 AAVertexIndex = Array{AVertexIndex,1}
 AGroupIndex = Array{Array{Array{Integer,1},1},1}
 
+""" TODO """
 function clear(sc::ShapeCoordinates)
 	sc.positions = AVec3f()
 	sc.normals = AVec3f()
@@ -37,6 +40,7 @@ function clear(sc::ShapeCoordinates)
 end
 
 # for std::map
+""" TODO """
 function isSmaller(a::VertexIndex, b::VertexIndex)
 	if a.v != b.v return (a.v < b.v) end
 	if a.vn != b.vn return (a.vn < b.vn) end
@@ -44,13 +48,18 @@ function isSmaller(a::VertexIndex, b::VertexIndex)
 	false
 end
 
+""" TODO """
 isSpace(c::Char) = (c == ' ') || (c == '\t')
+
+""" TODO """
 isNewLine(c::Char) = (c == '\r') || (c == '\n') || (c == '\0')
 
+""" TODO """
 function getOrigin(min_BBOX::Vec3f, max_BBOX::Vec3f, scale::Number)
 	(max_BBOX + min_BBOX) * (scale * 0.5f0)
 end
 
+""" TODO """
 function getScale(min_BBOX::Vec3f, max_BBOX::Vec3f)
 	size = max_BBOX - min_BBOX
 	println("size: ",size)
@@ -79,6 +88,7 @@ end
 #	(v, t.stop)
 #end
 
+""" TODO """
 function parseVal(T::DataType, str::AbstractString, default=T(0))
 	try
 		return parse(T, str)
@@ -88,6 +98,7 @@ function parseVal(T::DataType, str::AbstractString, default=T(0))
 end
 
 #for m in eachmatch(Regex("([0-9]+) ([0-9]+) ([0-9]+)"),"1 2 3s") println(m.captures) end
+""" TODO """
 function parseArray(T::DataType, str::AbstractString)
 	a = Array{T,1}()
 	m = matchall(Regex("(^|(?<=\\s))[+-]?([0-9]+[.])?[0-9]+([eE][-+]?[0-9]+)?((?=\\s)|\$)"),str) # only valid: (space?)(number)(space?)
@@ -95,6 +106,7 @@ function parseArray(T::DataType, str::AbstractString)
 	map(x->parseVal(T,x),m)
 end
 
+""" TODO """
 function parseVec(linenr::Number, str::AbstractString, count::Number)
 	if count < 1 error("count < 1") end
 
@@ -118,6 +130,7 @@ function parseVec(linenr::Number, str::AbstractString, count::Number)
 end
 
 # Make index zero-base, and also support relative index.
+""" TODO """
 function parseIndex(str::AbstractString, n::Integer)
 	#a = parseArray(Integer, str)
 	i = parseVal(Int, str, -1) #length(a)>0 ? a[1] : 0
@@ -127,9 +140,11 @@ function parseIndex(str::AbstractString, n::Integer)
 	i
 end
 
+""" TODO """
 has(str::AbstractString, index::Integer, c::Char) = index>0 && index<=length(str) && str[index] == c
 
 # Parse triples: i, i/j/k, i//k, i/j
+""" TODO """
 function parseTriple(line::AbstractString, vsize::Integer, vnsize::Integer, vtsize::Integer)
 	vi = VertexIndex()
 
@@ -163,6 +178,7 @@ function parseTriple(line::AbstractString, vsize::Integer, vnsize::Integer, vtsi
 	vi
 end
 
+""" TODO """
 function updateVertex2(vi::VertexIndex, vCache::Dict{VertexIndex, Integer}, coord::ShapeCoordinates, cache::ShapeCoordinates)
 	if haskey(vCache, vi) return vCache[vi] end
 
@@ -195,8 +211,10 @@ end
 const MinUInt32 = UInt32(0)
 const MaxUInt32 = UInt32(2^32 - 1)
 
+""" TODO """
 correctVec(v::Vec3f, tmp::ShapeCoordinates) = MatrixMath.scale(v, tmp.scale) #MatrixMath.scale(v, tmp.scale) - tmp.origin
 
+""" TODO """
 function parseAll(
 	vCache::Dict{VertexIndex,Integer},
 	groups::AGroupIndex,
@@ -259,6 +277,7 @@ function parseAll(
 	true
 end
 
+""" TODO """
 function parseIndicies(tmp_vi::AAVertexIndex,tmp::ShapeCoordinates, cache::ShapeCoordinates)
 
 	clear(cache) # remove old
@@ -336,6 +355,7 @@ function parseIndicies(tmp_vi::AAVertexIndex,tmp::ShapeCoordinates, cache::Shape
 	true
 end
 
+""" TODO """
 function loadOBJ(path::String, mesh::Mesh)
 	println("Load OBJ file $path...");
 

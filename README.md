@@ -1,10 +1,14 @@
 # JGE
-Julia Grafik Engine
+Julia Graphics Engine
 
 # Status
+ [![Build Status](https://travis-ci.org/Gilga/JGE.svg?branch=master)](https://travis-ci.org/Gilga/JGE)
 * Works with 0.6.0 (Compiling will work, but execution will fail, see [Status of BuildExecutable.jl](https://github.com/Gilga/BuildExecutable.jl#status))
 * Works with 0.6.1
 * Works with 0.6.2
+
+## Documentation
+Full detailed documentation can be found [here](https://gilga.github.io/JGE/).
 
 # Requirements
 ## Packages

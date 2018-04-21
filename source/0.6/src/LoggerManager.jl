@@ -35,6 +35,9 @@ macro printf(xs...) open(f -> (:(Base.@printf(f, $xs...)); :(Base.@printf(:STDOU
 @suppress begin error(xs...) = open(f -> (error(f, programTimeStr()," ", xs...); error(STDERR, xs...)), LOGGER_ERROR, "a+") end
 @suppress begin warn(xs...) = open(f -> (warn(f, programTimeStr()," ", xs...); warn(STDERR, xs...)), LOGGER_ERROR, "a+") end
 
+"""
+TODO
+"""
 function logException(ex::Exception)
 	t=programTimeStr()
 

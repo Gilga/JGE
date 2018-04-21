@@ -4,14 +4,17 @@ include("JLGEngine.jl")
 
 importall LoggerManager
 
+"""
+TODO
+"""
 module App
 
 using Images
 using ImageMagick
 using Quaternions
-using Mustache
+#using Mustache
 using ModernGL
-using Reactive
+#using Reactive
 using FixedPointNumbers
 using ColorTypes
 using Compat
@@ -30,6 +33,9 @@ using JLGEngine.GraphicsManager
 using JLGEngine.LibGL
 using JLGEngine.RenderManager
 
+"""
+TODO
+"""
 type ScriptRefs <: JLComponent
 	WINDOW	::Any
 	GD		::Any
@@ -37,6 +43,9 @@ type ScriptRefs <: JLComponent
 	ScriptRefs() = new()
 end
 
+"""
+TODO
+"""
 type ScriptState <: JLComponent
 	isInitalized		::Bool
 	isRunning			::Bool
@@ -82,6 +91,9 @@ end
 #     close(logfile)
 # end)
 
+"""
+TODO
+"""
 function start()
 	# (errorRead, errorWrite) = redirect_stderr()
 
@@ -153,6 +165,9 @@ function start()
 
 	programTick=0.1
 
+  """
+  TODO
+  """
 	function tickUpdate(script::JLScript)
 		script.state.currentTime = currentTime(script.state.startTime)
 		script.state.ticks+=1
@@ -162,6 +177,9 @@ function start()
 		end
 	end
 
+  """
+  TODO
+  """
 	function reload(script::JLScript)
 		script.state.isRunning=false
 		script.state.isRenderRunOnce=false
@@ -182,6 +200,9 @@ function start()
 		script(:OnReload)
 	end
 
+  """
+  TODO
+  """
 	function create(id::Symbol,path::String)
 		script = JLScript(id, FileSource(path))
 		script.state = ScriptState()
@@ -216,6 +237,9 @@ function start()
 		registerFileUpdate(script.source, (source::FileSource) -> list[:reload]())
 	end
 
+  """
+  TODO
+  """
 	function run(script::JLScript)
 		if !script.state.isRunning
 			script(:OnStart)

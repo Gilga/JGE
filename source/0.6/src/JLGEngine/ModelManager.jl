@@ -12,6 +12,7 @@ using ..MeshManager
 
 const Mesh = MeshManager.Typ
 
+""" TODO """
 type Model <: JLGEngine.IComponent
 	id::Symbol
 	name::String
@@ -29,14 +30,20 @@ type Model <: JLGEngine.IComponent
 	Model(id=:_) = (g=StorageGroup(); new(id, "",true,false,false,FileSource(),Dict(),g,g))
 end
 
+""" TODO """
 setMainBuffer(this::Model, storage::StorageGroup) = this.mainStorage = storage
+
+""" TODO """
 getMainBuffer(this::Model) = this.mainStorage
 
+""" TODO """
 link(this::Model) = StorageManager.link(this.group)
 
+""" TODO """
 function init(this::Model)
 end
 
+""" TODO """
 function upload(this::Model)
 	if this.loaded return end
 	prepare(this::Model,this.meshes[:DEFAULT])
@@ -44,12 +51,14 @@ function upload(this::Model)
 	this.loaded=true
 end
 
+""" TODO """
 function unload(this::Model)
 	if !this.loaded return end
 	# ....
 	this.loaded=false
 end
 
+""" TODO """
 function resets()
 	GRAPHICSDRIVER().resetBuffers()
 end
@@ -66,6 +75,7 @@ presetManager(Model)
 #	list[k]
 #end
 
+""" TODO """
 function getGroup(this::Model, k::Symbol)
 	r = nothing
 	if k == :VERTEX || k == :UV || k == :NORMAL
@@ -77,12 +87,14 @@ function getGroup(this::Model, k::Symbol)
 	#StorageManager.getData(getMainBuffer(this),k)
 end
 
+""" TODO """
 function getData(this::Model, k::Symbol)
 	r = getGroup(this,k)
 	if r != nothing r=r.data end #StorageManager.getValues
 	r
 end
 
+""" TODO """
 function getBuffer(this::Model, k::Symbol)
 	#.....
 end

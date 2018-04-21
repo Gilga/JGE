@@ -4,10 +4,22 @@ using CoreExtended
 using FileManager.FileSource
 
 export JLComponent
+
+"""
+TODO
+"""
 abstract type JLComponent <: AbstractObjectReference end
+
+"""
+TODO
+"""
 type JLInvalidComponent <: JLComponent end
+
 const JL_INVALID_COMPONENT = JLInvalidComponent()
 
+"""
+TODO
+"""
 type JLStateListComponent <: JLComponent
 	isInitalized	::Bool
 	isRunning			::Bool
@@ -18,6 +30,9 @@ end
 
 export JLScriptFunction
 
+"""
+TODO
+"""
 type JLScriptFunction
 	func::Function
 	JLScriptFunction(f::Function) = new(stabilize(f))
@@ -25,6 +40,9 @@ end
 
 export JLScript
 
+"""
+TODO
+"""
 type JLScript
   id        ::Symbol
 	mod				::Module
@@ -38,22 +56,37 @@ type JLScript
 	objref		::JLComponent
 	funcs			::JLComponent
 	events		::JLComponent
+end
 
-  JLScript(id::Symbol) = JLScript(id,FileSource())
+"""
+TODO
+"""
+JLScript(id::Symbol) = JLScript(id,FileSource())
 
-  function JLScript(id::Symbol, source::FileSource)
-    this=new(id,Module(id),source,(),Dict(),Dict(),Dict(),JLStateListComponent(),JL_INVALID_COMPONENT,JL_INVALID_COMPONENT,JL_INVALID_COMPONENT)
-		JLSCRIPTS[id]=this
-		this
-  end
+"""
+TODO
+"""
+function JLScript(id::Symbol, source::FileSource)
+  this=JLScript(id,Module(id),source,(),Dict(),Dict(),Dict(),JLStateListComponent(),JL_INVALID_COMPONENT,JL_INVALID_COMPONENT,JL_INVALID_COMPONENT)
+  JLSCRIPTS[id]=this
+  this
 end
 
 JLSCRIPTS = Dict{Symbol,JLScript}()
 
+"""
+TODO
+"""
 loop(f::Function) = for (k,s) in JLSCRIPTS f(s) end
 
+"""
+TODO
+"""
 listen(this::JLScript, k::Symbol, f::Function) = (this.listener[k]=f)
 
+"""
+TODO
+"""
 function run(this::JLScript, args...)
 	debug("run $(this.id)")
 	#Module(:__anon__)
@@ -64,9 +97,19 @@ function run(this::JLScript, args...)
   result
 end
 
+"""
+TODO
+"""
 (this::JLScript)(s::Symbol, args...) = CoreExtended.execute(this.mod,s,args...) #@eval $f($args...)
+
+"""
+TODO
+"""
 exists(this::JLScript, s::Symbol) = CoreExtended.exists(this.mod,s)
 
+"""
+TODO
+"""
 function execute(this::JLScript, compile_args=[], args...)
   debug("execute $(this.id)")
 	result = compile(this, compile_args...)
@@ -74,8 +117,14 @@ function execute(this::JLScript, compile_args=[], args...)
 	result
 end
 
+"""
+TODO
+"""
 execute(f::JLScriptFunction, args...) = (debug("execute function("*string(args...)*")"); f.func(args...))
 
+"""
+TODO
+"""
 function compile(this::JLScript, args...)
 	debug("compile $(this.id)")
 	result = (false, nothing)
@@ -97,6 +146,9 @@ function compile(this::JLScript, args...)
 	result
 end
 
+"""
+TODO
+"""
 function cleanCode(code::String)
 	
 	# problem using match(): only "function (name)" will be detected!
@@ -115,6 +167,9 @@ function cleanCode(code::String)
 	code=Base.replace(code, r"\n", ";")
 end
 
+"""
+TODO
+"""
 function eval(this::JLScript, args...)
 	
 	this.mod = Module(this.id) #reset modul

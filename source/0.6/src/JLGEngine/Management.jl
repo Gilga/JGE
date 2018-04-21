@@ -6,6 +6,7 @@ abstract type IManagerReference end
 
 list = SortedDict{Symbol, IManagerReference}(Forward)
 
+""" TODO """
 type Manager{T} <: IManagerReference
 	list::SortedDict{Symbol, T}
 	selected::Union{Void,T}
@@ -29,6 +30,7 @@ type Manager{T} <: IManagerReference
 	)
 end
 
+""" TODO """
 function presetManager(T::DataType)
 	m=createManager(T)
 	
@@ -58,6 +60,7 @@ function presetManager(T::DataType)
 	m
 end
 
+""" TODO """
 function createManager(T::DataType)
 	k = Symbol(T.name)
 	if !haskey(list,k)
@@ -69,6 +72,7 @@ function createManager(T::DataType)
 	e
 end
 
+""" TODO """
 function create{T}(m::Manager{T}, k::Symbol)
 	if !haskey(m.list,k)
 		e=m.create(k)
@@ -82,13 +86,22 @@ function create{T}(m::Manager{T}, k::Symbol)
 	e
 end
 
+""" TODO """
 getSelected{T}(m::Manager{T}) = m.selected
+
+""" TODO """
 setSelected{T}(m::Manager{T}, obj::Union{Void,T}) = (m.selected = obj)
+
+""" TODO """
 getType{T}(m::Manager{T}) = Union{Void,T}
 
+""" TODO """
 get{T}(m::Manager{T}, k::Symbol) = m.list[k]
+
+""" TODO """
 set{T}(m::Manager{T}, k::Symbol, obj::Union{Void,T}) = (m.list[k] = obj)
 
+""" TODO """
 function del{T}(m::Manager{T}, k::Symbol)
 	obj=get(m,k)
 	selected=getSelected(m)
@@ -97,16 +110,22 @@ function del{T}(m::Manager{T}, k::Symbol)
 	set(m,k,nothing)
 end
 
+""" TODO """
 function reset{T}(m::Manager{T})
 	unlink(m)
 	m.reset()
 end;
 
+""" TODO """
 isInvalid{T}(m::Manager{T}, obj::Union{Void,T}) = obj == nothing
+
+""" TODO """
 isLinked{T}(m::Manager{T}, obj::Union{Void,T}) =	!isInvalid(m,obj) && obj == getSelected(m)
 
+""" TODO """
 unlink{T}(m::Manager{T}) = (setSelected(m,nothing); m.unlink())
 
+""" TODO """
 function link{T}(m::Manager{T})
 	obj=getSelected(m)
 	if !isInvalid(m,obj) m.link(obj)
@@ -114,6 +133,7 @@ function link{T}(m::Manager{T})
 	end
 end
 
+""" TODO """
 function select{T}(m::Manager{T}, obj::Union{Void,T})
 	other=getSelected(m)
 	if other == obj return end

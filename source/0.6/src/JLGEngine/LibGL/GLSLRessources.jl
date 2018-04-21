@@ -3,15 +3,23 @@ using ..StorageManager
 shaderAttributes = []
 listListenerOnShaderPropertyUpdate = SortedDict{Symbol, Dict{String,Function}}()
 
+""" TODO """
 setListenerOnShaderPropertyUpdate(id::Symbol, t::Tuple) = setListenerOnShaderPropertyUpdate(id, Dict{String,Function}(t))
+
+""" TODO """
 setListenerOnShaderPropertyUpdate(id::Symbol, d::Dict{String,Function}) = listListenerOnShaderPropertyUpdate[id]=d
 removeListenerOnShaderPropertyUpdate(id::Symbol) = (listListenerOnShaderPropertyUpdate[id]=nothing)
 
+""" TODO """
 setShaderPropberty(program::AbstractGraphicsShaderProgram, name::String, args...) = program != nothing ? glUniform(glUniformLocation(program.id, name), args...) : nothing
 
+""" TODO """
 isAttribute(x) = (x == GL_PROGRAM_INPUT || x == GL_PROGRAM_OUTPUT)
+
+""" TODO """
 isUniform(x) = (x == GL_UNIFORM || x == GL_UNIFORM_BLOCK || x == GL_SHADER_STORAGE_BLOCK)
 
+""" TODO """
 function setVertexAttribArray(program::GLuint, prop::ShaderProperty)
 	if prop.location < 0 || prop.data == nothing || !isa(prop.data, GLStorageData) return end
 	glEnableVertexAttribArray(prop.location)
@@ -21,6 +29,7 @@ function setVertexAttribArray(program::GLuint, prop::ShaderProperty)
 	#glDisableVertexAttribArray(prop.location)
 end
 
+""" TODO """
 function findShaderProperties(program::AbstractGraphicsShaderProgram)
 	if program == nothing return end
 	for (id,list) in listListenerOnShaderPropertyUpdate
@@ -28,6 +37,7 @@ function findShaderProperties(program::AbstractGraphicsShaderProgram)
 	end
 end
 
+""" TODO """
 function getShaderProperties(program::AbstractGraphicsShaderProgram, buffer::AbstractGraphicsData)
 	if isLinked(program) && buffer != nothing && isa(buffer, GLStorage) && buffer.linked
 		for (_,p) in program.properties
@@ -49,6 +59,7 @@ function getShaderProperties(program::AbstractGraphicsShaderProgram, buffer::Abs
 	end
 end
 
+""" TODO """
 function findShaderProperty(program::AbstractGraphicsShaderProgram, line::String)
 	if program == nothing return end
 	m = match(r"\s*(\w+)\s+(\w+)\s+(\w+)\s*\;", line)
@@ -97,6 +108,7 @@ function findShaderProperty(program::AbstractGraphicsShaderProgram, line::String
 	end
 end
 
+""" TODO """
 function findActiveRessources(program::AbstractGraphicsShaderProgram)
 	if program == nothing return end
 	if printError("Before findActiveRessources") return end
@@ -228,6 +240,7 @@ function addShaderPropertyBlocks(program::AbstractGraphicsShaderProgram, categor
 end
 =#
 
+""" TODO """
 function addProperties(program::AbstractGraphicsShaderProgram, category::GLenum, count::GLuint, block=nothing) #ShaderProperty
 	if program == nothing return end
 	if printError("Before addProperties") return end

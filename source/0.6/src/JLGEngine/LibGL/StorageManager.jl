@@ -12,6 +12,7 @@ using ..GLLists
 using ..GLDebugControl
 using ..GLExtendedFunctions
 
+""" TODO """
 type GLStorageData <: IGraphicsData
 	id::GLuint  # GL
 	dtyp::DataType
@@ -34,6 +35,7 @@ type GLStorageData <: IGraphicsData
 	GLStorageData() = new(0,Float32,GL_FLOAT,0,GL_TRIANGLES,0,0,0,[],C_NULL,0,0,0,false)
 end
 
+""" TODO """
 type GLStorage <: IGraphicsData
 	linked::Bool
 	id::GLuint  # bind point
@@ -44,6 +46,7 @@ type GLStorage <: IGraphicsData
 	GLStorage(typ=GL_ARRAY_BUFFER) = new(false,0,0,0,typ,GL_STATIC_DRAW)
 end
 
+""" TODO """
 type GLStorageBlock <: IGraphicsData
 	created::Bool
 	isarray::Bool
@@ -55,12 +58,14 @@ end
 linkedArray = nothing
 linkedBuffers = Dict{GLenum,AbstractGraphicsData}()
 
+""" TODO """
 function unbindStorages()
 	# unbind
 	for (s,k) in LIST_BUFFER bind(false, k, GLuint(0), nothing) end
   bind(true, GLenum(0), GLuint(0), nothing)
 end
 
+""" TODO """
 function create(typ::Symbol, id::Symbol)
 	r = nothing
 	if typ == :DATA
@@ -73,8 +78,10 @@ function create(typ::Symbol, id::Symbol)
 	r
 end
 
+""" TODO """
 getValues(this::GLStorageData) = this.values
 
+""" TODO """
 function setValues(this::GLStorageData, values::AbstractArray, elems::Integer, mode = :TRIANGLES)
 	this.uploaded = false
 
@@ -105,6 +112,7 @@ function setValues(this::GLStorageData, values::AbstractArray, elems::Integer, m
 	println("setValues:done.")
 end
 
+""" TODO """
 function prepare(block::GLStorageBlock, storage::GLStorage, this::GLStorageData)
 	storage.count += 1
 	this.id=storage.count
@@ -112,16 +120,19 @@ function prepare(block::GLStorageBlock, storage::GLStorage, this::GLStorageData)
 	storage.size += this.size
 end
 
+""" TODO """
 function prepare(block::GLStorageBlock, this::GLStorage)
 	block.count += 1
 	this.id=block.count
 	this.count=0
 end
 
+""" TODO """
 function prepare(this::GLStorageBlock)
 	this.count=0
 end
 
+""" TODO """
 function init(this::GLStorageBlock)
 	if this.created return end
 	this.anchor=zeros(GLuint,this.count)
@@ -131,6 +142,7 @@ function init(this::GLStorageBlock)
 	this.created=true
 end
 
+""" TODO """
 function clean(this::GLStorageBlock)
 	if !this.created return end
 	this.anchor=zeros(GLuint,this.count)
@@ -140,6 +152,7 @@ function clean(this::GLStorageBlock)
 	this.created=false
 end
 
+""" TODO """
 function bind(isarray::Bool, k::GLenum, v::GLuint, s::AbstractGraphicsData)
 	global linkedBuffers
 	global linkedArray
@@ -159,10 +172,13 @@ function bind(isarray::Bool, k::GLenum, v::GLuint, s::AbstractGraphicsData)
 	end
 end
 
+""" TODO """
 bind(block::GLStorageBlock, this::GLStorage, on=true) = bind(block.isarray, this.typ, GLuint(on ? block.anchor[this.id] : 0), on ? this : nothing)
 
+""" TODO """
 upload(xs::Array{Any,1}) = for x in xs upload(x[1], x[2], x[3]) end
 
+""" TODO """
 function upload(block::GLStorageBlock, this::GLStorage, data::GLStorageData)
 	if block.isarray return end
 	bind(block,this)
@@ -170,6 +186,7 @@ function upload(block::GLStorageBlock, this::GLStorage, data::GLStorageData)
 	bind(block,this,false)
 end
 
+""" TODO """
 function uploadData(block::GLStorageBlock, this::GLStorage, data::GLStorageData)
 	if block.isarray || this.typ == 0 return end # || data.uploaded
 
@@ -204,6 +221,7 @@ function uploadData(block::GLStorageBlock, this::GLStorage, data::GLStorageData)
 	data.uploaded = true
 end
 
+""" TODO """
 update(this::GLStorageData, mode::Symbol) = this.mode = LIST_DRAW_MODE[mode]
 
 end #GLStorageManager

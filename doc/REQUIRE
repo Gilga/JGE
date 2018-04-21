@@ -1,0 +1,9 @@
+Compat
+DocStringExtensions
+Documenter
+ImageMagick
+ModernGL
+GLFW
+Quaternions
+FileIO
+Suppressor

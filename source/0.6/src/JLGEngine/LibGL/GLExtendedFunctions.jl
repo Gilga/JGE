@@ -82,6 +82,7 @@ end
 glGenOne(glGenFn,args...) = (r1 = glGenFn(args...); r2 = glCheckError(string(glGenFn)); [r2,r1])
 =#
 
+""" TODO """
 function glGetActiveUniform(program::GLuint, index::Integer)
     actualLength   = GLsizei[1]
     uniformSize    = GLint[1]
@@ -98,6 +99,7 @@ function glGetActiveUniform(program::GLuint, index::Integer)
     (uname, typ[1], uniformSize[1])
 end
 
+""" TODO """
 function glGetActiveAttrib(program::GLuint, index::Integer)
     actualLength   = GLsizei[1]
     attributeSize  = GLint[1]
@@ -114,14 +116,14 @@ function glGetActiveAttrib(program::GLuint, index::Integer)
     (uname, typ[1], attributeSize[1])
 end
 
-#TODO
+""" TODO """
 function glGetActiveUniformsiv(program::GLuint, index::Integer, variable::GLenum)
     result = Ref{GLint}(-1)
 		#glGetActiveUniformBlockiv(program, index, variable, result)
     result[]
 end
 
-# display information for a program's attributes
+""" display information for a program's attributes """
 function getAttributesInfo(program::GLuint)
 	# how many attribs?
 	@show activeAttr = glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES)
@@ -132,7 +134,7 @@ function getAttributesInfo(program::GLuint)
 	end
 end
 
-# display info for all active uniforms in a program
+""" display info for all active uniforms in a program """
 function getUniformsInfo(program::GLuint)
 	# Get uniforms info (not in named blocks)
 	@show activeUnif = glGetProgramiv(program, GL_ACTIVE_UNIFORMS)
@@ -181,6 +183,7 @@ function getUniformsInfo(program::GLuint)
 end
 
 # display the values for a uniform in a named block
+""" TODO """
 function getUniformInBlockInfo(program::GLuint, blockName, uniName)
 	@show index = glGetUniformBlockIndex(program, blockName)
 	if (index == GL_INVALID_INDEX)
@@ -198,6 +201,7 @@ function getUniformInBlockInfo(program::GLuint, blockName, uniName)
 end
 
 # display program's information
+""" TODO """
 function getProgramInfo(program::GLuint)
 	# check if name is really a program
 	@show program
@@ -220,12 +224,14 @@ function getProgramInfo(program::GLuint)
 	@show info = glGetProgramiv(program, GL_TRANSFORM_FEEDBACK_VARYINGS)
 end
 
-
+""" TODO """
 glSwitch(id::Symbol, on::Bool) = (option = Options[id]; on ? glEnable(option) : glDisable(option))
 #glDepthMask(on)
 
+""" TODO """
 glShaderSource(shaderID::GLuint, source::String) = (shadercode=Vector{UInt8}(string(source,"\x00")); glShaderSource(shaderID, 1, Ptr{UInt8}[pointer(shadercode)], Ref{GLint}(length(shadercode))))
 
+""" TODO """
 function glGetShaderSource(shaderID::GLuint)
 	len = Ref(GLint(0))
 	glGetShaderiv(shaderID, GL_SHADER_SOURCE_LENGTH, len)
@@ -244,14 +250,19 @@ function glGetShaderSource(shaderID::GLuint)
 	chomp(readline())
 end
 
+""" TODO """
 function glCompile(shaderID::GLuint, source::String)
 	glShaderSource(shaderID, source)
 	glCompileShader(shaderID)
 end
 
+""" TODO """
 glGetShaderiv(shaderID::GLuint, variable::GLenum) = (result = Ref{GLint}(-1); glGetShaderiv(shaderID, variable, result); result[])
+
+""" TODO """
 glGetProgramiv(programID::GLuint, variable::GLenum) = (result = Ref{GLint}(-1); glGetProgramiv(programID, variable, result); result[])
 
+""" TODO """
 function glGetAttachedShaders(program::GLuint)
     shader_count   = glGetProgramiv(program, GL_ATTACHED_SHADERS)
     length_written = GLsizei[0]
@@ -261,13 +272,14 @@ function glGetAttachedShaders(program::GLuint)
     shaders[1:first(length_written)]
 end
 
+""" TODO """
 function getValByRef(f::Function, arg)
 	ref = Ref(arg)
 	f(ref)
 	ref.x
 end
 
-# TODO
+""" TODO """
 function getValsByRef(f::Function, args...)
 	#refs=Array{Base.RefValue{Any},1}() # problem: different types
 	#for arg in args push!(refs, Ref(arg)) end
@@ -277,21 +289,43 @@ function getValsByRef(f::Function, args...)
 	[]
 end
 
+""" TODO """
 glString(name::GLenum) = unsafe_string(glGetString(name))
+
+""" TODO """
 glString(name::GLenum, index::GLuint) = unsafe_string(glGetStringi(name,index))
 
+""" TODO """
 glGetIntegerv(name::GLenum) = getValByRef((r)->glGetIntegerv(name,r), GLint(-1))
+
+""" TODO """
 glGetInteger64v(name::GLenum) = getValByRef((r)->glGetInteger64v(name,r), GLint64(-1))
+
+""" TODO """
 glGetBooleanv(name::GLenum) = getValByRef((r)->glGetBooleanv(name,r), GLboolean(false))
+
+""" TODO """
 glGetFloatv(name::GLenum) = getValByRef((r)->glGetFloatv(name,r), GLfloat(-1))
+
+""" TODO """
 glGetDoublev(name::GLenum) = getValByRef((r)->glGetDoublev(name,r), GLdouble(-1))
 
+""" TODO """
 glGetIntegeri_v(name::GLenum, index::GLuint) = getValByRef((r)->glGetIntegeri_v(name,r), GLint(-1))
+
+""" TODO """
 glGetInteger64i_v(name::GLenum, index::GLuint) = getValByRef((r)->glGetInteger64i_v(name,r), GLint64(-1))
+
+""" TODO """
 glGetBooleani_v(name::GLenum, index::GLuint) = getValByRef((r)->glGetBooleani_v(name,r), GLboolean(false))
+
+""" TODO """
 glGetFloati_v(name::GLenum, index::GLuint) = getValByRef((r)->glGetFloati_v(name,r), GLfloat(-1))
+
+""" TODO """
 glGetDoublei_v(name::GLenum, index::GLuint) = getValByRef((r)->glGetDoublei_v(name,r), GLdouble(-1))
 
+""" TODO """
 function glGet(typ::DataType, name::GLenum)
 
 	fn = nothing
@@ -308,6 +342,7 @@ function glGet(typ::DataType, name::GLenum)
 	nothing
 end
 
+""" TODO """
 function glGet(typ::DataType, name::GLenum, index::GLuint)
 
 	fn = nothing
@@ -326,11 +361,19 @@ end
 
 #glGetInternalformati64v
 #glGetInternalformativ
+""" TODO """
 setFragLocation(id::GLuint, name::String, colorNumber=GLuint(0)) = glFragLocation(id, name, colorNumber)
+
+""" TODO """
 glFragLocation(id::GLuint, name::String, colorNumber::GLuint) = glBindFragDataLocation(id, colorNumber, pointer(string(name,"\x00")))
+
+""" TODO """
 glAttribLocation(id::GLuint, name::String) = glGetAttribLocation(id, pointer(string(name,"\x00")))
+
+""" TODO """
 glUniformLocation(id::GLuint, name::String) = glGetUniformLocation(id, pointer(string(name,"\x00")))
 
+""" TODO """
 glUniform(location::GLint, value::Bool) = glUniform1ui(location, GLuint(value?1:0))
 glUniform(location::GLint, value::UInt32) = glUniform1ui(location, GLuint(value))
 glUniform(location::GLint, value::UInt64) = glUniform1ui(location, GLuint(value))

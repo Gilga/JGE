@@ -21,23 +21,35 @@ const ShaderProgram=ShaderManager.Typ
 
 const DEFAULT_FUNCTION = ()->nothing
 
+""" TODO """
 OnPreDraw = DEFAULT_FUNCTION
+
+""" TODO """
 OnPostDraw = DEFAULT_FUNCTION
+
+""" TODO """
 OnPreRender = DEFAULT_FUNCTION
+
+""" TODO """
 OnPostRender = DEFAULT_FUNCTION
+
+""" TODO """
 OnRender = DEFAULT_FUNCTION
 
+""" TODO """
 function setOnDraw(f1::Union{Void,Function}, f2::Union{Void,Function})
 	global OnPreDraw = f1 != nothing ? f1 : DEFAULT_FUNCTION
 	global OnPostDraw = f2 != nothing ? f2 : DEFAULT_FUNCTION
 end
 
+""" TODO """
 function setOnRender(f1::Union{Void,Function}, f2::Union{Void,Function}, f3::Union{Void,Function})
 	global OnPreRender = f1 != nothing ? f1 : DEFAULT_FUNCTION
 	global OnPostRender = f2 != nothing ? f2 : DEFAULT_FUNCTION
 	global OnRender = f3 != nothing ? f3 : DEFAULT_FUNCTION
 end
 
+""" TODO """
 type RenderGroup
 	enabled::Bool
 	transform::Transform
@@ -47,12 +59,14 @@ type RenderGroup
 	modes::Dict{Symbol,Any}
 end
 
+""" TODO """
 type RenderGroups
 	enabled::Bool
 	camera::Camera
 	groups::SortedDict{Symbol,RenderGroup}
 end
 
+""" TODO """
 type Renderer
 	id::Symbol
 	#gameObject::GameObject
@@ -75,6 +89,7 @@ type Renderer
 	end
 end
 
+""" TODO """
 function link(this::Renderer)
 	ModelManager.linkTo(this.model)
 	ShaderManager.linkTo(this.shaderProgram)
@@ -85,6 +100,7 @@ end
 #createModel(this::Renderer) = this.model = ModelManager.create(this.id)
 #createCamera(this::Renderer) = this.camera = CameraManager.create(this.id)
 
+""" TODO """
 function register(this::Renderer)
 	this.model = ModelManager.getSelected()
 	this.camera = CameraManager.getSelected()
@@ -92,6 +108,7 @@ function register(this::Renderer)
 	#RenderManager.createShaderProgram(:FG, "shaders/default.glsl")
 end
 
+""" TODO """
 function addTexture(this::Renderer, path::String)
 	id=Symbol(path)
 	texture = TextureManager.create(id)
@@ -100,21 +117,25 @@ function addTexture(this::Renderer, path::String)
 	texture
 end
 
+""" TODO """
 function update()
 	ShaderManager.watchShaderReload(RenderManager.reload)
 end
 
+""" TODO """
 function init(this::Renderer)
 	setMode(this, :POLYGONMODE,[:FRONT_AND_BACK,:FILL])
 	this.transform=TransformManager.create(this.id)
 end
 
+""" TODO """
 function render()
 	OnPreRender()
 	OnRender()
 	OnPostRender()
 end
 
+""" TODO """
 function render(this::Renderer)
 	if !this.enabled return end
 	setSelected(this)
@@ -126,11 +147,13 @@ function render(this::Renderer)
 	OnPostDraw()
 end
 
+""" TODO """
 function resets()
 	ModelManager.reset()
 	ShaderManager.reset()
 end
 
+""" TODO """
 function unlinks()
 	ModelManager.unlink()
 	ShaderManager.unlink()
@@ -142,9 +165,13 @@ presetManager(Renderer)
 useSortedList = false
 renderSortedList(use::Bool) = (global useSortedList = use)
 
+""" TODO """
 renderDefault() = for (_,this) in list; render(this); end
+
+""" TODO """
 renderAll = DEFAULT_FUNCTION
 
+""" TODO """
 function start()
 	reset()
 	RenderManager.reload()
@@ -155,6 +182,7 @@ function start()
 	end
 end
 
+""" TODO """
 function reload()
 	if !useSortedList
 		renderAll = stabilize(renderDefault)
@@ -187,6 +215,7 @@ function reload()
 	global OnRender = OnRender != DEFAULT_FUNCTION ? OnRender : renderAll
 end
 
+""" TODO """
 function copy(l::Renderer,r::Renderer)
 	l.model = r.model
 	l.camera = r.camera
@@ -194,40 +223,55 @@ function copy(l::Renderer,r::Renderer)
 	l.shaderProgram = r.shaderProgram
 end
 
+""" TODO """
 function unlink(typ::DataType)
 	#obj = typ == Camera ? EMPTY_CAMERA : (typ == Model ? EMPTY_MODEL : (typ == Model ? nothing : nothing))
 	if obj != nothing link(obj) end
 end
 
+""" TODO """
 function link(ent::Transform)
 	this = getSelected()
 	this.transform = ent
 end
 
+""" TODO """
 function link(camera::Camera)
 	this = getSelected()
 	this.camera = camera
 end
 
+""" TODO """
 function link(model::Model)
 	this = getSelected()
 	this.model = model
 end
 
+""" TODO """
 function link(program::ShaderProgram)
 	this = getSelected()
 	this.shaderProgram = program
 end
 
+""" TODO """
 is(id::Symbol) = RenderManager.getSelected().id == id
+
+""" TODO """
 isTransform(id::Symbol) = RenderManager.getSelected().transform.id == id
+
+""" TODO """
 isModel(id::Symbol) = RenderManager.getSelected().model.id == id
+
+""" TODO """
 isCamera(id::Symbol) = RenderManager.getSelected().camera.id == id
 
+""" TODO """
 getMVP() = RenderManager.getSelected().camera.mvpMat
 
+""" TODO """
 getData(k::Symbol) = ModelManager.getData(getSelected().model,k)
 
+""" TODO """
 function init()
 	ShaderManager.setListenerOnShaderPropertyUpdate(:OnShaderPropertyUpdateAttributes, (
 		"iVertex" => () ->  getData(:VERTEX)
@@ -237,16 +281,24 @@ function init()
 	)
 end
 
+""" TODO """
 function getShaderProperties(this::Renderer)
 	ShaderManager.getShaderProperties(this.shaderProgram, ModelManager.getMainBuffer(this.model).data)
 end
 
+""" TODO """
 setRenderMode(this::Renderer, mode::Symbol) = GRAPHICSDRIVER().update(ModelManager.getGroup(this.model,:VERTEX).data, mode)
+
+""" TODO """
 setMode(this::Renderer, mode::Symbol, value::Any) = this.modes[mode]=value
 
+""" TODO """
 setRenderMode(mode::Symbol) = setRenderMode(getSelected(), mode)
+
+""" TODO """
 setMode(mode::Symbol, value::Any) = GRAPHICSDRIVER().setMode(mode,value)
 
+""" TODO """
 function draw(this::Renderer)
 	model=this.model
 	buffer=ModelManager.getMainBuffer(model)

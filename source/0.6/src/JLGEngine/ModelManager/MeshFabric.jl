@@ -1,6 +1,7 @@
 include("MeshData.jl")
 include("MeshLoader_OBJ.jl")
 
+""" TODO """
 function createMesh(this::Model, id::Symbol)
 	if !haskey(this.meshes, id)
 		mesh = MeshManager.Mesh()
@@ -11,6 +12,7 @@ function createMesh(this::Model, id::Symbol)
 	mesh
 end
 
+""" TODO """
 function addMesh(this::Model, typ::Symbol)
 	mesh=createMesh(this, :DEFAULT)
 	if MeshManager.isEmpty(mesh)
@@ -20,6 +22,7 @@ function addMesh(this::Model, typ::Symbol)
 	mesh
 end
 
+""" TODO """
 function update(mesh::Mesh, typ::Symbol, path::String)
 	if typ == :PLANE
 		MeshManager.update(mesh, typ, MeshDataPlaneQuad)
@@ -36,6 +39,7 @@ function update(mesh::Mesh, typ::Symbol, path::String)
 	end
 end
 
+""" TODO """
 function prepare(this::Model, mesh::Mesh)
 	vlen=length(mesh.vertices.data.values)
 	uvlen=length(mesh.uvs.data.values)

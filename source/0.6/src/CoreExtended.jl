@@ -12,6 +12,9 @@ const EMPTY_FUNCTION = () -> nothing
 
 export iscallable
 
+"""
+TODO
+"""
 iscallable(f) = !isempty(methods(f))
 
 # -------------------------------------------------------------
@@ -22,8 +25,10 @@ export execute
 export exists
 
 #method_exists(Symbol(script.mod, :OnRender))
+"""
+TODO
+"""
 exists(m::Module, s::Symbol) = isdefined(m,s) #&& iscallable(catchException(()->eval(e)))
-
 execute(m::Module, s::Symbol, args...) = isdefined(m,s) ? execute(:($m.$s),args...) : nothing #(if isdefined(m,s) return execute(eval(m,s),args...); end; nothing)
 #execute(o::Any, s::Symbol, args...) = isdefined(o,s) ? execute(:($o.$s),args...) : nothing
 execute(e::Expr, args...) = execute(catchException(()->eval(e)),args...)
@@ -33,12 +38,18 @@ execute(t::Tuple{Bool,Any}, args...) = execute(t[1]?t[2]:nothing,args...)
 execute(r::Any, args...) = (debug("result "*string(typeof(r))); r)
 execute(r::Void, args...) = (warn("Cannot execute nothing"); r)
 
+"""
+TODO
+"""
 function invoke(f::Function, args...)
 	result = nothing
 	catchException(()	-> result = @eval $f($(args...)))
 	result
 end
 
+"""
+TODO
+"""
 stabilize(f::Function) = (args...) -> invoke(f, args...)
 
 # -------------------------------------------------------------
@@ -46,8 +57,14 @@ stabilize(f::Function) = (args...) -> invoke(f, args...)
 export AbstractObjectReference
 export EMPTY_OBJECT
 
+"""
+TODO
+"""
 abstract type AbstractObjectReference end
 
+"""
+TODO
+"""
 type EmptyObject <: AbstractObjectReference
 	EmptyObject() = new() 
 end
@@ -69,18 +86,30 @@ export linkToException
 
 #Base.show_backtrace(STDOUT,backtrace())
 
+"""
+TODO
+"""
 OnException = (x)->nothing
 
+"""
+TODO
+"""
 function linkToException(f::Function)
 	global OnException = f
 end
 
+"""
+TODO
+"""
 function backTraceException(ex::Exception)
 	println("--- [ BACKTRACE ] ---")
 	Base.showerror(STDERR, ex, catch_backtrace())
 	println("\n---------------------")
 end
 
+"""
+TODO
+"""
 function catchException(f::Function, exf=OnException)
 	try return f()
 	catch ex exf(ex)
@@ -96,6 +125,9 @@ export hasVal
 export replace
 export update
 
+"""
+TODO
+"""
 function hasVal(a::AbstractArray, getindex::Function)
 	i=0; for v in a
 		i+=1
@@ -105,6 +137,9 @@ function hasVal(a::AbstractArray, getindex::Function)
 	(0,nothing)
 end
 
+"""
+TODO
+"""
 function replace(a::AbstractArray, f::Function, v::Any)
 	found=hasVal(f,a)
 	if found[1] == 0 push!(a, v)
@@ -115,6 +150,9 @@ end
 #found=find(x -> x.name == p.name,program.properties)
 #!haskey() push!(program.properties, p)
 
+"""
+TODO
+"""
 function update(a::AbstractArray, getindex::Function, f::Function)
 	found=hasVal(getindex,a)
 	if found[1] == 0 push!(a, f((false,nothing)))
@@ -122,6 +160,9 @@ function update(a::AbstractArray, getindex::Function, f::Function)
 	end
 end
 
+"""
+TODO
+"""
 function update(dict::Dict, index::Any, f::Function)
 	v=nothing
 	try

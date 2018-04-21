@@ -11,6 +11,7 @@ using ModernGL
 
 using ..GLLists
 
+""" TODO """
 function printError(title=nothing)
  result=false
 	while (err = checkError())[1]
@@ -24,14 +25,19 @@ function printError(title=nothing)
 	result
 end
 
+""" TODO """
 function checkError()
 	err = glGetError()
 	(err != GL_NO_ERROR, err)
 end
 
+""" TODO """
 hasError() = checkError()[1]
+
+""" TODO """
 hasNoError() = !hasError()
 
+""" TODO """
 function getInfoLog(s::Symbol, id::GLuint)
 	len = zeros(GLint,1)
 	LIST_STATUS[s][:STATE](id, GL_INFO_LOG_LENGTH, len)
@@ -52,6 +58,7 @@ function getInfoLog(s::Symbol, id::GLuint)
 	end
 end
 
+""" TODO """
 validate(s::Symbol, id::GLuint, status::GLenum) = (result = zeros(GLint,1); LIST_STATUS[s][:STATE](id, status, result); result[] == GL_TRUE)
 
 end #GLDebugControl

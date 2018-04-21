@@ -21,6 +21,7 @@ export LIST_TYPE_STRING
 
 const GL_QUERY_BUFFER = 0x9192 # (was not defined)
 
+""" TODO """
 const LIST_STATUS = Dict{Symbol,Dict{Symbol,Function}}(
 	:SHADER		=> Dict{Symbol,Function}(:STATE => glGetShaderiv, :INFO => glGetShaderInfoLog),
 	:PROGRAM	=> Dict{Symbol,Function}(:STATE => glGetProgramiv, :INFO => glGetProgramInfoLog),

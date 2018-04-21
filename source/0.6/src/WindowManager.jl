@@ -7,6 +7,7 @@ WINDOW_HANDLER_ID_COUNTER = 0
 lastKey=Number(0)
 KEYS=Dict{Number,Number}()
 
+""" TODO """
 type WindowHandler
 	id						::Symbol
 	name					::AbstractString
@@ -19,37 +20,43 @@ type WindowHandler
 	lastCursorPos	::AbstractVector
 	nativeWindow	::Window
 	fullScreen		::Bool
+end
 
-	function WindowHandler(name::AbstractString, size::Tuple{Number,Number})
-		global WINDOW_HANDLER_ID_COUNTER
+""" TODO """
+function WindowHandler(name::AbstractString, size::Tuple{Number,Number})
+  global WINDOW_HANDLER_ID_COUNTER
 
-		if WINDOW_HANDLER_ID_COUNTER == 0
-			GLFW.Init()
-		end
+  if WINDOW_HANDLER_ID_COUNTER == 0
+    GLFW.Init()
+  end
 
-    new(
-      Symbol("display"*string(WINDOW_HANDLER_ID_COUNTER+=1)),
-			name,
-			(0,0),
-			size,
-			size,
-			Dict(),
-			[],[],[],
-			Window(GLFW.WindowHandle(C_NULL)),
-			false
-		)
-	end
+  WindowHandler(
+    Symbol("display"*string(WINDOW_HANDLER_ID_COUNTER+=1)),
+    name,
+    (0,0),
+    size,
+    size,
+    Dict(),
+    [],[],[],
+    Window(GLFW.WindowHandle(C_NULL)),
+    false
+  )
 end
 
 WINDOW_TO_HANDLER_DICT = Dict{Window, WindowHandler}()
 
 windowHandler = nothing
 
+""" TODO """
 getWindowHandler() = windowHandler
+
+""" TODO """
 setWindowHandler(this::WindowHandler) = (global windowHandler = this)
 
+""" TODO """
 terminate() = GLFW.Terminate()
 
+""" TODO """
 function setListener(this::WindowHandler, key::Symbol, listener::Function)
 	this.listenList[key] = listener
 end
@@ -57,20 +64,35 @@ end
 ################################################################################
 # Window Events
 
+""" TODO """
 function OnWindowResize(window::Window, width::Number, height::Number)
 	h = WINDOW_TO_HANDLER_DICT[window]
 	h.size = (width,height)
 	OnEvent(h, :OnWindowResize, [width,height])
 end
 
+""" TODO """
 OnWindowIconify(window::Window, iconified::Number) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnWindowIconify, iconified)
+
+""" TODO """
 OnWindowClose(window::Window) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnWindowClose)
+
+""" TODO """
 OnWindowFocus(window::Window, focused::Number) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnWindowFocus, focused)
+
+""" TODO """
 OnWindowRefresh(window::Window) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnWindowRefresh)
+
+""" TODO """
 OnFramebufferResize(window::Window, width::Number, height::Number) =  OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnFramebufferResize, [width,height])
+
+""" TODO """
 OnCursorEnter(window::Window, entered::Number) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnCursorEnter, entered)
+
+""" TODO """
 OnDroppedFiles(window::Window, files::AbstractArray) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnDroppedFiles, files)
 
+""" TODO """
 function OnWindowPos(window::Window, x::Number, y::Number)
   h = WINDOW_TO_HANDLER_DICT[window]
   t = [-x,y]
@@ -81,6 +103,7 @@ function OnWindowPos(window::Window, x::Number, y::Number)
   OnEvent(h, :OnWindowMove, n)
 end
 
+""" TODO """
 function OnCursorPos(window::Window, x::Number, y::Number)
   h = WINDOW_TO_HANDLER_DICT[window]
   t = [x,y]
@@ -92,9 +115,13 @@ function OnCursorPos(window::Window, x::Number, y::Number)
 end
 
 # Input Events
+""" TODO """
 OnScroll(window::Window, x::Number, y::Number) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnScroll, [x,y])
+
+""" TODO """
 OnCharMods(window::Window, code::Char, mods::Number) = OnEvent(WINDOW_TO_HANDLER_DICT[window], :OnCharMods, code, mods)
 
+""" TODO """
 function OnUpdateEvents()
   GLFW.PollEvents()  # Poll for and process events
 	for (window,h) in WINDOW_TO_HANDLER_DICT
@@ -109,17 +136,20 @@ function OnUpdateEvents()
 	end
 end
 
+""" TODO """
 function OnKey(window::Window, key::Number, scancode::Number, action::Number, mods::Number)
 	h = WINDOW_TO_HANDLER_DICT[window]
 	global lastKey = key
 	push!(h.events, [ :OnKey, key, scancode, action, mods, Number(0) ]) # unicode = 0
 end
 
+""" TODO """
 function OnMouseKey(window::Window, key::Number, action::Number, mods::Number)
   h = WINDOW_TO_HANDLER_DICT[window]
   OnEvent(h, :OnMouseKey, key, action, mods)
 end
 
+""" TODO """
 function OnUnicodeChar(window::Window, unicode::Char)
 	h = WINDOW_TO_HANDLER_DICT[window]
 	if lastKey > 0 KEYS[lastKey]=Number(unicode) end
@@ -128,11 +158,13 @@ end
 
 ################################################################################
 
+""" TODO """
 function ShowError(debugging::Bool)
   @static if is_apple() return end
   GLFW.WindowHint(GLFW.OPENGL_DEBUG_CONTEXT, convert(Cint, debugging))
 end
 
+""" TODO """
 function OnEvent(this::WindowHandler, eventName::Symbol, args...)
  #a = values(d) # convert Dict Values to Array
   for (k,listener) in this.listenList
@@ -142,13 +174,16 @@ function OnEvent(this::WindowHandler, eventName::Symbol, args...)
   end
 end
 
+""" TODO """
 title(this::WindowHandler, name::String) = GLFW.SetWindowTitle(this.nativeWindow, name)
 
+""" TODO """
 function cursor(this::WindowHandler, mode::Symbol)
 	GLFW.SetInputMode(this.nativeWindow, GLFW.CURSOR, eval(:(GLFW.$mode)))
 	#GLFW.STICKY_KEYS or GLFW.STICKY_MOUSE_BUTTONS
 end
 
+""" TODO """
 function fullscreen(this::WindowHandler, full::Bool)
 	monitor = GLFW.GetPrimaryMonitor()
 	mode = GLFW.GetVideoMode(monitor)
@@ -170,11 +205,13 @@ function fullscreen(this::WindowHandler, full::Bool)
 end
 
 # GLFW.SetWindowMonitor
+""" TODO """
 function SetWindowMonitor(window::Window, monitor::GLFW.Monitor, xpos, ypos, width, height, refreshRate)
     ccall((:glfwSetWindowMonitor, GLFW.lib), Void, (GLFW.WindowHandle, GLFW.Monitor, Cint, Cint, Cint, Cint, Cint), window, monitor, xpos, ypos, width, height, refreshRate)
 end
 
 # Create a window and its OpenGL context
+""" TODO """
 function open(this::WindowHandler, windowhints=[])
     for (id,val) in windowhints
         GLFW.WindowHint(eval(:(GLFW.$id)),val)
@@ -217,25 +254,30 @@ function open(this::WindowHandler, windowhints=[])
     GLFW.SetCharModsCallback(window, OnCharMods)
 end
 
+""" TODO """
 isClosing(this::Window) = GLFW.WindowShouldClose(this.nativeWindow)
 isClosing(this::WindowHandler) = GLFW.WindowShouldClose(this.nativeWindow)
 
+""" TODO """
 function create(name::AbstractString, size::Tuple{Number,Number})
 	h=WindowHandler(name,size)
 	setWindowHandler(h)
 	h
 end
 
+""" TODO """
 function close(this::WindowHandler)
 	global WINDOW_HANDLER_ID_COUNTER
 	if WINDOW_HANDLER_ID_COUNTER == 1 GLFW.Terminate() end
 	if WINDOW_HANDLER_ID_COUNTER > 0 WINDOW_HANDLER_ID_COUNTER -= 1 end
 end
 
+""" TODO """
 function swap(this::WindowHandler)
   GLFW.SwapBuffers(this.nativeWindow)   # Swap front and back buffers
 end
 
+""" TODO """
 function update(this::WindowHandler)
   swap(this)
 	OnUpdateEvents()

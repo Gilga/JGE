@@ -7,8 +7,10 @@ using CoreExtended
 using JLGEngine
 using ..Management
 
+""" TODO """
 IComponent = JLGEngine.IComponent
 
+""" TODO """
 type GameObject <: IComponent
 	id::Symbol
 	enabled::Bool
@@ -19,10 +21,13 @@ type GameObject <: IComponent
 	GameObject(id=:_) = new(id,true,SortedDict{Symbol, IComponent}(Forward))
 end
 
+""" TODO """
 setComponent(this::GameObject, c::IComponent) = (this.components[k] = c; c.gameObject=this)
 
+""" TODO """
 getComponent(this::GameObject, T::DataType) = getComponents(this, T).first
 
+""" TODO """
 function getComponents(this::GameObject, T::DataType)
 	components = SortedDict{Symbol, IComponent}(Forward)
 	for (k,v) in this.components

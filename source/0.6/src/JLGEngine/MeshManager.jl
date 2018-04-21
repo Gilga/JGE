@@ -5,6 +5,7 @@ using FileManager
 
 using ..StorageManager
 
+""" TODO """
 type Mesh
 	typ::Symbol
 	vertices::StorageGroup
@@ -18,6 +19,7 @@ type Mesh
 	end
 end
 
+""" TODO """
 function clear(mesh::Mesh)
 	mesh.vertices = StorageManager.StorageGroup(:DATA, :VERTEX)
 	mesh.uvs = StorageManager.StorageGroup(:DATA, :UV)
@@ -29,10 +31,19 @@ end
 # preset for manager: includes code here
 presetManager(Mesh)
 
+""" TODO """
 isEmpty(mesh::Mesh) = isEmptyVertices(mesh) && isEmptyUVs(mesh) && isEmptyNormals(mesh) && isEmptyIndicies(mesh)
+
+""" TODO """
 isEmptyVertices(mesh::Mesh) = length(mesh.vertices.data.values) == 0
+
+""" TODO """
 isEmptyUVs(mesh::Mesh) = length(mesh.uvs.data.values) == 0
+
+""" TODO """
 isEmptyNormals(mesh::Mesh) = length(mesh.normals.data.values) == 0
+
+""" TODO """
 isEmptyIndicies(mesh::Mesh) = length(mesh.indicies.data.values) == 0
 
 #MeshManager.addPosition(mesh::Mesh, Vec3f pos)
@@ -40,12 +51,14 @@ isEmptyIndicies(mesh::Mesh) = length(mesh.indicies.data.values) == 0
 #MeshManager.addUV(mesh::Mesh, Vec2f pos)
 #MeshManager.addIndex(mesh::Mesh, Vec3f pos)
 
+""" TODO """
 function update(mesh::Mesh, typ::Symbol, values::AbstractArray, elems=0)
 	mesh.typ = typ
 	if length(values)>0	StorageManager.setValues(mesh.vertices, values, elems, :TRIANGLES) end
 	mesh
 end
 
+""" TODO """
 function update(mesh::Mesh, typ::Symbol, f::Function)
 	data = f()
 	mesh.typ = typ

@@ -11,12 +11,14 @@ using ..GLLists
 using ..GLDebugControl
 using ..GLExtendedFunctions
 
+""" TODO """
 type GLTextureBlock
 	anchor::Array{GLuint,1}
 	
 	GLTextureBlock() = new(GLuint[1])
 end
 
+""" TODO """
 type GLTexture
 	anchor::Array{GLuint,1}
 	id::GLuint
@@ -25,6 +27,7 @@ type GLTexture
 	GLTexture() = new(GLuint[1],0,GL_TEXTURE_2D)
 end
 
+""" TODO """
 function create()
 	this = GLTexture()
 	glGenTextures(1, this.anchor)
@@ -32,8 +35,10 @@ function create()
 	this
 end
 
+""" TODO """
 bind(this::GLTexture) = glBindTexture(this.typ, this.id)
 
+""" TODO """
 function load(this::GLTexture, file::AbstractString)
 	img = Images.load(file)
 	sz = size(img)

@@ -2,6 +2,7 @@ module ThreadManager
 
 export Thread
 
+""" TODO """
 type Thread
 	id::Integer
 	mutex::Threads.Mutex
@@ -11,12 +12,14 @@ end
 Mutex = Threads.Mutex()
 List = Thread[]
 
+""" TODO """
 function safe_call(t::Thread, f::Function)
 	Threads.lock(t.mutex)
 	f(t)
 	Threads.unlock(t.mutex)
 end
 
+""" TODO """
 function reset()
 	global Mutex
 	global List
@@ -24,6 +27,7 @@ function reset()
 	List = Thread[]
 end
 
+""" TODO """
 function run(a = Function[])
 	reset()
 	max=Threads.nthreads()

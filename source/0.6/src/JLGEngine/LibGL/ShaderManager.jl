@@ -13,6 +13,7 @@ using ..GLLists
 using ..GLDebugControl
 using ..GLExtendedFunctions
 
+""" TODO """
 type ShaderProperty <: IGraphicsShaderProperty
 	enabled::Bool
 	linked::Bool
@@ -49,7 +50,7 @@ type ShaderProperty <: IGraphicsShaderProperty
 	ShaderProperty() = new(true,false,"","","",Void,0,-1,-1,-1,0,-1,-1,-1,-1,0,0,-1,-1,0,nothing,()->nothing,Dict{String,ShaderProperty}())
 end
 
-# Shader
+""" TODO """
 type Shader <: IGraphicsShader
 	enabled ::Bool
 	created ::Bool
@@ -65,7 +66,7 @@ type Shader <: IGraphicsShader
   Shader(typ::Symbol, file::FileSourcePart)	= new(true,false,typ,file,"",0,0)
 end
 
-# ShaderProgram
+""" TODO """
 type ShaderProgram <: IGraphicsShaderProgram
 	id			::GLuint
 
@@ -87,8 +88,11 @@ end
 #listenOnShaderProgramUpdate(id::Symbol, d::Dict{String,Function}) = listShaderProgramListener[id]=d
 #notlistenOnShaderPropertyUpdate(id::Symbol) = (listShaderProgramListener[id]=nothing)
 
+""" TODO """
 link(this::Shader, p::AbstractGraphicsShaderProgram) = (this.program = p; true)
 
+
+""" TODO """
 function compile(this::Shader)
 	println("compile: ", this.typ);
 	f = this.file
@@ -118,6 +122,7 @@ function compile(this::Shader)
 	r
 end
 
+""" TODO """
 function reload(this::AbstractGraphicsShaderProgram, source::FileSource)
 	if this == nothing return end
 
@@ -150,22 +155,34 @@ function reload(this::AbstractGraphicsShaderProgram, source::FileSource)
 	#useLinkedShaderProgram() # switch back to linked shader
 end
 
+""" TODO """
 createShaderProgram() = ShaderProgram()
+
+""" TODO """
 createShader(program::ShaderProgram, typ::Symbol, file::FileSourcePart) = (this=Shader(typ, file); program.shaders[typ]=this; this)
 
 #getSource(this::AbstractGraphicsShaderProgram) = this.source
 #setPath(this::AbstractGraphicsShaderProgram, path::String) = (this.source.path = path)
 
+""" TODO """
 clear(this::AbstractGraphicsShaderProgram) = this.shaders = Dict()
 
+""" TODO """
 hasShader(this::AbstractGraphicsShaderProgram, id::Symbol) = haskey(this.shaders,id)
 
 linked = nothing
+
+""" TODO """
 unlink() = link(nothing)
 #isValid(this::ShaderProgram) = this.created && this.bound
+
+""" TODO """
 isValid(this::AbstractGraphicsShaderProgram) = this != nothing && isa(this,ShaderProgram) && this.created && this.bound
+
+""" TODO """
 isLinked(this::AbstractGraphicsShaderProgram) =	isValid(this) && this == linked
 
+""" TODO """
 function create(this::Shader)
 	if this.created return true end
 	this.created = true
@@ -175,6 +192,7 @@ function create(this::Shader)
 	hasNoError()
 end
 
+""" TODO """
 function delete(this::Shader)
 	if !this.created return true end
 	println("delete: ", this.typ);
@@ -183,9 +201,13 @@ function delete(this::Shader)
 	hasNoError()
 end
 
+""" TODO """
 attach(this::Shader, programID::GLuint) = (println("attach: ", this.typ); glAttachShader(programID, this.id); hasNoError())
+
+""" TODO """
 detach(this::Shader, programID::GLuint) = (println("detach: ", this.typ); glDetachShader(programID, this.id); hasNoError())
 
+""" TODO """
 function link(this::AbstractGraphicsShaderProgram)
 	global linked
 	if linked == this return end
@@ -198,6 +220,7 @@ function link(this::AbstractGraphicsShaderProgram)
 	result
 end
 
+""" TODO """
 function create(this::ShaderProgram)
 	if this.created return true end
 	this.created = true
@@ -205,6 +228,7 @@ function create(this::ShaderProgram)
 	hasNoError()
 end
 
+""" TODO """
 function delete(this::ShaderProgram)
 	if !this.created return true end
 	this.created = false
@@ -213,6 +237,7 @@ function delete(this::ShaderProgram)
 	hasNoError()
 end
 
+""" TODO """
 function bind(this::ShaderProgram)
 	glLinkProgram(this.id)
   #result = validate(:PROGRAM, this.id, GL_LINK_STATUS)
@@ -223,6 +248,7 @@ function bind(this::ShaderProgram)
 	this.bound=hasNoError()
 end
 
+""" TODO """
 function setUp(this::ShaderProgram)
 	result = (
 	(reset(this) ? true : true) &&
@@ -232,6 +258,7 @@ function setUp(this::ShaderProgram)
 	result
 end
 
+""" TODO """
 function invokeList(list::Dict, f::Function, args...)
 	if length(list) <= 0 return false end;
 	for (k,e) in list
@@ -240,15 +267,29 @@ function invokeList(list::Dict, f::Function, args...)
 	true
 end
 
+""" TODO """
 reset() = unlink()
 #(create(this) && compileAll(this) && link(this, true) && cleanAll(this))
+
+""" TODO """
 reset(this::ShaderProgram) = (unlink(); clearList(this) && delete(this))
+
+""" TODO """
 compile(this::ShaderProgram) = invokeList(this.shaders, (s)->(create(s) && compile(s)))
+
+""" TODO """
 detach(this::ShaderProgram) = (shader_ids = glGetAttachedShaders(this.id); foreach(glDetachShader, shader_ids); true)
+
+""" TODO """
 attach(this::ShaderProgram) = invokeList(this.shaders, attach, this.id)
+
+""" TODO """
 clearList(this::ShaderProgram) = invokeList(this.shaders, delete)
+
+""" TODO """
 clear(this::ShaderProgram) = (this.properties = Dict{String, ShaderProperty}())
 
+""" TODO """
 function render(this::ShaderProgram, buffer, data)
 	if !isLinked(this) return end
 	if !buffer.linked return end

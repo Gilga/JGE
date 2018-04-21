@@ -94,8 +94,10 @@ MeshDataCubeIndices = Int32[
 3, 2, 5, 5, 4, 3            # Bottom face
 ]
 
+""" TODO """
 createCubeDataTest() = (:TRIANGLES, MeshDataCubeVertices_small, [], [], MeshDataCubeIndices)
 
+""" TODO """
 function createPlaneDataTest(wdetail::Integer, hdetail::Integer)
 	vertices=Vec3f[]
 	normals=Vec3f[]
@@ -120,6 +122,7 @@ function createPlaneDataTest(wdetail::Integer, hdetail::Integer)
 	(:TRIANGLE_STRIP, vertices, normals, uvs, indicies)
 end
 
+""" TODO """
 function createPlaneData(wdetail::Integer, hdetail::Integer)
 	texture_scale = true
 
@@ -187,6 +190,7 @@ function createPlaneData(wdetail::Integer, hdetail::Integer)
 	(:TRIANGLE_STRIP, vertices, normals, uvs, indicies) #TRIANGLE_STRIP
 end
 
+""" TODO """
 function createCubeDataSimple()
 	const vd = Vec3f[
 		Vec3f(-1, -1, 0),
@@ -217,6 +221,7 @@ function createCubeDataSimple()
 	(:TRIANGLES, vertices, normals, uvs, indicies)
 end
 
+""" TODO """
 function createCubeData()
 		v = [
 			Vec3f(-1, -1, -1), Vec3f(1, -1, -1), Vec3f(-1, 1, -1), Vec3f(1, 1, -1),
@@ -454,6 +459,7 @@ createTerrain(wdetail::Integer, hdetail::Integer)
 end
 =#
 
+""" TODO """
 function addTriangle(list::Dict{Symbol,Any}, id::Integer, index::Integer, v::Vec3f)
 	ids = list[:IDS]
 	position = list[:VERTICES]
@@ -482,10 +488,12 @@ function addTriangle(list::Dict{Symbol,Any}, id::Integer, index::Integer, v::Vec
 	ids[3]+=1
 end
 
+""" TODO """
 function addTriangle(list::Dict{Symbol,Any}, id::Integer, v::Array{Vec3f,1})
 	for i=1:length(v) addTriangle(list, id, i, v[i]) end
 end
 
+""" TODO """
 function subdivide(list::Dict{Symbol,Any}, id::Integer, depth::Integer, v::Array{Vec3f,1})
 	if depth <= 0
 		addTriangle(list, id, v)
@@ -518,6 +526,7 @@ function subdivide(list::Dict{Symbol,Any}, id::Integer, depth::Integer, v::Array
 	end
 end
 
+""" TODO """
 function computeVAO(list::Dict{Symbol,Any}, sides::Integer, depth::Integer, points::Array{Vec3f,1}, indices::Array{Vec3u,1})
 	if depth>8
 		error("VAO depth should not be larger than 8! Computer will freeze!")
@@ -542,6 +551,7 @@ function computeVAO(list::Dict{Symbol,Any}, sides::Integer, depth::Integer, poin
 	end
 end
 
+""" TODO """
 function createTetrahedronSphere(depth::Integer)
 	X = 0.525731112119133606f0; # sin(inc * 6.362117953f0); // 0.61803399f0,0.6662394341f0,6.362117953f0
 	Z = 0.850650808352039932f0; # 1.61803399f0; // cos(0.0f0);

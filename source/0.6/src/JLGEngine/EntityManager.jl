@@ -7,6 +7,7 @@ using CoreExtended
 using MatrixMath
 using JLGEngine
 
+""" TODO """
 type Entity <: JLGEngine.IComponent
 	id::Symbol
 	enabled::Bool
