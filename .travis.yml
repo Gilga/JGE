@@ -2,7 +2,8 @@ language: julia
 rvm:
   - 0.6.2
 branches:
-  - master
+  only:
+    - master
 addons:
   apt:
     packages:
@@ -26,5 +27,7 @@ deploy:
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: true
+  file: docs/*
+  target-branch: deploy
   on:
     branch: master
