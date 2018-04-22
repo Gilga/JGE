@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>GLLists.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link href="../../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../../App.html">App.jl</a></li><li><a class="toctext" href="../../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="../CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="../ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="../EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="../GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="../GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="../Management.html">Management.jl</a></li><li><a class="toctext" href="../MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="../ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="../RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="../ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="../StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="../SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="../TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="../TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="../ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="../ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="../ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li class="current"><a class="toctext" href="GLLists.html">GLLists.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="GLLists.html">GLLists.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/LibGL/GLLists.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>GLLists.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="GLLists.jl-1" href="#GLLists.jl-1">GLLists.jl</a></h1><p>using ModernGL</p><pre><code class="language-none">const GL_QUERY_BUFFER = 0x9192 # (was not defined)</code></pre><pre><code class="language-none">const LIST_STATUS = Dict{Symbol,Dict{Symbol,Function}}(
+	:SHADER		=&gt; Dict{Symbol,Function}(:STATE =&gt; glGetShaderiv, :INFO =&gt; glGetShaderInfoLog),
+	:PROGRAM	=&gt; Dict{Symbol,Function}(:STATE =&gt; glGetProgramiv, :INFO =&gt; glGetProgramInfoLog),
+)
+
+const LIST_BUFFER = Dict{Symbol,GLenum}(
+	:ARRAY_BUFFER								=&gt; GL_ARRAY_BUFFER,
+	:ATOMIC_COUNTER_BUFFER			=&gt; GL_ATOMIC_COUNTER_BUFFER,
+	:COPY_READ_BUFFER						=&gt; GL_COPY_READ_BUFFER,
+	:COPY_WRITE_BUFFER					=&gt; GL_COPY_WRITE_BUFFER,
+	:DISPATCH_INDIRECT_BUFFER		=&gt; GL_DISPATCH_INDIRECT_BUFFER,
+	:DRAW_INDIRECT_BUFFER				=&gt; GL_DRAW_INDIRECT_BUFFER,
+	:ELEMENT_ARRAY_BUFFER				=&gt; GL_ELEMENT_ARRAY_BUFFER,
+	:PIXEL_PACK_BUFFER					=&gt; GL_PIXEL_PACK_BUFFER,
+	:PIXEL_UNPACK_BUFFER				=&gt; GL_PIXEL_UNPACK_BUFFER,
+	:QUERY_BUFFER								=&gt; GL_QUERY_BUFFER,
+	:SHADER_STORAGE_BUFFER			=&gt; GL_SHADER_STORAGE_BUFFER,
+	:TEXTURE_BUFFER							=&gt; GL_TEXTURE_BUFFER,
+	:TRANSFORM_FEEDBACK_BUFFER	=&gt; GL_TRANSFORM_FEEDBACK_BUFFER,
+	:UNIFORM_BUFFER							=&gt; GL_UNIFORM_BUFFER,
+)
+
+const CLIP_DISTANCE = [
+	GL_CLIP_DISTANCE0,
+	GL_CLIP_DISTANCE1,
+	GL_CLIP_DISTANCE2,
+	GL_CLIP_DISTANCE3,
+	GL_CLIP_DISTANCE4,
+	GL_CLIP_DISTANCE5,
+	GL_CLIP_DISTANCE6,
+	GL_CLIP_DISTANCE7,
+	#GL_CLIP_DISTANCE8,
+]
+
+#	GL_CLIP_ORIGIN,
+#	GL_CLIP_DEPTH_MODE
+#	GL_CLIPPING_INPUT_PRIMITIVES_ARB
+#	GL_CLIPPING_OUTPUT_PRIMITIVES_ARB
+
+const LIST_OPTIONS = Dict{Symbol,GLuint}(
+	:ALPHA_TEST                     =&gt; 0,                                # GL_ALPHA_TEST
+	:AUTO_NORMAL                    =&gt; GL_AUTO_GENERATE_MIPMAP,          # GL_AUTO_NORMAL
+	:BLEND                          =&gt; GL_BLEND,                         # GL_BLEND
+	:CLIP_PLANEi                    =&gt; 0,                                # GL_CLIP_PLANEi
+	:CLIP_DISTANCEi                 =&gt; 0,                                # GL_CLIP_DISTANCEi
+	:COLOR_LOGIC_OP                 =&gt; GL_COLOR_LOGIC_OP,                # GL_COLOR_LOGIC_OP
+	:COLOR_MATERIAL                 =&gt; 0,                                # GL_COLOR_MATERIAL
+	:COLOR_SUM                      =&gt; 0,                                # GL_COLOR_SUM
+	:COLOR_TABLE                    =&gt; 0,                                # GL_COLOR_TABLE
+	:CONVOLUTION_1D                 =&gt; 0,                                # GL_CONVOLUTION_1D
+	:CONVOLUTION_2D                 =&gt; 0,                                # GL_CONVOLUTION_2D
+	:CULL_FACE                      =&gt; GL_CULL_FACE,                     # GL_CULL_FACE
+	:DEBUG_OUTPUT                   =&gt; GL_DEBUG_OUTPUT,                  # GL_DEBUG_OUTPUT
+	:DEBUG_OUTPUT_SYNCHRONOUS       =&gt; GL_DEBUG_OUTPUT_SYNCHRONOUS,      # GL_DEBUG_OUTPUT_SYNCHRONOUS
+	:DEPTH_CLAMP                    =&gt; GL_DEPTH_CLAMP,                   # GL_DEPTH_CLAMP
+	:DEPTH_TEST                     =&gt; GL_DEPTH_TEST,                    # GL_DEPTH_TEST
+	:DITHER                         =&gt; GL_DITHER,                        # GL_DITHER
+	:FOG                            =&gt; 0,                                # GL_FOG
+	:FRAMEBUFFER_SRGB               =&gt; GL_FRAMEBUFFER_SRGB,              # GL_FRAMEBUFFER_SRGB
+	:HISTOGRAM                      =&gt; 0,                                # GL_HISTOGRAM
+	:INDEX_LOGIC_OP                 =&gt; 0,                                # GL_INDEX_LOGIC_OP
+	:LIGHTi                         =&gt; 0,                                # GL_LIGHTi
+	:LIGHTING                       =&gt; 0,                                # GL_LIGHTING
+	:LINE_SMOOTH                    =&gt; GL_LINE_SMOOTH,                   # GL_LINE_SMOOTH
+	:LINE_STIPPLE                   =&gt; 0,                                # GL_LINE_STIPPLE
+	:MAP1_COLOR_4                   =&gt; 0,                                # GL_MAP1_COLOR_4
+	:MAP1_INDEX                     =&gt; 0,                                # GL_MAP1_INDEX
+	:MAP1_NORMAL                    =&gt; 0,                                # GL_MAP1_NORMAL
+	:MAP1_TEXTURE_COORD_1           =&gt; 0,                                # GL_MAP1_TEXTURE_COORD_1
+	:MAP1_TEXTURE_COORD_2           =&gt; 0,                                # GL_MAP1_TEXTURE_COORD_2
+	:MAP1_TEXTURE_COORD_3           =&gt; 0,                                # GL_MAP1_TEXTURE_COORD_3
+	:MAP1_TEXTURE_COORD_4           =&gt; 0,                                # GL_MAP1_TEXTURE_COORD_4
+	:MAP1_VERTEX_3                  =&gt; 0,                                # GL_MAP1_VERTEX_3
+	:MAP1_VERTEX_4                  =&gt; 0,                                # GL_MAP1_VERTEX_4
+	:MAP2_COLOR_4                   =&gt; 0,                                # GL_MAP2_COLOR_4
+	:MAP2_INDEX                     =&gt; 0,                                # GL_MAP2_INDEX
+	:MAP2_NORMAL                    =&gt; 0,                                # GL_MAP2_NORMAL
+	:MAP2_TEXTURE_COORD_1           =&gt; 0,                                # GL_MAP2_TEXTURE_COORD_1
+	:MAP2_TEXTURE_COORD_2           =&gt; 0,                                # GL_MAP2_TEXTURE_COORD_2
+	:MAP2_TEXTURE_COORD_3           =&gt; 0,                                # GL_MAP2_TEXTURE_COORD_3
+	:MAP2_TEXTURE_COORD_4           =&gt; 0,                                # GL_MAP2_TEXTURE_COORD_4
+	:MAP2_VERTEX_3                  =&gt; 0,                                # GL_MAP2_VERTEX_3
+	:MAP2_VERTEX_4                  =&gt; 0,                                # GL_MAP2_VERTEX_4
+	:MINMAX                         =&gt; 0,                                # GL_MINMAX
+	:MULTISAMPLE                    =&gt; GL_MULTISAMPLE,                   # GL_MULTISAMPLE
+	:NORMALIZE                      =&gt; 0,                                # GL_NORMALIZE
+	:POINT_SMOOTH                   =&gt; 0,                                # GL_POINT_SMOOTH
+	:POINT_SPRITE                   =&gt; 0,                                # GL_POINT_SPRITE
+	:POLYGON_OFFSET_FILL            =&gt; GL_POLYGON_OFFSET_FILL,           # GL_POLYGON_OFFSET_FILL
+	:POLYGON_OFFSET_LINE            =&gt; GL_POLYGON_OFFSET_LINE,           # GL_POLYGON_OFFSET_LINE
+	:POLYGON_OFFSET_POINT           =&gt; GL_POLYGON_OFFSET_POINT,          # GL_POLYGON_OFFSET_POINT
+	:POLYGON_SMOOTH                 =&gt; GL_POLYGON_SMOOTH,                # GL_POLYGON_SMOOTH
+	:POLYGON_STIPPLE                =&gt; 0,                                # GL_POLYGON_STIPPLE
+	:POST_COLOR_MATRIX_COLOR_TABLE  =&gt; 0,                                # GL_POST_COLOR_MATRIX_COLOR_TABLE
+	:POST_CONVOLUTION_COLOR_TABLE   =&gt; 0,                                # GL_POST_CONVOLUTION_COLOR_TABLE
+	:PRIMITIVE_RESTART              =&gt; GL_PRIMITIVE_RESTART,             # GL_PRIMITIVE_RESTART
+	:PRIMITIVE_RESTART_FIXED_INDEX  =&gt; GL_PRIMITIVE_RESTART_FIXED_INDEX, # GL_PRIMITIVE_RESTART_FIXED_INDEX
+	:PROGRAM_POINT_SIZE             =&gt; GL_PROGRAM_POINT_SIZE,            # GL_PROGRAM_POINT_SIZE
+	:RASTERIZER_DISCARD             =&gt; GL_RASTERIZER_DISCARD,            # GL_RASTERIZER_DISCARD
+	:RESCALE_NORMAL                 =&gt; 0,                                # GL_RESCALE_NORMAL
+	:SAMPLE_ALPHA_TO_COVERAGE       =&gt; GL_SAMPLE_ALPHA_TO_COVERAGE,      # GL_SAMPLE_ALPHA_TO_COVERAGE
+	:SAMPLE_ALPHA_TO_ONE            =&gt; GL_SAMPLE_ALPHA_TO_ONE,           # GL_SAMPLE_ALPHA_TO_ONE
+	:SAMPLE_COVERAGE                =&gt; GL_SAMPLE_COVERAGE,               # GL_SAMPLE_COVERAGE
+	:SAMPLE_SHADING                 =&gt; GL_SAMPLE_SHADING,                # GL_SAMPLE_SHADING
+	:SAMPLE_MASK                    =&gt; GL_SAMPLE_MASK,                   # GL_SAMPLE_MASK
+	:SEPARABLE_2D                   =&gt; 0,                                # GL_SEPARABLE_2D
+	:SCISSOR_TEST                   =&gt; GL_SCISSOR_TEST,                  # GL_SCISSOR_TEST
+	:STENCIL_TEST                   =&gt; GL_STENCIL_TEST,                  # GL_STENCIL_TEST
+	:TEXTURE_1D                     =&gt; GL_TEXTURE_1D,                    # GL_TEXTURE_1D
+	:TEXTURE_2D                     =&gt; GL_TEXTURE_2D,                    # GL_TEXTURE_2D
+	:TEXTURE_3D                     =&gt; GL_TEXTURE_3D,                    # GL_TEXTURE_3D
+	:TEXTURE_CUBE_MAP               =&gt; GL_TEXTURE_CUBE_MAP,              # GL_TEXTURE_CUBE_MAP
+	:TEXTURE_CUBE_MAP_SEAMLESS      =&gt; GL_TEXTURE_CUBE_MAP_SEAMLESS,     # GL_TEXTURE_CUBE_MAP_SEAMLESS
+	:TEXTURE_GEN_Q                  =&gt; 0,                                # GL_TEXTURE_GEN_Q
+	:TEXTURE_GEN_R                  =&gt; 0,                                # GL_TEXTURE_GEN_R
+	:TEXTURE_GEN_S                  =&gt; 0,                                # GL_TEXTURE_GEN_S
+	:TEXTURE_GEN_T                  =&gt; 0,                                # GL_TEXTURE_GEN_T
+	:VERTEX_PROGRAM_POINT_SIZE      =&gt; GL_VERTEX_PROGRAM_POINT_SIZE,     # GL_VERTEX_PROGRAM_POINT_SIZE
+	:VERTEX_PROGRAM_TWO_SIDE        =&gt; 0,                                # GL_VERTEX_PROGRAM_TWO_SIDE
+)
+
+const LIST_COLOR_MASK = Dict{Symbol,GLuint}(
+	:SRC_COLOR                 =&gt; GL_SRC_COLOR,
+	:ONE_MINUS_SRC_COLOR       =&gt; GL_ONE_MINUS_SRC_COLOR,
+	:DST_COLOR                 =&gt; GL_DST_COLOR,
+	:ONE_MINUS_DST_COLOR       =&gt; GL_ONE_MINUS_DST_COLOR,
+	:SRC_ALPHA                 =&gt; GL_SRC_ALPHA,
+	:ONE_MINUS_SRC_ALPHA       =&gt; GL_ONE_MINUS_SRC_ALPHA,
+	:DST_ALPHA                 =&gt; GL_DST_ALPHA,
+	:ONE_MINUS_DST_ALPHA       =&gt; GL_ONE_MINUS_DST_ALPHA,
+	:CONSTANT_COLOR            =&gt; GL_CONSTANT_COLOR,
+	:ONE_MINUS_CONSTANT_COLOR  =&gt; GL_ONE_MINUS_CONSTANT_COLOR,
+	:CONSTANT_ALPHA            =&gt; GL_CONSTANT_ALPHA,
+	:ONE_MINUS_CONSTANT_ALPHA  =&gt; GL_ONE_MINUS_CONSTANT_ALPHA,
+	:SRC_ALPHA_SATURATE        =&gt; GL_SRC_ALPHA_SATURATE,
+	:SRC1_COLOR                =&gt; GL_SRC1_COLOR,
+	:ONE_MINUS_SRC1_COLOR      =&gt; GL_ONE_MINUS_SRC1_COLOR,
+	:SRC1_ALPHA                =&gt; GL_SRC1_ALPHA,
+	:ONE_MINUS_SRC1_ALPHA      =&gt; GL_ONE_MINUS_SRC1_ALPHA,
+)
+
+const LIST_COMPARE = Dict{Symbol,GLuint}(
+	:NEVER     =&gt; GL_NEVER,
+	:LESS      =&gt; GL_LESS,
+	:EQUAL     =&gt; GL_EQUAL,
+	:LEQUAL    =&gt; GL_LEQUAL,
+	:GREATER   =&gt; GL_GREATER,
+	:NOTEQUAL  =&gt; GL_NOTEQUAL,
+	:GEQUAL    =&gt; GL_GEQUAL,
+	:ALWAYS    =&gt; GL_ALWAYS,
+)
+
+const LIST_INFO = Dict{Symbol,GLuint}(
+	:RENDERER =&gt;                 GL_RENDERER,
+	:VENDOR =&gt;                   GL_VENDOR,
+	:VERSION =&gt;                  GL_VERSION,
+	:SHADING_LANGUAGE_VERSION =&gt; GL_SHADING_LANGUAGE_VERSION,
+	:EXTENSIONS =&gt;               GL_EXTENSIONS,
+)
+
+const DEFAULT_SHADER_VERSION = 130
+
+function DEFAULT_SHADER_CODE(typ::Symbol)
+	code = LIST_SHADER[typ][:CODE]
+	string(&quot;#version &quot;,DEFAULT_SHADER_VERSION,&quot;\n&quot;,code[1],&quot;\n&quot;,code[2],&quot;\nvoid main(){\n&quot;,code[3],&quot;\n}&quot;)
+end
+
+const LIST_SHADER = Dict(
+	:VERTEX           =&gt; Dict(:TYPE =&gt; GLuint(GL_VERTEX_SHADER),					:EXT =&gt; &quot;vert&quot;, :CODE =&gt; (&quot;in vec3 iVertex; uniform mat4 iMVP = mat4(vec4(1,0,0,0),vec4(0,1,0,0),vec4(0,0,1,0),vec4(0,0,0,1));&quot;, &quot;&quot;, &quot;gl_Position = iMVP * vec4(iVertex,1);&quot;)),
+	:FRAGMENT         =&gt; Dict(:TYPE =&gt; GLuint(GL_FRAGMENT_SHADER),				:EXT =&gt; &quot;frag&quot;, :CODE =&gt; (&quot;&quot;, &quot;out vec4 oFragColor;&quot;, &quot;oFragColor=vec4(vec3(0.5),1.0);&quot;)),
+	:TESS_CONTROL			=&gt; Dict(:TYPE =&gt; GLuint(GL_TESS_CONTROL_SHADER),		:EXT =&gt; &quot;tesc&quot;, :CODE =&gt; (&quot;uniform uint iTessLevel = 1;&quot;, &quot;layout (vertices = 3) out;&quot;, &quot;#define ID gl_InvocationID\n if (ID == 0) for(int i=0; i&lt;3; ++i){	if(i&lt;2) gl_TessLevelInner[i] = iTessLevel; gl_TessLevelOuter[i] = iTessLevel; }; gl_out[ID].gl_Position = gl_in[ID].gl_Position;&quot;)),
+	:TESS_EVALUATION	=&gt; Dict(:TYPE =&gt; GLuint(GL_TESS_EVALUATION_SHADER),	:EXT =&gt; &quot;tese&quot;, :CODE =&gt; (&quot;layout (triangles, equal_spacing, ccw) in;&quot;, &quot;&quot;, &quot;gl_Position = vec4(gl_in[0].gl_Position.xyz * gl_TessCoord.x + gl_in[1].gl_Position.xyz * gl_TessCoord.y + gl_in[2].gl_Position.xyz * gl_TessCoord.z,1.0);&quot;)),
+	:GEOMETRY         =&gt; Dict(:TYPE =&gt; GLuint(GL_GEOMETRY_SHADER),				:EXT =&gt; &quot;geom&quot;,	:CODE =&gt; (&quot;layout(triangles) in;&quot;, &quot;layout(triangle_strip, max_vertices=3) out;&quot;, &quot;for(int i=0; i&lt;gl_in.length(); ++i){ gl_Position = gl_in[i].gl_Position; EmitVertex(); }; EndPrimitive();&quot;)),
+	:COMPUTE          =&gt; Dict(:TYPE =&gt; GLuint(GL_COMPUTE_SHADER),					:EXT =&gt; &quot;comp&quot;,	:CODE =&gt; (&quot;&quot;, &quot;&quot;, &quot;&quot;)),
+)
+
+const LIST_DRAW_MODE = Dict{Symbol,GLuint}(
+	:POINTS										=&gt; GL_POINTS,										#0x0000
+	:LINES										=&gt; GL_LINE,											#0x0001
+	:LINE_LOOP								=&gt; GL_LINE_LOOP,								#0x0002
+	:LINE_STRIP     					=&gt; GL_LINE_STRIP,								#0x0003
+	:TRIANGLES 								=&gt; GL_TRIANGLES,								#0x0004
+	:TRIANGLE_STRIP  					=&gt; GL_TRIANGLE_STRIP,						#0x0005
+	:TRIANGLE_FAN							=&gt; GL_TRIANGLE_FAN,							#0x0006
+	:QUADS										=&gt; GL_QUADS,										#0x0007
+	:QUAD_STRIP								=&gt; GL_QUAD_STRIP,								#0x0008 (deprecated since OpenGL3)
+	:POLYGON									=&gt; GL_POLYGON,									#0x0009 (deprecated since OpenGL3)
+	:LINES_ADJACENCY					=&gt; GL_LINES_ADJACENCY,					#0x000A
+	:LINE_STRIP_ADJACENCY			=&gt; GL_LINE_STRIP_ADJACENCY,			#0x000B
+	:TRIANGLES_ADJACENCY			=&gt; GL_TRIANGLES_ADJACENCY,			#0x000C
+	:TRIANGLE_STRIP_ADJACENCY	=&gt; GL_TRIANGLE_STRIP_ADJACENCY,	#0x000D
+	:PATCHES 									=&gt; GL_PATCHES,									#0x000E
+)
+
+const LIST_ERROR = Dict{GLuint,AbstractString}(
+	GL_NO_ERROR											 =&gt;	&quot;&quot;,
+	GL_INVALID_ENUM									 =&gt;	&quot;INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.&quot;,
+	GL_INVALID_VALUE								 =&gt;	&quot;INVALID_VALUE: A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.&quot;,
+	GL_INVALID_OPERATION						 =&gt;	&quot;INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.&quot;,
+	GL_INVALID_FRAMEBUFFER_OPERATION =&gt; &quot;INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete. The offending command is ignored and has no other side effect than to set the error flag.&quot;,
+	GL_OUT_OF_MEMORY								 =&gt;	&quot;OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded.&quot;,
+	GL_STACK_UNDERFLOW							 =&gt;	&quot;STACK_UNDERFLOW&quot;,
+	GL_STACK_OVERFLOW								 =&gt;	&quot;STACK_OVERFLOW&quot;,
+)
+
+const LIST_TYPE = Dict{DataType,GLuint}(
+	Bool =&gt; GL_BOOL,
+	Int8 =&gt; GL_BYTE,
+	Int16 =&gt; GL_SHORT,
+	Int32 =&gt; GL_INT, #gl_low_int, gl_medium_int, gl_high_int
+	Int64 =&gt; GL_INT, # no 64 bit support
+	Int128 =&gt; GL_INT, # no 128 bit support
+	UInt8 =&gt; GL_UNSIGNED_BYTE,
+	UInt16 =&gt; GL_UNSIGNED_SHORT,
+	UInt32 =&gt; GL_UNSIGNED_INT,
+	UInt64 =&gt; GL_UNSIGNED_INT, # no 64 bit support
+	UInt128 =&gt; GL_UNSIGNED_INT, # no 128 bit support
+	Float16 =&gt; GL_HALF_FLOAT,
+	Float32 =&gt; GL_FLOAT,
+	Float64 =&gt; GL_DOUBLE,
+)
+
+const LIST_TYPE_ELEMENTS = Dict{GLuint,UInt32}(
+	# Float
+	GL_FLOAT =&gt;      1,
+	GL_FLOAT_VEC2 =&gt; 2,
+	GL_FLOAT_VEC3 =&gt; 3,
+	GL_FLOAT_VEC4 =&gt; 4,
+
+	# Doubles
+	GL_DOUBLE =&gt;      1,
+	GL_DOUBLE_VEC2 =&gt; 2,
+	GL_DOUBLE_VEC3 =&gt; 3,
+	GL_DOUBLE_VEC4 =&gt; 4,
+
+	# Int
+	GL_INT =&gt;      1,
+	GL_INT_VEC2 =&gt; 2,
+	GL_INT_VEC3 =&gt; 3,
+	GL_INT_VEC4 =&gt; 4,
+
+	# Unsigned Int
+	GL_UNSIGNED_INT =&gt;      1,
+	GL_UNSIGNED_INT_VEC2 =&gt; 2,
+	GL_UNSIGNED_INT_VEC3 =&gt; 3,
+	GL_UNSIGNED_INT_VEC4 =&gt; 4,
+
+	# Bool
+	GL_BOOL =&gt;      1,
+	GL_BOOL_VEC2 =&gt; 2,
+	GL_BOOL_VEC3 =&gt; 3,
+	GL_BOOL_VEC4 =&gt; 4,
+
+	# Float Matrix
+	GL_FLOAT_MAT2 =&gt;   4,
+	GL_FLOAT_MAT3 =&gt;   9,
+	GL_FLOAT_MAT4 =&gt;   16,
+	GL_FLOAT_MAT2x3 =&gt; 6,
+	GL_FLOAT_MAT2x4 =&gt; 8,
+	GL_FLOAT_MAT3x2 =&gt; 6,
+	GL_FLOAT_MAT3x4 =&gt; 12,
+	GL_FLOAT_MAT4x2 =&gt; 8,
+	GL_FLOAT_MAT4x3 =&gt; 12,
+
+	# Double Matrix
+	GL_DOUBLE_MAT2 =&gt;   4,
+	GL_DOUBLE_MAT3 =&gt;   9,
+	GL_DOUBLE_MAT4 =&gt;   16,
+	GL_DOUBLE_MAT2x3 =&gt; 6,
+	GL_DOUBLE_MAT2x4 =&gt; 8,
+	GL_DOUBLE_MAT3x2 =&gt; 6,
+	GL_DOUBLE_MAT3x4 =&gt; 12,
+	GL_DOUBLE_MAT4x2 =&gt; 8,
+	GL_DOUBLE_MAT4x3 =&gt; 12,
+)
+
+const LIST_TYPE_STRING = Dict{GLuint,AbstractString}(
+	# Float
+	GL_FLOAT =&gt;      &quot;float&quot;,
+	GL_FLOAT_VEC2 =&gt; &quot;vec2f&quot;,
+	GL_FLOAT_VEC3 =&gt; &quot;vec3f&quot;,
+	GL_FLOAT_VEC4 =&gt; &quot;vec4f&quot;,
+
+	# Doubles
+	GL_DOUBLE =&gt;      &quot;double&quot;,
+	GL_DOUBLE_VEC2 =&gt; &quot;vec2d&quot;,
+	GL_DOUBLE_VEC3 =&gt; &quot;vec3d&quot;,
+	GL_DOUBLE_VEC4 =&gt; &quot;vec4d&quot;,
+
+	# Int
+	GL_INT =&gt;      &quot;int&quot;,
+	GL_INT_VEC2 =&gt; &quot;vec2i&quot;,
+	GL_INT_VEC3 =&gt; &quot;vec3i&quot;,
+	GL_INT_VEC4 =&gt; &quot;vec4i&quot;,
+
+	# Unsigned Int
+	GL_UNSIGNED_INT =&gt;      &quot;uint&quot;,
+	GL_UNSIGNED_INT_VEC2 =&gt; &quot;vec2u&quot;,
+	GL_UNSIGNED_INT_VEC3 =&gt; &quot;vec3u&quot;,
+	GL_UNSIGNED_INT_VEC4 =&gt; &quot;vec4u&quot;,
+
+	# Bool
+	GL_BOOL =&gt;      &quot;bool&quot;,
+	GL_BOOL_VEC2 =&gt; &quot;vec2b&quot;,
+	GL_BOOL_VEC3 =&gt; &quot;vec3b&quot;,
+	GL_BOOL_VEC4 =&gt; &quot;vec4b&quot;,
+
+	# Float Matrix
+	GL_FLOAT_MAT2 =&gt;   &quot;mat2f&quot;,
+	GL_FLOAT_MAT3 =&gt;   &quot;mat3f&quot;,
+	GL_FLOAT_MAT4 =&gt;   &quot;mat4f&quot;,
+	GL_FLOAT_MAT2x3 =&gt; &quot;mat2x3f&quot;,
+	GL_FLOAT_MAT2x4 =&gt; &quot;mat2x4f&quot;,
+	GL_FLOAT_MAT3x2 =&gt; &quot;mat3x2f&quot;,
+	GL_FLOAT_MAT3x4 =&gt; &quot;mat3x4f&quot;,
+	GL_FLOAT_MAT4x2 =&gt; &quot;mat4x2f&quot;,
+	GL_FLOAT_MAT4x3 =&gt; &quot;mat4x3f&quot;,
+
+	# Double Matrix
+	GL_DOUBLE_MAT2 =&gt;   &quot;mat2d&quot;,
+	GL_DOUBLE_MAT3 =&gt;   &quot;mat3d&quot;,
+	GL_DOUBLE_MAT4 =&gt;   &quot;mat4d&quot;,
+	GL_DOUBLE_MAT2x3 =&gt; &quot;mat2x3d&quot;,
+	GL_DOUBLE_MAT2x4 =&gt; &quot;mat2x4d&quot;,
+	GL_DOUBLE_MAT3x2 =&gt; &quot;mat3x2d&quot;,
+	GL_DOUBLE_MAT3x4 =&gt; &quot;mat3x4d&quot;,
+	GL_DOUBLE_MAT4x2 =&gt; &quot;mat4x2d&quot;,
+	GL_DOUBLE_MAT4x3 =&gt; &quot;mat4x3d&quot;,
+
+	# Sampler
+	GL_SAMPLER_1D =&gt;                   &quot;sampler1D&quot;,
+	GL_SAMPLER_2D =&gt;                   &quot;sampler2D&quot;,
+	GL_SAMPLER_3D =&gt;                   &quot;sampler3D&quot;,
+	GL_SAMPLER_CUBE =&gt;                 &quot;sampler_Cube&quot;,
+	GL_SAMPLER_CUBE_SHADOW =&gt;          &quot;sampler_Cube_Shadow&quot;,
+	GL_SAMPLER_1D_SHADOW =&gt;            &quot;sampler1D_Shadow&quot;,
+	GL_SAMPLER_2D_SHADOW =&gt;            &quot;sampler2D_Shadow&quot;,
+	GL_SAMPLER_1D_ARRAY =&gt;             &quot;sampler1D_Array&quot;,
+	GL_SAMPLER_2D_ARRAY =&gt;             &quot;sampler2D_Array&quot;,
+	GL_SAMPLER_1D_ARRAY_SHADOW =&gt;      &quot;sampler1D_Array_Shadow&quot;,
+	GL_SAMPLER_2D_ARRAY_SHADOW =&gt;      &quot;sampler2D_Array_Shadow&quot;,
+	GL_SAMPLER_2D_MULTISAMPLE =&gt;       &quot;sampler2D_Multisample&quot;,
+	GL_SAMPLER_2D_MULTISAMPLE_ARRAY =&gt; &quot;sampler2D_Multisample_Array&quot;,
+	GL_SAMPLER_BUFFER =&gt;               &quot;sampler_Buffer&quot;,
+	GL_SAMPLER_2D_RECT =&gt;              &quot;sampler2D_Rect&quot;,
+	GL_SAMPLER_2D_RECT_SHADOW =&gt;       &quot;sampler2D_Rect_Shadow&quot;,
+
+	# Sampler Int
+	GL_INT_SAMPLER_1D =&gt;                   &quot;isampler1D&quot;,
+	GL_INT_SAMPLER_2D =&gt;                   &quot;isampler2D&quot;,
+	GL_INT_SAMPLER_3D =&gt;                   &quot;isampler3D&quot;,
+	GL_INT_SAMPLER_CUBE =&gt;                 &quot;isampler_Cube&quot;,
+	GL_INT_SAMPLER_1D_ARRAY =&gt;             &quot;isampler1D_Array&quot;,
+	GL_INT_SAMPLER_2D_ARRAY =&gt;             &quot;isampler2D_Array&quot;,
+	GL_INT_SAMPLER_2D_MULTISAMPLE =&gt;       &quot;isampler2D_Multisample&quot;,
+	GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY =&gt; &quot;isampler2D_Multisample_Array&quot;,
+	GL_INT_SAMPLER_BUFFER =&gt;               &quot;isampler_Buffer&quot;,
+	GL_INT_SAMPLER_2D_RECT =&gt;              &quot;isampler2D_Rect&quot;,
+
+	# Sampler Unsigned Int
+	GL_UNSIGNED_INT_SAMPLER_1D =&gt;                   &quot;usampler1D&quot;,
+	GL_UNSIGNED_INT_SAMPLER_2D =&gt;                   &quot;usampler2D&quot;,
+	GL_UNSIGNED_INT_SAMPLER_3D =&gt;                   &quot;usampler3D&quot;,
+	GL_UNSIGNED_INT_SAMPLER_CUBE =&gt;                 &quot;usampler_Cube&quot;,
+	GL_UNSIGNED_INT_SAMPLER_1D_ARRAY =&gt;             &quot;usampler1D_Array&quot;,
+	GL_UNSIGNED_INT_SAMPLER_2D_ARRAY =&gt;             &quot;usampler2D_Array&quot;,
+	GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE =&gt;       &quot;usampler2D_Multisample&quot;,
+	GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY =&gt; &quot;usampler2D_Multisample_Array&quot;,
+	GL_UNSIGNED_INT_SAMPLER_BUFFER =&gt;               &quot;usampler_Buffer&quot;,
+	GL_UNSIGNED_INT_SAMPLER_2D_RECT =&gt;              &quot;usampler2D_Rect&quot;,
+)</code></pre><footer><hr/><a class="previous" href="GLExtendedFunctions.html"><span class="direction">Previous</span><span class="title">GLExtendedFunctions.jl</span></a><a class="next" href="GLSLParser.html"><span class="direction">Next</span><span class="title">GLSLParser.jl</span></a></footer></article></body></html>

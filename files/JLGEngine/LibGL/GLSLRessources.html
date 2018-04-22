@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>GLSLRessources.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link href="../../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../../App.html">App.jl</a></li><li><a class="toctext" href="../../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="../CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="../ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="../EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="../GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="../GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="../Management.html">Management.jl</a></li><li><a class="toctext" href="../MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="../ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="../RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="../ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="../StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="../SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="../TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="../TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="../ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="../ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="../ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="GLSLParser.html">GLSLParser.jl</a></li><li class="current"><a class="toctext" href="GLSLRessources.html">GLSLRessources.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="GLSLRessources.html">GLSLRessources.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/LibGL/GLSLRessources.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>GLSLRessources.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="GLSLRessources.jl-1" href="#GLSLRessources.jl-1">GLSLRessources.jl</a></h1><p>using ..StorageManager</p><pre><code class="language-none">setListenerOnShaderPropertyUpdate(id::Symbol, t::Tuple) = setListenerOnShaderPropertyUpdate(id, Dict{String,Function}(t))</code></pre><pre><code class="language-none">setListenerOnShaderPropertyUpdate(id::Symbol, d::Dict{String,Function}) = listListenerOnShaderPropertyUpdate[id]=d
+removeListenerOnShaderPropertyUpdate(id::Symbol) = (listListenerOnShaderPropertyUpdate[id]=nothing)</code></pre><pre><code class="language-none">setShaderPropberty(program::AbstractGraphicsShaderProgram, name::String, args...) = program != nothing ? glUniform(glUniformLocation(program.id, name), args...) : nothing</code></pre><pre><code class="language-none">isAttribute(x) = (x == GL_PROGRAM_INPUT || x == GL_PROGRAM_OUTPUT)</code></pre><pre><code class="language-none">isUniform(x) = (x == GL_UNIFORM || x == GL_UNIFORM_BLOCK || x == GL_SHADER_STORAGE_BLOCK)</code></pre><pre><code class="language-none">function setVertexAttribArray(program::GLuint, prop::ShaderProperty)
+	if prop.location &lt; 0 || prop.data == nothing || !isa(prop.data, GLStorageData) return end
+	glEnableVertexAttribArray(prop.location)
+	glVertexAttribPointer(prop.location, prop.elements, prop.data.typ,
+			GLboolean(prop.data.flags &amp; GL_VERTEX_ATTRIB_ARRAY_NORMALIZED != GL_VERTEX_ATTRIB_ARRAY_NORMALIZED),
+			prop.data.elementsSize, prop.offset == 0 ? C_NULL : GLuint[prop.offset]) #gl.PtrOffset(0)
+	#glDisableVertexAttribArray(prop.location)
+end</code></pre><pre><code class="language-none">function findShaderProperties(program::AbstractGraphicsShaderProgram)
+	if program == nothing return end
+	for (id,list) in listListenerOnShaderPropertyUpdate
+		for (name,f) in list if haskey(program.properties,name) program.properties[name].update=f end	end
+	end
+end</code></pre><pre><code class="language-none">function getShaderProperties(program::AbstractGraphicsShaderProgram, buffer::AbstractGraphicsData)
+	if isLinked(program) &amp;&amp; buffer != nothing &amp;&amp; isa(buffer, GLStorage) &amp;&amp; buffer.linked
+		for (_,p) in program.properties
+			c = p.categoryid
+			data = p.update()
+			if data != nothing
+				p.data = data
+				if isAttribute(c)
+					if p.location == -1 p.location = glAttribLocation(program.id, p.name) end
+					if c == GL_PROGRAM_INPUT setVertexAttribArray(program.id, p)
+					else setFragLocation(program.id, p.name)
+					end
+				elseif isUniform(c)
+					if p.location == -1 p.location = glUniformLocation(program.id, p.name) end
+					if c == GL_UNIFORM  glUniform(p.location, p.data) end
+				end
+			end
+		end
+	end
+end</code></pre><pre><code class="language-none">function findShaderProperty(program::AbstractGraphicsShaderProgram, line::String)
+	if program == nothing return end
+	m = match(r&quot;\s*(\w+)\s+(\w+)\s+(\w+)\s*\;&quot;, line)
+	if m != nothing
+		m=m.captures
+		c=m[1]
+		t=m[2]
+
+		# [mat/vec] without type =&gt; float
+		mt = match(r&quot;^((mat[2-4](\x[2-4])?)|(vec))[2-4]$&quot;, t)
+		if mt != nothing t=string(t,&quot;f&quot;) end
+
+		#GL_UNIFORM_BLOCK
+		ci = (c == &quot;in&quot; ? GL_PROGRAM_INPUT : (c == &quot;out&quot; ? GL_PROGRAM_OUTPUT : (c == &quot;uniform&quot; ? GL_UNIFORM : GL_BUFFER_VARIABLE)))
+
+		p = ShaderProperty()
+		p.name = m[3]
+		p.category=c
+		p.typname=t
+		p.categoryid = ci
+		for (key, value) in LIST_TYPE_STRING if p.typname == value p.typid=key;	break end end
+		for (key, value) in LIST_TYPE if p.typid == value p.typ=key;	break end end
+		p.elements = haskey(LIST_TYPE_ELEMENTS, p.typid) ?  LIST_TYPE_ELEMENTS[p.typid] : 1
+
+		# set offset
+		if isAttribute(p.categoryid)
+			offset=0
+			for v in shaderAttributes
+				offset+=v.offset+v.elements*sizeof(v.typ)
+			end
+			p.offset = offset
+			push!(shaderAttributes, p)
+		end
+
+		#p.size=size
+		CoreExtended.update(program.properties,p.name,
+		function(x)
+			if !x[1] return p end
+			p=x[2]
+			if isAttribute(ci) &amp;&amp; isAttribute(p.categoryid)
+				p.categoryid = -1 # custom type
+				p.category=&quot;shared&quot;
+			end
+			p
+		end)
+	end
+end</code></pre><pre><code class="language-none">function findActiveRessources(program::AbstractGraphicsShaderProgram)
+	if program == nothing return end
+	if printError(&quot;Before findActiveRessources&quot;) return end
+
+	programID = program.id
+
+	attributeMap = []
+	uniformMap = []
+	uniformBlockMap = []
+	matrixMap = []
+
+	#if !program.linked
+		#program.shaders_count = 0
+		#program.shaderParts = false
+		#return
+	#end
+
+	const properties = GLenum[ GL_PROGRAM_INPUT, GL_PROGRAM_OUTPUT, GL_UNIFORM, GL_UNIFORM_BLOCK, GL_SHADER_STORAGE_BLOCK ]
+	const NAMES = String[ &quot;IN Attributes&quot;, &quot;OUT Attributes&quot;, &quot;Uniforms&quot;, &quot;Uniform Blocks&quot;, &quot;Storage Blocks&quot; ]
+	const TOTAL = length(properties)
+	COUNT = zeros(GLint, TOTAL)
+
+	#println(&quot;Version: &quot;,glString(GL_VERSION))
+	#println(&quot;MJ: &quot;,glGet(GLint,GL_MAJOR_VERSION))
+	#println(&quot;MN: &quot;,glGet(GLint, GL_MINOR_VERSION))
+	println(&quot;\n[ SHADER RESOURCES ]\n&quot;)
+
+	#@show activeUnif = glGetProgramiv(programID, GL_ACTIVE_UNIFORMS)
+
+	for i = 1:TOTAL
+		# glGetProgramInterfaceiv usable since gl version 4.3
+		# breaks when using intel gpu ..?
+		count = getValByRef((ref) -&gt; glGetProgramInterfaceiv(programID, properties[i], GL_ACTIVE_RESOURCES, ref), COUNT[i])
+
+		if printError(&quot;glGetProgramInterfaceiv&quot;) return end
+
+		if count &gt; 0 COUNT[i] = count end
+	end
+
+	#@printf(&quot;%s : %d\n&quot;, NAMES[i], count)
+	#println()
+
+	for i = 1:TOTAL
+		count =  GLuint(COUNT[i])
+		if count &lt;= 0 continue end
+		println(&quot;  [ $(NAMES[i]) ] ($(count))&quot;)
+		category=properties[i]
+		addProperties(program, category, count)
+		#if category != GL_UNIFORM_BLOCK addProperties(program, category, count)
+		#else addShaderPropertyBlocks(category, count)
+		#end
+		println()
+	end
+
+	println(&quot;[/ SHADER RESOURCES ]\n&quot;)
+end
+
+# TODO: CHECK
+#=
+function addShaderPropertyBlocks(program::AbstractGraphicsShaderProgram, category::GLenum, count::GLuint)
+	if program == nothing return end
+	if printError(&quot;Before addShaderPropertyBlocks&quot;) return end
+	if count &lt;= 0 return end
+
+	programID = program.id
+
+	if category != GL_UNIFORM_BLOCK &amp;&amp; category != GL_SHADER_STORAGE_BLOCK return end #_DEBUG_BREAK_IF
+
+	const b_NAME = 1
+	const b_VARS = 2
+	const b_BINDS = 3
+	const b_SIZE = 4
+
+	const properties	= GLenum[ GL_NAME_LENGTH, GL_NUM_ACTIVE_VARIABLES, GL_BUFFER_BINDING, GL_BUFFER_DATA_SIZE ]
+	const activeProp = GLenum[ GL_ACTIVE_VARIABLES ]
+
+	const TOTAL = length(properties)
+
+	block = nothing
+	pcount = 0
+
+	values = zeros(GLint, TOTAL)
+
+	nameData = GLchar[0]
+
+	for tmpId = 1:count
+
+		values = getValByRef((ref) -&gt; glGetProgramResourceiv(programID, category, tmpId, TOTAL, pointer(properties), TOTAL * sizeof(GLenum), C_NULL, ref), values)
+
+		if printError(&quot;glGetProgramResourceiv&quot;) return end
+
+		if err len = 255
+		else
+			len = length(values) &gt;= p_NAME ? values[p_NAME] : 0
+			if len &lt; 0 len = 0 end
+		end
+
+		nameData = zeros(GLchar,len)
+		nameData = getValByRef((ref) -&gt; glGetProgramResourceName(programID, category, tmpId, length(nameData), C_NULL, ref), nameData)
+
+		if printError(&quot;glGetProgramResourceName&quot;) name = &quot;Unknown&quot;
+		else name = convert(String, nameData[1:len-1])
+		end
+
+		size = values[b_SIZE]
+		index = glGetProgramResourceIndex(programID, category, pointer(name)) # TODO
+
+		if printError(&quot;glGetProgramResourceIndex&quot;) index = -1	end
+
+		binding = values[b_BINDS]
+
+		#GL_INVALID_ENUM; GL_INVALID_INDEX
+		block = ShaderProperty()
+		block.categoryid=category
+		block.name = name
+		block.index=index
+		block.binding=binding
+		block.size=size
+
+		#link(block, program)
+
+		@printf(&quot;  - %d. [%d] %s &lt;%d&gt;\n&quot;, index, binding, name, size)
+
+		pcount = values[b_VARS]
+		#if !pcount continue end
+		#addProperties(program, category == GL_UNIFORM_BLOCK ? GL_UNIFORM : GL_BUFFER_VARIABLE, pcount, block)
+		#add(block)
+	end
+end
+=#</code></pre><pre><code class="language-none">function addProperties(program::AbstractGraphicsShaderProgram, category::GLenum, count::GLuint, block=nothing) #ShaderProperty
+	if program == nothing return end
+	if printError(&quot;Before addProperties&quot;) return end
+	if count &lt;= 0 return end
+
+	programID = program.id
+
+	const p_INDEX = 1
+	const p_NAME = 2
+	const p_TYPE = 3
+	const p_ARRAYSIZE = 4
+	const p_LOCATION = 5
+	const p_OFFSET = 6
+	const p_ARRAY = 7
+	const p_MATRIX = 8
+	const p_TOPARRAYSIZE = 9
+	const p_TOPARRAYSTRIDE = 10
+
+	const GL_LOCATION_COMPONENT = convert(GLenum, 0x934A)
+
+	const aplist = GLenum[ GL_LOCATION_COMPONENT,	GL_NAME_LENGTH, GL_TYPE, GL_ARRAY_SIZE, GL_LOCATION ]
+	const uplist = GLenum[ GL_BLOCK_INDEX, 				GL_NAME_LENGTH, GL_TYPE, GL_ARRAY_SIZE, GL_LOCATION, GL_OFFSET, GL_ARRAY_STRIDE, GL_MATRIX_STRIDE ]
+	const bplist = GLenum[ GL_BLOCK_INDEX,				GL_NAME_LENGTH, GL_TYPE, GL_ARRAY_SIZE,	GL_LOCATION, GL_OFFSET, GL_ARRAY_STRIDE, GL_MATRIX_STRIDE, GL_TOP_LEVEL_ARRAY_SIZE, GL_TOP_LEVEL_ARRAY_STRIDE ]
+	const splist = GLenum[ GL_BLOCK_INDEX,				GL_NAME_LENGTH, GL_TYPE, GL_BUFFER_DATA_SIZE, GL_BUFFER_BINDING, GL_NUM_ACTIVE_VARIABLES ]
+
+	#GL_IS_ROW_MAJOR, GL_ATOMIC_COUNTER_BUFFER_INDEX, GL_REFERENCED_BY_VERTEX_SHADER, GL_REFERENCED_BY_TESS_CONTROL_SHADER,
+	#GL_REFERENCED_BY_TESS_EVALUATION_SHADER, GL_REFERENCED_BY_GEOMETRY_SHADER, GL_REFERENCED_BY_FRAGMENT_SHADER, GL_REFERENCED_BY_COMPUTE_SHADER
+
+	const CATEGORIES = Dict{GLenum,Tuple{String,Array{GLenum,1}}}(
+		GL_PROGRAM_OUTPUT		=&gt; (&quot;Output&quot;, aplist),
+		GL_PROGRAM_INPUT		=&gt; (&quot;Input&quot;, aplist),
+		GL_UNIFORM					=&gt; (&quot;Uniform&quot;, uplist),
+		GL_BUFFER_VARIABLE	=&gt; (&quot;Buffer&quot;, bplist),
+		GL_UNIFORM_BLOCK		=&gt; (&quot;UniformBlock&quot;, splist),
+	)
+
+	if !haskey(CATEGORIES, category)
+		println(&quot;ERROR: UNKNOWN TYPE&quot;) #_DEBUG_BREAK_IF
+		return
+	end
+
+	t=CATEGORIES[category]
+	category_name = t[1]
+	properties = t[2]
+	TOTAL = length(properties)
+	BUFSIZE = TOTAL * sizeof(GLenum)
+
+	values = zeros(GLint,TOTAL)
+	nameData = GLchar[0]
+
+	categoryID = category
+	name = &quot;&quot;
+	len = 0
+
+	PTR = pointer(properties)
+
+	for i = 1:count
+		tmpId=i-1
+
+		values = getValByRef((ref) -&gt; glGetProgramResourceiv(programID, category, tmpId, TOTAL, PTR, BUFSIZE, C_NULL, ref), values)
+
+		err = printError(&quot;glGetProgramResourceiv&quot;)
+
+		if err len = 255
+		else
+			len = length(values) &gt;= p_NAME ? values[p_NAME] : 0
+			if len &lt; 0 len = 0 end
+		end
+
+		nameData = zeros(GLchar,len)
+		nameData = getValByRef((ref) -&gt; glGetProgramResourceName(programID, category, tmpId, length(nameData), C_NULL, ref), nameData)
+
+		if printError(&quot;glGetProgramResourceName&quot;) name = &quot;Unknown&quot;
+		else name = convert(String, nameData[1:len-1])
+		end
+
+		# debugging
+		if err
+			warn(&quot;An error did occur for variable $name [$category_name] ($tmpId)!&quot;)
+
+			pdummy = GLenum[1]; dummy = GLint[1]
+			for tId = 1:TOTAL
+				pdummy[1] = properties[tId]
+				#VideoDriver&lt;GLEW&gt;::Shader&lt;Ressource&gt;::get(programID, categoryID, tmpId, GLint(1), pdummy, dummy)
+				dummy = getValByRef((ref) -&gt; glGetProgramResourceiv(programID, category, tmpId, 1, pointer(pdummy), 1 * sizeof(GLenum), C_NULL, ref), dummy)
+				if hasError() @printf(&quot;Parameter %d (%d) failed.\n&quot;, tId, pdummy[1]) end
+			end
+			continue
+		end
+
+		# ------------------------------------
+		hasBlock = block != nothing
+
+		if category == GL_UNIFORM
+			if hasBlock || values[p_INDEX] == -1 pindex = tmpId
+			else continue
+			end
+		elseif category == GL_BUFFER_VARIABLE pindex = tmpId
+		else pindex = values[p_INDEX]
+		end
+
+		index = glGetProgramResourceIndex(programID, category, pointer(name)) # TODO
+		if printError(&quot;glGetProgramResourceIndex&quot;) index = -1	end
+
+		typ = values[p_TYPE]
+		type_name = LIST_TYPE_STRING[typ]
+		location = category != GL_BUFFER_VARIABLE ? values[p_LOCATION] : values[p_INDEX]
+		binding = length(values)&gt;= GL_LOCATION ? values[GL_LOCATION] : -1
+		arrSize = values[p_ARRAYSIZE]
+		size = arrSize
+
+		prop = ShaderProperty()
+		prop.index = index
+		prop.name = name
+		prop.categoryid=category
+		prop.typid=typ
+		prop.location=location
+		prop.binding = binding
+		prop.size=size
+
+		#if typ == GL_FLOAT_MAT4 prop.code = MATRICES::getCode(name)
+
+		#GL_TRANSPOSE_MODELVIEW_MATRIX
+		#GL_TRANSPOSE_PROJECTION_MATRIX
+		#GL_TRANSPOSE_TEXTURE_MATRIX
+		#GL_TRANSPOSE_COLOR_MATRIX
+
+		if category == GL_UNIFORM || category == GL_BUFFER_VARIABLE
+
+			auxSize = 0
+			arrayStride = values[p_ARRAY]
+			matrixStride = values[p_MATRIX]
+
+			prop.offset=values[p_OFFSET]
+			prop.arrayStride=arrayStride
+			prop.matrixStride=values[p_MATRIX]
+
+			if category == GL_BUFFER_VARIABLE
+				prop.topSize=values[p_TOPARRAYSIZE]
+				prop.topStride=values[p_TOPARRAYSTRIDE]
+			end
+
+			if arrayStride &gt; 0
+				size = arrayStride * arrSize
+
+			elseif matrixStride &gt; 0
+
+				if (typ == GL_FLOAT_MAT2) || (typ == GL_FLOAT_MAT2x3) || (typ == GL_FLOAT_MAT2x4) || (typ == GL_DOUBLE_MAT2) || (typ == GL_DOUBLE_MAT2x3) || (typ == GL_DOUBLE_MAT2x4)
+					auxSize = 2
+				elseif (typ == GL_FLOAT_MAT3) || (typ == GL_FLOAT_MAT3x2) || (typ == GL_FLOAT_MAT3x4) || (typ == GL_DOUBLE_MAT3) || (typ == GL_DOUBLE_MAT3x2) || (typ == GL_DOUBLE_MAT3x4)
+					auxSize = 3
+				elseif (typ == GL_FLOAT_MAT4) || (typ == GL_FLOAT_MAT4x2) || (typ == GL_FLOAT_MAT4x3) || (typ == GL_DOUBLE_MAT4) || (typ == GL_DOUBLE_MAT4x2) || (typ == GL_DOUBLE_MAT4x3)
+					auxSize = 4
+				end
+
+				auxSize *= matrixStride
+				size = auxSize
+			end
+
+			#if (location != -1 &amp;&amp; type == GL_SAMPLER_2D)
+			#glUniform1i(location, 0); // Set our sampler to user Texture Unit 0
+			#driver-&gt;printError(&quot;glUniform1i DiffuseMap&quot;);
+			#end
+		end
+
+		prop.size=size
+
+		if size == 0
+			@printf(&quot;  %s%d. [%d] %s %s &lt;%d&gt;\n&quot;, hasBlock ? &quot;\t- &quot; : &quot;&quot;,	pindex, location, name, type_name, size)
+		else
+			@printf(&quot;  %s%d. [%d] %s %s (%d) &lt;%d&gt;\n&quot;, hasBlock ? &quot;\t- &quot; : &quot;&quot;, pindex, location, name, type_name, prop.offset, size);
+		end
+
+		pcount = length(values)&gt;= p_OFFSET ? values[p_OFFSET] : 0 # vars
+
+		if pcount &gt; 0 &amp;&amp; (category == GL_UNIFORM_BLOCK || category == GL_ATOMIC_COUNTER_BUFFER || category == GL_SHADER_STORAGE_BLOCK || category == GL_TRANSFORM_FEEDBACK_BUFFER)
+			addProperties(program, category == GL_UNIFORM_BLOCK ? GL_UNIFORM : GL_BUFFER_VARIABLE, pcount, prop)
+		end
+
+		if hasBlock &amp;&amp; !haskey(block.properties, prop.name) block.properties[prop.name]=prop
+		elseif !haskey(program.properties, prop.name) program.properties[prop.name]=prop
+		end
+
+	end
+end</code></pre><footer><hr/><a class="previous" href="GLSLParser.html"><span class="direction">Previous</span><span class="title">GLSLParser.jl</span></a><a class="next" href="ShaderManager.html"><span class="direction">Next</span><span class="title">GL/ShaderManager.jl</span></a></footer></article></body></html>

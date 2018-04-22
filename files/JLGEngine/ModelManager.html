@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>ModelManager.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../App.html">App.jl</a></li><li><a class="toctext" href="../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="Management.html">Management.jl</a></li><li><a class="toctext" href="MeshManager.html">MeshManager.jl</a></li><li class="current"><a class="toctext" href="ModelManager.html">ModelManager.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="LibGL/LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="LibGL/GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="LibGL/GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="LibGL/GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="LibGL/GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="LibGL/GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="LibGL/ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="LibGL/StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="LibGL/TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="ModelManager.html">ModelManager.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/ModelManager.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>ModelManager.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="ModelManager.jl-1" href="#ModelManager.jl-1">ModelManager.jl</a></h1><p>using CoreExtended using FileManager using JLGEngine</p><p>using ..GraphicsManager using ..StorageManager using ..MeshManager</p><p>const Mesh = MeshManager.Typ</p><pre><code class="language-none">type Model &lt;: JLGEngine.IComponent
+	id::Symbol
+	name::String
+
+	enabled::Bool
+	linked::Bool
+	loaded ::Bool
+
+	source::FileSource
+
+	meshes::Dict{Symbol, Mesh}
+	group::StorageGroup
+	mainStorage::StorageGroup
+
+	Model(id=:_) = (g=StorageGroup(); new(id, &quot;&quot;,true,false,false,FileSource(),Dict(),g,g))
+end</code></pre><pre><code class="language-none">setMainBuffer(this::Model, storage::StorageGroup) = this.mainStorage = storage</code></pre><pre><code class="language-none">getMainBuffer(this::Model) = this.mainStorage</code></pre><pre><code class="language-none">link(this::Model) = StorageManager.link(this.group)</code></pre><pre><code class="language-none">function init(this::Model)
+end</code></pre><pre><code class="language-none">function upload(this::Model)
+	if this.loaded return end
+	prepare(this::Model,this.meshes[:DEFAULT])
+	StorageManager.upload(this.group)
+	this.loaded=true
+end</code></pre><pre><code class="language-none">function unload(this::Model)
+	if !this.loaded return end
+	# ....
+	this.loaded=false
+end</code></pre><pre><code class="language-none">function resets()
+	GRAPHICSDRIVER().resetBuffers()
+end</code></pre><pre><code class="language-none">function getGroup(this::Model, k::Symbol)
+	r = nothing
+	if k == :VERTEX || k == :UV || k == :NORMAL
+		r = StorageManager.getGroup(this.group.list[:VB].list[:VBO],k)
+	elseif  k == :INDEX
+		r = StorageManager.getGroup(this.group.list[:IB].list[:IBO],k)
+	end
+	r
+	#StorageManager.getData(getMainBuffer(this),k)
+end</code></pre><pre><code class="language-none">function getData(this::Model, k::Symbol)
+	r = getGroup(this,k)
+	if r != nothing r=r.data end #StorageManager.getValues
+	r
+end</code></pre><pre><code class="language-none">function getBuffer(this::Model, k::Symbol)
+	#.....
+end</code></pre><p>include(&quot;ModelManager/MeshFabric.jl&quot;)</p><footer><hr/><a class="previous" href="MeshManager.html"><span class="direction">Previous</span><span class="title">MeshManager.jl</span></a><a class="next" href="RenderManager.html"><span class="direction">Next</span><span class="title">RenderManager.jl</span></a></footer></article></body></html>

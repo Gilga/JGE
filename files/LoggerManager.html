@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>LoggerManager.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="App.html">App.jl</a></li><li><a class="toctext" href="CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="Environment.html">Environment.jl</a></li><li><a class="toctext" href="FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="JLScriptManager.html">JLScriptManager.jl</a></li><li class="current"><a class="toctext" href="LoggerManager.html">LoggerManager.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="JLGEngine/CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="JLGEngine/ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="JLGEngine/EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="JLGEngine/GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="JLGEngine/GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="JLGEngine/Management.html">Management.jl</a></li><li><a class="toctext" href="JLGEngine/MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="JLGEngine/RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="JLGEngine/ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="JLGEngine/StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="JLGEngine/SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="JLGEngine/TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="JLGEngine/TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="LoggerManager.html">LoggerManager.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/LoggerManager.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>LoggerManager.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="LoggerManager.jl-1" href="#LoggerManager.jl-1">LoggerManager.jl</a></h1><pre><code class="language-none">import Base.print, Base.println, Base.info, Base.warn, Base.error
+
+export @printf # cannot replace Base.@printf
+
+using Suppressor
+using TimeManager
+using CoreExtended
+
+export LOGGER_OUT
+export LOGGER_ERROR
+
+export print
+export printf
+export println
+export info
+export warn
+export error
+
+LOGGER_OUT = &quot;out.log&quot;
+LOGGER_ERROR = &quot;error.log&quot;
+
+function __init__()
+	open(LOGGER_OUT, &quot;w+&quot;)
+	open(LOGGER_ERROR, &quot;w+&quot;)
+end
+
+
+@suppress begin print(xs...) = open(f -&gt; (print(f, xs...); print(STDOUT, xs...)), LOGGER_OUT, &quot;a+&quot;) end
+macro printf(xs...) open(f -&gt; (:(Base.@printf(f, $xs...)); :(Base.@printf(:STDOUT, $xs...))),LOGGER_OUT, &quot;a+&quot;) end 
+@suppress begin println(xs...) = open(f -&gt; (println(f, programTimeStr(), &quot; &quot;, xs...); println(STDOUT, xs...)), LOGGER_OUT, &quot;a+&quot;) end
+
+@suppress begin info(xs...) = open(f -&gt; (info(f, programTimeStr(), &quot; &quot;, xs...); info(STDOUT, xs...)), LOGGER_OUT, &quot;a+&quot;) end
+@suppress begin error(xs...) = open(f -&gt; (error(f, programTimeStr(),&quot; &quot;, xs...); error(STDERR, xs...)), LOGGER_ERROR, &quot;a+&quot;) end
+@suppress begin warn(xs...) = open(f -&gt; (warn(f, programTimeStr(),&quot; &quot;, xs...); warn(STDERR, xs...)), LOGGER_ERROR, &quot;a+&quot;) end
+
+&quot;&quot;&quot;
+TODO
+&quot;&quot;&quot;
+function logException(ex::Exception)
+	t=programTimeStr()
+
+	println(STDERR, &quot;[ ERROR ] EXCEPTION! See &#39;$LOGGER_ERROR&#39; for more info.&quot;)
+	open(f -&gt; println(f, t, &quot; [ ERROR ] EXCEPTION! See &#39;$LOGGER_ERROR&#39; for more info.&quot;), LOGGER_OUT, &quot;a+&quot;)
+	open(function(f)
+			println(f, t, &quot; --- [ BACKTRACE ] ---&quot;)
+			Base.showerror(f, ex, catch_backtrace())
+			println(f, &quot;\n---------------------&quot;)
+	end, LOGGER_ERROR, &quot;a+&quot;)
+end
+
+CoreExtended.linkToException(logException)
+
+#messageToString(mode::String, time::String, name::String, msg::String) = string(time, &quot; &quot;, mode != &quot;&quot; ? string(&quot;[&quot;,mode,&quot;] &quot;): &quot;&quot; , name != &quot;&quot; ? string(name, &quot; &quot;) : &quot;&quot; , &quot;: &quot;, msg, &quot;\n&quot;)
+#logMsg(mode::Symbol, name::String, msg::String) = messageToString(string(mode), programTimeStr(), name, msg)
+</code></pre><footer><hr/><a class="previous" href="JLScriptManager.html"><span class="direction">Previous</span><span class="title">JLScriptManager.jl</span></a><a class="next" href="MatrixMath.html"><span class="direction">Next</span><span class="title">MatrixMath.jl</span></a></footer></article></body></html>

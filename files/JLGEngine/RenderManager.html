@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>RenderManager.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../App.html">App.jl</a></li><li><a class="toctext" href="../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="Management.html">Management.jl</a></li><li><a class="toctext" href="MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="ModelManager.html">ModelManager.jl</a></li><li class="current"><a class="toctext" href="RenderManager.html">RenderManager.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="LibGL/LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="LibGL/GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="LibGL/GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="LibGL/GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="LibGL/GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="LibGL/GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="LibGL/ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="LibGL/StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="LibGL/TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="RenderManager.html">RenderManager.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/RenderManager.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>RenderManager.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="RenderManager.jl-1" href="#RenderManager.jl-1">RenderManager.jl</a></h1><p>using CoreExtended using ..GraphicsManager using ..StorageManager using ..ModelManager using ..CameraManager using ..TransformManager using ..ShaderManager using ..TextureManager using ..GameObjectManager</p><p>const Transform=TransformManager.Typ const Model=ModelManager.Typ const Camera=CameraManager.Typ const Texture=TextureManager.Typ const ShaderProgram=ShaderManager.Typ</p><pre><code class="language-none">const DEFAULT_FUNCTION = ()-&gt;nothing</code></pre><pre><code class="language-none">OnPreDraw = DEFAULT_FUNCTION</code></pre><pre><code class="language-none">OnPostDraw = DEFAULT_FUNCTION</code></pre><pre><code class="language-none">OnPreRender = DEFAULT_FUNCTION</code></pre><pre><code class="language-none">OnPostRender = DEFAULT_FUNCTION</code></pre><pre><code class="language-none">OnRender = DEFAULT_FUNCTION</code></pre><pre><code class="language-none">function setOnDraw(f1::Union{Void,Function}, f2::Union{Void,Function})
+	global OnPreDraw = f1 != nothing ? f1 : DEFAULT_FUNCTION
+	global OnPostDraw = f2 != nothing ? f2 : DEFAULT_FUNCTION
+end</code></pre><pre><code class="language-none">function setOnRender(f1::Union{Void,Function}, f2::Union{Void,Function}, f3::Union{Void,Function})
+	global OnPreRender = f1 != nothing ? f1 : DEFAULT_FUNCTION
+	global OnPostRender = f2 != nothing ? f2 : DEFAULT_FUNCTION
+	global OnRender = f3 != nothing ? f3 : DEFAULT_FUNCTION
+end</code></pre><pre><code class="language-none">type RenderGroup
+	enabled::Bool
+	transform::Transform
+	model::Model
+	shaderProgram::ShaderProgram
+	textures::Dict{Symbol,Texture}
+	modes::Dict{Symbol,Any}
+end</code></pre><pre><code class="language-none">type RenderGroups
+	enabled::Bool
+	camera::Camera
+	groups::SortedDict{Symbol,RenderGroup}
+end</code></pre><pre><code class="language-none">type Renderer
+	id::Symbol
+	#gameObject::GameObject
+	
+	order::Symbol
+	enabled::Bool
+	transform::Transform
+	model::Model
+	camera::Camera
+	shaderProgram::ShaderProgram
+	textures::Dict{Symbol,Texture}
+	modes::Dict{Symbol,Any}
+	setModes::Function
+	
+	function Renderer(id=:_)
+		#obj=GameObjectManager.create(id)
+		this=new(id,:_,true,nothing,nothing,nothing,nothing,Dict(),Dict(),()-&gt;nothing)
+		#GameObjectManager.setComponent(obj,this)
+		this
+	end
+end</code></pre><pre><code class="language-none">function link(this::Renderer)
+	ModelManager.linkTo(this.model)
+	ShaderManager.linkTo(this.shaderProgram)
+	if this.camera != nothing CameraManager.update(this.camera, this.transform) end
+end</code></pre><pre><code class="language-none">function register(this::Renderer)
+	this.model = ModelManager.getSelected()
+	this.camera = CameraManager.getSelected()
+	this.shaderProgram = ShaderManager.getSelected()
+	#RenderManager.createShaderProgram(:FG, &quot;shaders/default.glsl&quot;)
+end</code></pre><pre><code class="language-none">function addTexture(this::Renderer, path::String)
+	id=Symbol(path)
+	texture = TextureManager.create(id)
+	this.textures[id] = texture
+	TextureManager.load(texture, path)
+	texture
+end</code></pre><pre><code class="language-none">function update()
+	ShaderManager.watchShaderReload(RenderManager.reload)
+end</code></pre><pre><code class="language-none">function init(this::Renderer)
+	setMode(this, :POLYGONMODE,[:FRONT_AND_BACK,:FILL])
+	this.transform=TransformManager.create(this.id)
+end</code></pre><pre><code class="language-none">function render()
+	OnPreRender()
+	OnRender()
+	OnPostRender()
+end</code></pre><pre><code class="language-none">function render(this::Renderer)
+	if !this.enabled return end
+	setSelected(this)
+	link() # shaderprogram, model, texture, ...
+	getShaderProperties(this) 	# set propberties
+	#this.setModes()
+	OnPreDraw()
+	draw(this)
+	OnPostDraw()
+end</code></pre><pre><code class="language-none">function resets()
+	ModelManager.reset()
+	ShaderManager.reset()
+end</code></pre><pre><code class="language-none">function unlinks()
+	ModelManager.unlink()
+	ShaderManager.unlink()
+end
+
+# preset for manager: includes code here
+presetManager(Renderer)
+
+useSortedList = false
+renderSortedList(use::Bool) = (global useSortedList = use)</code></pre><pre><code class="language-none">renderDefault() = for (_,this) in list; render(this); end</code></pre><pre><code class="language-none">renderAll = DEFAULT_FUNCTION</code></pre><pre><code class="language-none">function start()
+	reset()
+	RenderManager.reload()
+	
+	# shader reload
+	for (k,this) in list
+		if this.shaderProgram != nothing ShaderManager.reload(this.shaderProgram) end
+	end
+end</code></pre><pre><code class="language-none">function reload()
+	if !useSortedList
+		renderAll = stabilize(renderDefault)
+	else
+		#all=Expr(:block,:())
+
+		sortedList=SortedDict{Symbol, Array{Renderer,1}}(Forward)
+
+		order=0
+		for (k,this) in list
+			order+=1
+			ex=:()
+			for (k,v) in this.modes
+				ex=:($(ex.args...); $(GRAPHICSDRIVER().getMode(k,v).args...);)
+			end
+
+			this.setModes=()-&gt;nothing #eval(:(function(); $(ex.args...); end;))
+
+			if this.order == :_ this.order=Symbol(order) end
+			if !haskey(sortedList,this.order) sortedList[this.order]=Array{Renderer,1}(); end
+			push!(sortedList[this.order], this)
+		end
+
+		global renderAll = stabilize(eval(:(function();
+			for (_,a) in $sortedList; for this in a; render(this); end; end;
+		end;)))
+		println(&quot;sortedList generated.&quot;)
+	end
+	
+	global OnRender = OnRender != DEFAULT_FUNCTION ? OnRender : renderAll
+end</code></pre><pre><code class="language-none">function copy(l::Renderer,r::Renderer)
+	l.model = r.model
+	l.camera = r.camera
+	l.transform = r.transform
+	l.shaderProgram = r.shaderProgram
+end</code></pre><pre><code class="language-none">function unlink(typ::DataType)
+	#obj = typ == Camera ? EMPTY_CAMERA : (typ == Model ? EMPTY_MODEL : (typ == Model ? nothing : nothing))
+	if obj != nothing link(obj) end
+end</code></pre><pre><code class="language-none">function link(ent::Transform)
+	this = getSelected()
+	this.transform = ent
+end</code></pre><pre><code class="language-none">function link(camera::Camera)
+	this = getSelected()
+	this.camera = camera
+end</code></pre><pre><code class="language-none">function link(model::Model)
+	this = getSelected()
+	this.model = model
+end</code></pre><pre><code class="language-none">function link(program::ShaderProgram)
+	this = getSelected()
+	this.shaderProgram = program
+end</code></pre><pre><code class="language-none">is(id::Symbol) = RenderManager.getSelected().id == id</code></pre><pre><code class="language-none">isTransform(id::Symbol) = RenderManager.getSelected().transform.id == id</code></pre><pre><code class="language-none">isModel(id::Symbol) = RenderManager.getSelected().model.id == id</code></pre><pre><code class="language-none">isCamera(id::Symbol) = RenderManager.getSelected().camera.id == id</code></pre><pre><code class="language-none">getMVP() = RenderManager.getSelected().camera.mvpMat</code></pre><pre><code class="language-none">getData(k::Symbol) = ModelManager.getData(getSelected().model,k)</code></pre><pre><code class="language-none">function init()
+	ShaderManager.setListenerOnShaderPropertyUpdate(:OnShaderPropertyUpdateAttributes, (
+		&quot;iVertex&quot; =&gt; () -&gt;  getData(:VERTEX)
+		,&quot;iUV&quot; =&gt; () -&gt; (d=getData(:UV); d != nothing ? d : getData(:VERTEX))
+		,&quot;iNormal&quot; =&gt; () -&gt; (d=getData(:NORMAL); d != nothing ? d : getData(:VERTEX))
+		)
+	)
+end</code></pre><pre><code class="language-none">function getShaderProperties(this::Renderer)
+	ShaderManager.getShaderProperties(this.shaderProgram, ModelManager.getMainBuffer(this.model).data)
+end</code></pre><pre><code class="language-none">setRenderMode(this::Renderer, mode::Symbol) = GRAPHICSDRIVER().update(ModelManager.getGroup(this.model,:VERTEX).data, mode)</code></pre><pre><code class="language-none">setMode(this::Renderer, mode::Symbol, value::Any) = this.modes[mode]=value</code></pre><pre><code class="language-none">setRenderMode(mode::Symbol) = setRenderMode(getSelected(), mode)</code></pre><pre><code class="language-none">setMode(mode::Symbol, value::Any) = GRAPHICSDRIVER().setMode(mode,value)</code></pre><pre><code class="language-none">function draw(this::Renderer)
+	model=this.model
+	buffer=ModelManager.getMainBuffer(model)
+	if model.enabled &amp;&amp; ModelManager.isLinked(model) &amp;&amp; buffer != nothing &amp;&amp; buffer.data != nothing &amp;&amp; (data=StorageManager.getData(buffer, 1)) != nothing
+		ShaderManager.render(this.shaderProgram, buffer.data, data)
+	end
+end</code></pre><footer><hr/><a class="previous" href="ModelManager.html"><span class="direction">Previous</span><span class="title">ModelManager.jl</span></a><a class="next" href="ShaderManager.html"><span class="direction">Next</span><span class="title">ShaderManager.jl</span></a></footer></article></body></html>

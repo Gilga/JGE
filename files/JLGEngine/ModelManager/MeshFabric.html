@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>MeshFabric.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link href="../../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../../App.html">App.jl</a></li><li><a class="toctext" href="../../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="../CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="../ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="../EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="../GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="../GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="../Management.html">Management.jl</a></li><li><a class="toctext" href="../MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="../ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="../RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="../ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="../StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="../SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="../TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="../TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="MeshData.html">MeshData.jl</a></li><li class="current"><a class="toctext" href="MeshFabric.html">MeshFabric.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="../LibGL/LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="../LibGL/GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="../LibGL/GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="../LibGL/GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="../LibGL/GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="../LibGL/GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="../LibGL/ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="../LibGL/StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="../LibGL/TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="MeshFabric.html">MeshFabric.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/ModelManager/MeshFabric.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>MeshFabric.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="MeshFabric.jl-1" href="#MeshFabric.jl-1">MeshFabric.jl</a></h1><p>include(&quot;MeshData.jl&quot;) include(&quot;MeshLoader_OBJ.jl&quot;)</p><pre><code class="language-none">function createMesh(this::Model, id::Symbol)
+	if !haskey(this.meshes, id)
+		mesh = MeshManager.Mesh()
+		this.meshes[id]=mesh
+	else
+		mesh=this.meshes[id]
+	end
+	mesh
+end</code></pre><pre><code class="language-none">function addMesh(this::Model, typ::Symbol)
+	mesh=createMesh(this, :DEFAULT)
+	if MeshManager.isEmpty(mesh)
+		update(mesh, typ, this.source.path)
+	end
+	upload(this)
+	mesh
+end</code></pre><pre><code class="language-none">function update(mesh::Mesh, typ::Symbol, path::String)
+	if typ == :PLANE
+		MeshManager.update(mesh, typ, MeshDataPlaneQuad)
+	elseif typ == :CUBE
+		MeshManager.update(mesh, typ, MeshDataCube, 5)
+	elseif typ == :CUBE2
+		MeshManager.update(mesh,typ, createCubeDataTest)
+	elseif typ == :IPLANE
+		MeshManager.update(mesh, typ, ()-&gt;createPlaneData(5,5))
+	elseif typ == :ICOSPHERE
+		MeshManager.update(mesh, typ, ()-&gt;createTetrahedronSphere(1))
+	elseif typ == :MODEL
+		if !loadOBJ(path, mesh)	warn(string(&quot;Failed loading mesh file &quot;, path))	end
+	end
+end</code></pre><pre><code class="language-none">function prepare(this::Model, mesh::Mesh)
+	vlen=length(mesh.vertices.data.values)
+	uvlen=length(mesh.uvs.data.values)
+	nlen=length(mesh.normals.data.values)
+	ilen=length(mesh.indicies.data.values)
+
+	if vlen&gt;0 || uvlen&gt;0 || nlen&gt;0
+		va=StorageManager.create(this.group, :VA, :BLOCK, :ARRAY_BLOCK)
+		vao=StorageManager.create(va, :VAO, :STORAGE, :ARRAY)
+
+		vb=StorageManager.create(this.group, :VB, :BLOCK, :BUFFER_BLOCK)
+		vbo=StorageManager.create(vb, :VBO, :STORAGE, :ARRAY_BUFFER)
+
+		if vlen&gt;0	StorageManager.link(vbo, mesh.vertices, :VERTEX) end
+		if uvlen&gt;0 StorageManager.link(vbo, mesh.uvs, :UV) end
+		if nlen&gt;0	StorageManager.link(vbo, mesh.normals, :NORMAL)	end
+		if ilen==0 setMainBuffer(this,vbo) end
+	end
+
+	if ilen&gt;0
+		ib=StorageManager.create(this.group, :IB, :BLOCK, :INDEX_BLOCK)
+		ibo=StorageManager.create(ib, :IBO, :STORAGE, :ELEMENT_ARRAY_BUFFER)
+		StorageManager.link(ibo, mesh.indicies, :INDEX)
+		setMainBuffer(this,ibo)
+	end
+end</code></pre><footer><hr/><a class="previous" href="MeshData.html"><span class="direction">Previous</span><span class="title">MeshData.jl</span></a><a class="next" href="MeshLoader_OBJ.html"><span class="direction">Next</span><span class="title">MeshLoader_OBJ.jl</span></a></footer></article></body></html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>GL/StorageManager.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link href="../../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../../App.html">App.jl</a></li><li><a class="toctext" href="../../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="../CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="../ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="../EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="../GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="../GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="../Management.html">Management.jl</a></li><li><a class="toctext" href="../MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="../ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="../RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="../ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="../StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="../SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="../TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="../TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="../ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="../ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="../ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="ShaderManager.html">GL/ShaderManager.jl</a></li><li class="current"><a class="toctext" href="StorageManager.html">GL/StorageManager.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="StorageManager.html">GL/StorageManager.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/LibGL/StorageManager.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>GL/StorageManager.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="GL-StorageManager.jl-1" href="#GL-StorageManager.jl-1">GL/StorageManager.jl</a></h1><p>export GLStorageData export GLStorage export GLStorageBlock</p><p>using ModernGL using MatrixMath</p><p>using JLGEngine.GraphicsManager using ..GLLists using ..GLDebugControl using ..GLExtendedFunctions</p><pre><code class="language-none">type GLStorageData &lt;: IGraphicsData
+	id::GLuint  # GL
+	dtyp::DataType
+	typ::GLenum
+	flags::GLuint
+	mode::GLenum
+
+	offset::GLuint
+	count::GLuint
+	size::GLsizei
+	values::AbstractArray
+	valuesPtr::Ptr{Void}
+
+	elements::GLint
+	elementsCount::GLsizei
+	elementsSize::GLsizei
+
+	uploaded::Bool
+
+	GLStorageData() = new(0,Float32,GL_FLOAT,0,GL_TRIANGLES,0,0,0,[],C_NULL,0,0,0,false)
+end</code></pre><pre><code class="language-none">type GLStorage &lt;: IGraphicsData
+	linked::Bool
+	id::GLuint  # bind point
+	size::GLsizei
+	count::GLuint
+	typ::GLenum
+	mode::GLuint
+	GLStorage(typ=GL_ARRAY_BUFFER) = new(false,0,0,0,typ,GL_STATIC_DRAW)
+end</code></pre><pre><code class="language-none">type GLStorageBlock &lt;: IGraphicsData
+	created::Bool
+	isarray::Bool
+	anchor::Array{GLuint,1}
+	count::GLuint
+	GLStorageBlock(isarray::Bool) = new(false, isarray, GLuint[0], 0)
+end
+
+linkedArray = nothing
+linkedBuffers = Dict{GLenum,AbstractGraphicsData}()</code></pre><pre><code class="language-none">function unbindStorages()
+	# unbind
+	for (s,k) in LIST_BUFFER bind(false, k, GLuint(0), nothing) end
+  bind(true, GLenum(0), GLuint(0), nothing)
+end</code></pre><pre><code class="language-none">function create(typ::Symbol, id::Symbol)
+	r = nothing
+	if typ == :DATA
+		r=GLStorageData()
+	elseif typ == :STORAGE
+		r=GLStorage(haskey(LIST_BUFFER, id) ? LIST_BUFFER[id] : 0)
+	elseif typ == :BLOCK
+		r= GLStorageBlock(id == :ARRAY_BLOCK)
+	end
+	r
+end</code></pre><pre><code class="language-none">getValues(this::GLStorageData) = this.values</code></pre><pre><code class="language-none">function setValues(this::GLStorageData, values::AbstractArray, elems::Integer, mode = :TRIANGLES)
+	this.uploaded = false
+
+	# convert to one dim valid array
+	v=MatrixMath.convertMatrixToArray(values)
+	values=v[1]
+	elems=elems == 0 ? v[2] : elems
+
+	this.values = values
+	this.count = length(this.values)
+	this.size = sizeof(this.values)
+	this.dtyp = typeof(this.values[1])
+	this.valuesPtr = pointer(this.values)
+	this.typ = LIST_TYPE[this.dtyp]
+	this.mode = LIST_DRAW_MODE[mode]
+
+	n=this.count/elems
+	 #check if number becomes fractional
+	if modf(n)[1]&gt;0
+		warn(&quot;element number does not match up with data count! instruction aborted.&quot;)
+		return
+	end
+
+	this.elements=elems
+	this.elementsSize=elems*sizeof(this.dtyp)
+	this.elementsCount=n
+
+	println(&quot;setValues:done.&quot;)
+end</code></pre><pre><code class="language-none">function prepare(block::GLStorageBlock, storage::GLStorage, this::GLStorageData)
+	storage.count += 1
+	this.id=storage.count
+	this.offset = storage.size
+	storage.size += this.size
+end</code></pre><pre><code class="language-none">function prepare(block::GLStorageBlock, this::GLStorage)
+	block.count += 1
+	this.id=block.count
+	this.count=0
+end</code></pre><pre><code class="language-none">function prepare(this::GLStorageBlock)
+	this.count=0
+end</code></pre><pre><code class="language-none">function init(this::GLStorageBlock)
+	if this.created return end
+	this.anchor=zeros(GLuint,this.count)
+	if this.isarray	glGenVertexArrays(this.count, this.anchor)
+	else glGenBuffers(this.count, this.anchor)
+	end
+	this.created=true
+end</code></pre><pre><code class="language-none">function clean(this::GLStorageBlock)
+	if !this.created return end
+	this.anchor=zeros(GLuint,this.count)
+	if this.isarray	glDeleteVertexArrays(this.count, this.anchor)
+	else glDeleteBuffers(this.count, this.anchor)
+	end
+	this.created=false
+end</code></pre><pre><code class="language-none">function bind(isarray::Bool, k::GLenum, v::GLuint, s::AbstractGraphicsData)
+	global linkedBuffers
+	global linkedArray
+	if isarray
+		glBindVertexArray(v)
+		if linkedArray != nothing linkedArray.linked = false end
+		if s != nothing s.linked = true end
+		linkedArray = s
+	else
+		glBindBuffer(k,v)
+		if haskey(linkedBuffers,k)
+			prev = linkedBuffers[k]
+			if prev != nothing prev.linked = false end
+			if s != nothing s.linked = true end
+		end
+		linkedBuffers[k] = s
+	end
+end</code></pre><pre><code class="language-none">bind(block::GLStorageBlock, this::GLStorage, on=true) = bind(block.isarray, this.typ, GLuint(on ? block.anchor[this.id] : 0), on ? this : nothing)</code></pre><pre><code class="language-none">upload(xs::Array{Any,1}) = for x in xs upload(x[1], x[2], x[3]) end</code></pre><pre><code class="language-none">function upload(block::GLStorageBlock, this::GLStorage, data::GLStorageData)
+	if block.isarray return end
+	bind(block,this)
+	uploadData(block, this, data) # offsets etc.
+	bind(block,this,false)
+end</code></pre><pre><code class="language-none">function uploadData(block::GLStorageBlock, this::GLStorage, data::GLStorageData)
+	if block.isarray || this.typ == 0 return end # || data.uploaded
+
+	if data.id == 1
+			size=GLsizeiptr(data.size)
+			values=data.valuesPtr
+
+			if this.size &gt; data.size
+				values = C_NULL
+				size = this.size
+			end
+
+			#this.typ to name
+			
+			println(&quot;Data Upload: $(this.typ), $(data.id) , $(size) bytes&quot;)
+			glBufferData(this.typ, size, values, this.mode)
+	end
+
+	if this.size &gt; data.size
+		#location = data.id-1
+		#normalized = GL_FALSE #GLboolean(data.flags &amp; GL_VERTEX_ATTRIB_ARRAY_NORMALIZED != GL_VERTEX_ATTRIB_ARRAY_NORMALIZED)
+		#stride = 0 #data.elementsSize #Vertex.SIZE * 4
+		#offset = C_NULL #data.offset == 0 ? C_NULL : GLintptr[data.offset]
+
+		#glEnableVertexAttribArray(location)
+		#glVertexAttribPointer(location, data.elements, data.typ, normalized, stride, offset)
+
+		println(&quot;Data Sub Upload: $(this.typ), $(data.size) bytes, offset:$(data.offset)&quot;)
+		glBufferSubData(this.typ, GLintptr(data.offset), GLsizeiptr(data.size), data.valuesPtr)
+	end
+
+	data.uploaded = true
+end</code></pre><pre><code class="language-none">update(this::GLStorageData, mode::Symbol) = this.mode = LIST_DRAW_MODE[mode]</code></pre><footer><hr/><a class="previous" href="ShaderManager.html"><span class="direction">Previous</span><span class="title">GL/ShaderManager.jl</span></a><a class="next" href="TextureManager.html"><span class="direction">Next</span><span class="title">GL/TextureManager.jl</span></a></footer></article></body></html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>LibGL.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link href="../../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../../App.html">App.jl</a></li><li><a class="toctext" href="../../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="../CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="../ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="../EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="../GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="../GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="../Management.html">Management.jl</a></li><li><a class="toctext" href="../MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="../ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="../RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="../ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="../StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="../SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="../TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="../TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="../ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="../ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="../ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li class="current"><a class="toctext" href="LibGL.html">LibGL.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="LibGL.html">LibGL.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/LibGL/LibGL.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>LibGL.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="LibGL.jl-1" href="#LibGL.jl-1">LibGL.jl</a></h1><p>import DataStructures</p><p>using ModernGL</p><p>using CoreExtended using FileManager</p><p>include(&quot;GLLists.jl&quot;) include(&quot;GLDebugControl.jl&quot;) include(&quot;GLExtendedFunctions.jl&quot;) include(&quot;StorageManager.jl&quot;) include(&quot;ShaderManager.jl&quot;) include(&quot;TextureManager.jl&quot;)</p><p>using JLGEngine.GraphicsManager using .GLLists using .GLExtendedFunctions</p><pre><code class="language-none">hasDuplicates(msg) = (for (i,j) in zip(msg,lastMessage) if i != j return false end end; true)</code></pre><pre><code class="language-none">function openglerrorcallback(
+                source::GLenum, typ::GLenum,
+                id::GLuint, severity::GLenum,
+                len::GLsizei, message::Ptr{GLchar},
+                userParam::Ptr{Void}
+            )
+
+		msg = (source, typ, id, severity, len)
+		if hasDuplicates(msg) return end # ignore duplicates
+		global lastMessage = msg
+
+		#source = GL_DEBUG_SOURCE_API, GL_DEBUG_SOURCE_WINDOW_SYSTEM_, GL_DEBUG_SOURCE_SHADER_COMPILER, GL_DEBUG_SOURCE_THIRD_PARTY, GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_SOURCE_OTHER, GL_DONT_CARE
+		#typ = GL_DEBUG_TYPE_ERROR, GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR, GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR, GL_DEBUG_TYPE_PORTABILITY, GL_DEBUG_TYPE_PERFORMANCE, GL_DEBUG_TYPE_MARKER, GL_DEBUG_TYPE_PUSH_GROUP, GL_DEBUG_TYPE_POP_GROUP, or GL_DEBUG_TYPE_OTHER, GL_DONT_CARE
+		#severity = GL_DEBUG_SEVERITY_LOW, GL_DEBUG_SEVERITY_MEDIUM, or GL_DEBUG_SEVERITY_HIGH, GL_DONT_CARE
+    errormessage = 	&quot;\n&quot;*
+                    &quot; __OPENGL________________________________________________________\n&quot;*
+                    &quot;|\n&quot;*
+                    #&quot;| type: $(GLENUM(typ).name) :: id: $(GLENUM(id).name)\n&quot;*
+										#&quot;| source: $(GLENUM(source).name) :: severity: $(GLENUM(severity).name)\n&quot;*
+										(userParam != C_NULL ? &quot;| UserParam : NOT NULL\n&quot; : &quot;&quot;)*
+                    (len &gt; 0 ? &quot;| &quot;*ascii(unsafe_string(message, len))*&quot;\n&quot; : &quot;&quot;)*
+										(haskey(LIST_ERROR,id) ? &quot;| &quot;*LIST_ERROR[id]*&quot;\n&quot; : &quot;&quot;)*
+                    &quot;|________________________________________________________________\n&quot;
+    #if typ == GL_DEBUG_TYPE_ERROR
+				warn(errormessage)
+    #end
+    nothing
+end</code></pre><pre><code class="language-none">const _openglerrorcallback = cfunction(openglerrorcallback, Void,
+                                        (GLenum, GLenum,
+                                        GLuint, GLenum,
+                                        GLsizei, Ptr{GLchar},
+                                        Ptr{Void}))</code></pre><pre><code class="language-none">function SetDebugging(debug::Bool)
+  if debug SetErrorCallBack() end
+end</code></pre><pre><code class="language-none">function SetErrorCallBack()
+  @static if is_apple()
+			warn(&quot;OpenGL debug message callback not available on osx&quot;)
+			return
+  end
+	flags = getValByRef((ref) -&gt; glGetIntegerv(GL_CONTEXT_FLAGS, ref), GLint(0))
+  if (flags &amp; GL_CONTEXT_FLAG_DEBUG_BIT) != 0
+		glEnable(GL_DEBUG_OUTPUT)
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS)
+		glDebugMessageCallbackARB(_openglerrorcallback, C_NULL)
+	end
+end</code></pre><pre><code class="language-none">function init()
+	SetErrorCallBack()
+end</code></pre><pre><code class="language-none">GetVersion(key::Symbol) = haskey(LIST_INFO,key) ? string(&quot;OpenGL &quot;,glString(LIST_INFO[key])) : &quot;&quot;</code></pre><pre><code class="language-none">function getMode(key::Symbol, value::Any)
+	global MOD
+	if key == :POLYGONMODE
+		k=eval(Symbol(PREFIX,value[1]))
+		v=eval(Symbol(PREFIX,value[2]))
+		:($MOD.glPolygonMode($k,$v);)
+	else
+		:()
+	end
+end</code></pre><pre><code class="language-none">function resetBuffers()	StorageManager.unbindStorages() end</code></pre><pre><code class="language-none">function resetRegisters()
+	#StorageManager.unbindStorages()
+	ShaderManager.reset()
+end</code></pre><footer><hr/><a class="previous" href="../ModelManager/MeshLoader_OBJ.html"><span class="direction">Previous</span><span class="title">MeshLoader_OBJ.jl</span></a><a class="next" href="GLDebugControl.html"><span class="direction">Next</span><span class="title">GLDebugControl.jl</span></a></footer></article></body></html>

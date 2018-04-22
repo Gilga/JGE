@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>CoreExtended.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="App.html">App.jl</a></li><li class="current"><a class="toctext" href="CoreExtended.html">CoreExtended.jl</a><ul class="internal"><li class="toplevel"><a class="toctext" href="#obsolete-1">obsolete</a></li></ul></li><li><a class="toctext" href="Environment.html">Environment.jl</a></li><li><a class="toctext" href="FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="JLGEngine/CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="JLGEngine/ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="JLGEngine/EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="JLGEngine/GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="JLGEngine/GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="JLGEngine/Management.html">Management.jl</a></li><li><a class="toctext" href="JLGEngine/MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="JLGEngine/RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="JLGEngine/ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="JLGEngine/StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="JLGEngine/SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="JLGEngine/TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="JLGEngine/TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="CoreExtended.html">CoreExtended.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/CoreExtended.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>CoreExtended.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="CoreExtended.jl-1" href="#CoreExtended.jl-1">CoreExtended.jl</a></h1><p>const EMPTY_FUNCTION = () -&gt; nothing</p><p>iscallable(f) = !isempty(methods(f))</p><pre><code class="language-none">exists(m::Module, s::Symbol) = isdefined(m,s) #&amp;&amp; iscallable(catchException(()-&gt;eval(e)))
+execute(m::Module, s::Symbol, args...) = isdefined(m,s) ? execute(:($m.$s),args...) : nothing #(if isdefined(m,s) return execute(eval(m,s),args...); end; nothing)
+#execute(o::Any, s::Symbol, args...) = isdefined(o,s) ? execute(:($o.$s),args...) : nothing
+execute(e::Expr, args...) = execute(catchException(()-&gt;eval(e)),args...)
+execute(f::Function, args...) = iscallable(f) ? invoke(f,args...) : nothing
+#execute(f::Function, args...) = (debug(&quot;execute function(&quot;*string(args...)*&quot;)&quot;); if iscallable(f) return invoke(f, args...); end; nothing)
+execute(t::Tuple{Bool,Any}, args...) = execute(t[1]?t[2]:nothing,args...)
+execute(r::Any, args...) = (debug(&quot;result &quot;*string(typeof(r))); r)
+execute(r::Void, args...) = (warn(&quot;Cannot execute nothing&quot;); r)</code></pre><pre><code class="language-none">function invoke(f::Function, args...)
+	result = nothing
+	catchException(()	-&gt; result = @eval $f($(args...)))
+	result
+end</code></pre><pre><code class="language-none">stabilize(f::Function) = (args...) -&gt; invoke(f, args...)</code></pre><pre><code class="language-none">abstract type AbstractObjectReference end</code></pre><pre><code class="language-none">type EmptyObject &lt;: AbstractObjectReference
+	EmptyObject() = new() 
+end</code></pre><pre><code class="language-none">const EMPTY_OBJECT = EmptyObject()</code></pre><pre><code class="language-none">OnException = (x)-&gt;nothing</code></pre><pre><code class="language-none">function linkToException(f::Function)
+	global OnException = f
+end</code></pre><pre><code class="language-none">function backTraceException(ex::Exception)
+	println(&quot;--- [ BACKTRACE ] ---&quot;)
+	Base.showerror(STDERR, ex, catch_backtrace())
+	println(&quot;\n---------------------&quot;)
+end</code></pre><pre><code class="language-none">function catchException(f::Function, exf=OnException)
+	try return f()
+	catch ex exf(ex)
+	end
+	nothing
+end</code></pre><pre><code class="language-none">function hasVal(a::AbstractArray, getindex::Function)
+	i=0; for v in a
+		i+=1
+		if getindex(v) return (i,v) end
+	end
+	#found=find(f,a)
+	(0,nothing)
+end</code></pre><pre><code class="language-none">function replace(a::AbstractArray, f::Function, v::Any)
+	found=hasVal(f,a)
+	if found[1] == 0 push!(a, v)
+	else a[found[1]]=v
+	end
+end</code></pre><pre><code class="language-none">function update(a::AbstractArray, getindex::Function, f::Function)
+	found=hasVal(getindex,a)
+	if found[1] == 0 push!(a, f((false,nothing)))
+	else a[found[1]]=f((true,found[2]))
+	end
+end</code></pre><pre><code class="language-none">function update(dict::Dict, index::Any, f::Function)
+	v=nothing
+	try
+		v=(true,dict[index])
+	catch error
+		if isa(error, KeyError) v=(false,nothing) end
+	end
+	if v != nothing dict[index]=f(v) end
+end</code></pre><h1><a class="nav-anchor" id="obsolete-1" href="#obsolete-1">obsolete</a></h1><pre><code class="language-none">export presetManager
+function presetManager(T::DataType, S=T)
+	mod=T.name.module
+	#mname=Base.replace(string(S),r&quot;\..*&quot;,&quot;&quot;)
+	#mod=Module(Symbol(mname))
+	#typ=&quot;EMPTY_&quot;*uppercase(Base.replace(string(S),r&quot;[^\.]+\.&quot;,&quot;&quot;))
+	reset = isdefined(mod,:resets) ? mod.resets : ()-&gt;nothing
+	link = isdefined(mod,:link) ? mod.link : (x)-&gt;nothing
+	unlink = isdefined(mod,:unlinks) ? mod.unlinks : ()-&gt;nothing
+	
+	eval(mod,
+		Expr(:toplevel,
+			:(
+				const Typ = Union{Void,$T};
+				list = SortedDict{Symbol, $S}(Forward);
+			
+				function create(k::Symbol);
+					if !haskey(list,k);
+						e=$S(k);
+						list[k]=e;
+						setSelected(e);
+						if isdefined($mod,:init) init(e) end;
+					else
+						e=list[k];
+						setSelected(e);
+					end;
+					e;
+				end;
+			
+				selected = nothing;
+				getSelected() = selected;
+				setSelected(obj::Typ) = global selected = obj;
+				
+				get(k::Symbol) = list[k];
+				set(k::Symbol, obj::Typ) = (list[k] = obj);
+	
+				function reset();
+					unlink();
+					$reset();
+				end;
+
+				isInvalid(obj::Typ) = obj == nothing || !isa(obj,$S);
+				isLinked(obj::Typ) =	!isInvalid(obj) &amp;&amp; obj == getSelected();
+
+				function unlink() setSelected(nothing); $unlink(); end;
+
+				function link();
+					obj=getSelected();
+					if !isInvalid(obj); $link(obj) else unlink() end;
+				end;
+
+				function linkTo(obj::Typ);
+					other=getSelected();
+					if other == obj return end;
+					setSelected(obj);
+					link();
+				end;
+			)
+		)
+	)
+end</code></pre><footer><hr/><a class="previous" href="App.html"><span class="direction">Previous</span><span class="title">App.jl</span></a><a class="next" href="Environment.html"><span class="direction">Next</span><span class="title">Environment.jl</span></a></footer></article></body></html>

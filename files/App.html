@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>App.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li class="current"><a class="toctext" href="App.html">App.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="Environment.html">Environment.jl</a></li><li><a class="toctext" href="FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="JLGEngine/CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="JLGEngine/ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="JLGEngine/EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="JLGEngine/GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="JLGEngine/GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="JLGEngine/Management.html">Management.jl</a></li><li><a class="toctext" href="JLGEngine/MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="JLGEngine/RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="JLGEngine/ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="JLGEngine/StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="JLGEngine/SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="JLGEngine/TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="JLGEngine/TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="JLGEngine/ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="JLGEngine/LibGL/TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="App.html">App.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/App.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>App.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="App.jl-1" href="#App.jl-1">App.jl</a></h1><p>include(&quot;JLGEngine.jl&quot;) importall LoggerManager</p><pre><code class="language-none">module App
+
+using Images
+using ImageMagick
+using Quaternions
+#using Mustache
+using ModernGL
+#using Reactive
+using FixedPointNumbers
+using ColorTypes
+using Compat
+using FileIO
+
+using CoreExtended
+using RessourceManager
+using TimeManager
+using FileManager
+using Environment
+using JLScriptManager
+using WindowManager
+
+using JLGEngine
+using JLGEngine.GraphicsManager
+using JLGEngine.LibGL
+using JLGEngine.RenderManager</code></pre><pre><code class="language-none">type ScriptRefs &lt;: JLComponent
+	WINDOW	::Any
+	GD		::Any
+
+	ScriptRefs() = new()
+end</code></pre><pre><code class="language-none">type ScriptState &lt;: JLComponent
+	isInitalized		::Bool
+	isRunning			::Bool
+	isTerminated		::Bool
+	isRenderRunOnce		::Bool
+	isRenderOn			::Bool
+	ticks				::Integer
+	ticksTotal			::Integer
+	ticksTime			::Base.RefValue{Float64}
+	startTime			::Real
+	currentTime			::Real
+
+	ScriptState() = new(false,false,false,false,true,0,0,Ref(0.0),0.0,0.0)
+end</code></pre><pre><code class="language-none">function start()
+	JLGEngine.init()
+
+	RessourceManager.AddPath(:LOGS,&quot;logs&quot;)
+	RessourceManager.AddPath(:SCRIPTS,&quot;scripts&quot;)
+	RessourceManager.AddPath(:SHADERS,&quot;shaders&quot;)
+
+	println(&quot;---------------------------------------------------------------------&quot;)
+	println(&quot;Start Program @ &quot;, now())
+	versioninfo()
+
+	WINDOW = WindowManager.create(&quot;Julia GLFW Window&quot;,(800,600))
+
+	WindowManager.open(WINDOW, [(:OPENGL_DEBUG_CONTEXT,true),(:SAMPLES, 4),(:CONTEXT_VERSION_MAJOR,3),(:CONTEXT_VERSION_MINOR,3)])
+
+	println(GRAPHICSDRIVER().GetVersion(:VERSION))
+	println(&quot;---------------------------------------------------------------------&quot;)
+
+	GRAPHICSDRIVER().init()
+
+	RenderManager.init()
+
+	programTick=0.1
+
+  &quot;&quot;&quot;
+  TODO
+  &quot;&quot;&quot;
+	function tickUpdate(script::JLScript)
+		script.state.currentTime = currentTime(script.state.startTime)
+		script.state.ticks+=1
+		if OnTime(1.0,script.state.ticksTime)
+			script.state.ticksTotal=script.state.ticks
+			script.state.ticks=0
+		end
+	end
+
+  &quot;&quot;&quot;
+  TODO
+  &quot;&quot;&quot;
+	function reload(script::JLScript)
+		script.state.isRunning=false
+		script.state.isRenderRunOnce=false
+		script.state.isRenderOn=true
+		
+		JLScriptManager.run(script)
+
+		if !script.state.isInitalized
+			script(:OnInit)
+			
+			OnRender=JLScriptManager.exists(script,:OnRender) ? () -&gt; script(:OnRender) : nothing
+			RenderManager.setOnRender(() -&gt; script(:OnPreRender),() -&gt; script(:OnPostRender),OnRender)
+			RenderManager.setOnDraw(() -&gt; script(:OnPreDraw),() -&gt; script(:OnPostDraw))
+			
+			script.state.isInitalized=true
+		end
+		
+		script(:OnReload)
+	end
+
+  &quot;&quot;&quot;
+  TODO
+  &quot;&quot;&quot;
+	function create(id::Symbol,path::String)
+		script = JLScript(id, FileSource(path))
+		script.state = ScriptState()
+		script.objref = ScriptRefs()
+		script.objref.WINDOW = WINDOW
+		script.objref.GD = GRAPHICSDRIVER()
+
+		WindowManager.setListener(WINDOW,script.id,(args...)-&gt;script(args...))
+
+		list=Dict{Symbol,Function}(
+			 :scriptTime =&gt; () -&gt; script.state.currentTime
+			,:OnTick =&gt; function(tick::Real)
+				m=modf(tick)
+				t=m[1]&gt;0?1/m[1]:0
+				g=m[2]&gt;0?(TimeManager.now() % m[2]) :0
+				println(m,&quot; | &quot;, t,&quot; | &quot;,g,&quot; | &quot;,script.state.ticks/script.state.ticksTotal)
+				g &lt; 1 &amp;&amp; (script.state.ticksTotal==0?true:(script.state.ticks/script.state.ticksTotal == t))
+			end
+			,:reload =&gt; function()
+				println(&quot;Reload Script...&quot;)
+				programTick=0.1
+				RenderManager.reset()
+				GRAPHICSDRIVER().resetRegisters()
+				reload(script)
+			end
+			,:setProgramTick =&gt; (tick::Real) -&gt; programTick = tick
+			,:setRenderUpdate =&gt; (turn::Bool) -&gt; script.state.isRenderOn = turn
+		)
+
+		script.extern = merge(script.extern,list)
+
+		registerFileUpdate(script.source, (source::FileSource) -&gt; list[:reload]())
+	end
+
+  &quot;&quot;&quot;
+  TODO
+  &quot;&quot;&quot;
+	function run(script::JLScript)
+		if !script.state.isRunning
+			script(:OnStart)
+			RenderManager.start()
+			script.state.isRunning=true
+		end
+
+		tickUpdate(script)
+		script(:OnUpdate)
+		RenderManager.update()
+
+		if script.state.isRenderOn
+			RenderManager.render()
+			if !script.state.isRenderRunOnce script.state.isRenderRunOnce=true end
+		end
+	end
+
+	# create script
+	create(:input, &quot;scripts/input.jl&quot;)
+
+	WindowManager.loop(WINDOW, function()
+		Libc.systemsleep(programTick)
+		runOnFileUpdate()
+		JLScriptManager.loop(run)
+	end)
+
+end</code></pre><footer><hr/><a class="previous" href="../manual/start.html"><span class="direction">Previous</span><span class="title">Start</span></a><a class="next" href="CoreExtended.html"><span class="direction">Next</span><span class="title">CoreExtended.jl</span></a></footer></article></body></html>

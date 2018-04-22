@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>GL/ShaderManager.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link href="../../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../../App.html">App.jl</a></li><li><a class="toctext" href="../../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../../JLGEngine.html">JLGEngine.jl</a></li><li><a class="toctext" href="../CameraManager.html">CameraManager.jl</a></li><li><a class="toctext" href="../ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="../EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="../GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="../GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="../Management.html">Management.jl</a></li><li><a class="toctext" href="../MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="../ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="../RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="../ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="../StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="../SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="../TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="../TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="../ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="../ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="../ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="GLSLRessources.html">GLSLRessources.jl</a></li><li class="current"><a class="toctext" href="ShaderManager.html">GL/ShaderManager.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="ShaderManager.html">GL/ShaderManager.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/LibGL/ShaderManager.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>GL/ShaderManager.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="GL-ShaderManager.jl-1" href="#GL-ShaderManager.jl-1">GL/ShaderManager.jl</a></h1><p>export ShaderProperty export ShaderProgram export Shader</p><p>using CoreExtended using ModernGL using FileManager</p><p>using JLGEngine.GraphicsManager using ..GLLists using ..GLDebugControl using ..GLExtendedFunctions</p><pre><code class="language-none">type ShaderProperty &lt;: IGraphicsShaderProperty
+	enabled::Bool
+	linked::Bool
+
+	name::String
+	typname::String
+	category::String
+
+	typ::DataType
+	elements::Int32
+
+	categoryid::Int32
+	typid::Int32
+	location::Int32 #GLuint
+	offset::Int32
+
+	arrayStride::Int32
+	matrixStride::Int32
+	topSize::Int32
+	topStride::Int32
+
+	size::UInt32
+	code::UInt32
+
+	index::Int32
+	binding::Int32
+	id::UInt32
+
+	data::Any
+	update::Function
+
+	properties::Dict{String, ShaderProperty}
+
+	ShaderProperty() = new(true,false,&quot;&quot;,&quot;&quot;,&quot;&quot;,Void,0,-1,-1,-1,0,-1,-1,-1,-1,0,0,-1,-1,0,nothing,()-&gt;nothing,Dict{String,ShaderProperty}())
+end</code></pre><pre><code class="language-none">type Shader &lt;: IGraphicsShader
+	enabled ::Bool
+	created ::Bool
+
+	typ			::Symbol
+	file 		::FileSourcePart
+	cache		::String
+
+	id      ::GLuint # GL
+	typid   ::GLuint # GL
+
+	Shader(typ::Symbol, source::FileSource) = Shader(typ, FileSourcePart(source))
+  Shader(typ::Symbol, file::FileSourcePart)	= new(true,false,typ,file,&quot;&quot;,0,0)
+end</code></pre><pre><code class="language-none">type ShaderProgram &lt;: IGraphicsShaderProgram
+	id			::GLuint
+
+	enabled	::Bool
+	created ::Bool
+	linked	::Bool
+	bound		::Bool
+
+	#source	::FileSource
+	shaders ::Dict{Symbol,Shader}
+	properties ::Dict{String, ShaderProperty}
+
+	#ShaderProgram() = new(0,true,false,false,false,FileSource(),Dict(),Dict())
+  ShaderProgram() = new(0,true,false,false,false,Dict(),Dict())
+end
+
+#listShaderProgramListener = createSortedDict(Dict{String,Function})
+#listenOnShaderProgramUpdate(id::Symbol, t::Tuple) = listenOnShaderProgramUpdate(id, Dict{String,Function}(t))
+#listenOnShaderProgramUpdate(id::Symbol, d::Dict{String,Function}) = listShaderProgramListener[id]=d
+#notlistenOnShaderPropertyUpdate(id::Symbol) = (listShaderProgramListener[id]=nothing)</code></pre><pre><code class="language-none">link(this::Shader, p::AbstractGraphicsShaderProgram) = (this.program = p; true)
+</code></pre><pre><code class="language-none">function compile(this::Shader)
+	println(&quot;compile: &quot;, this.typ);
+	f = this.file
+	glGetShaderSource(this.id)
+	cache = f.cache #source.cache #FileManager.getCache(f.source)
+
+	if cache == &quot;&quot;
+		warn(&quot;OpenGL Error! Compile shader &#39;$(f.source.path)&#39;: Failed loading content!&quot;)
+		return false
+	end
+
+	#cache = cache[f.range]
+	#println(f.source.path, &quot; &quot;, f.range, &quot;:(&quot;,length(cache), &quot;)\n--------------------------\n&quot;, cache,&quot;\n--------------------------\n&quot;)
+
+	glCompile(this.id,cache)
+	r = validate(:SHADER, this.id, GL_COMPILE_STATUS)
+	if !r
+		warn(&quot;OpenGL Error! Compile shader &#39;$(f.source.path)&#39;: $(getInfoLog(:SHADER, this.id))&quot;)
+		glCompile(this.id,this.cache)
+		r = validate(:SHADER, this.id, GL_COMPILE_STATUS)
+		if !r
+			warn(&quot;OpenGL Error! Compile shader cache &#39;$(f.source.path)&#39;: $(getInfoLog(:SHADER, this.id))&quot;)
+		end
+	else
+		this.cache = cache
+	end
+	r
+end</code></pre><pre><code class="language-none">function reload(this::AbstractGraphicsShaderProgram, source::FileSource)
+	if this == nothing return end
+
+	clear(this)
+
+	if printError(&quot;Before readShadersFromSource&quot;) end
+
+	println(&quot;[ readShadersFromSource ]&quot;)
+	readShaders(this,source)
+	println(&quot;---------------------------------------&quot;)
+	println(&quot;[ setUp ]&quot;)
+	setUp(this)
+	println(&quot;---------------------------------------&quot;)
+
+	#programID = this.id
+	#getProgramInfo(this)
+	#getAttributesInfo(this)
+	#getUniformsInfo(this)
+
+	if isValid(this)
+		#glUseProgram(this.id)
+		println(&quot;[ findActiveRessources ]&quot;)
+		findActiveRessources(this)
+		println(&quot;---------------------------------------&quot;)
+		println(&quot;[ findShaderProperties ]&quot;)
+		findShaderProperties(this)
+		println(&quot;---------------------------------------&quot;)
+	end
+	link(this)
+	#useLinkedShaderProgram() # switch back to linked shader
+end</code></pre><pre><code class="language-none">createShaderProgram() = ShaderProgram()</code></pre><pre><code class="language-none">createShader(program::ShaderProgram, typ::Symbol, file::FileSourcePart) = (this=Shader(typ, file); program.shaders[typ]=this; this)
+
+#getSource(this::AbstractGraphicsShaderProgram) = this.source
+#setPath(this::AbstractGraphicsShaderProgram, path::String) = (this.source.path = path)</code></pre><pre><code class="language-none">clear(this::AbstractGraphicsShaderProgram) = this.shaders = Dict()</code></pre><pre><code class="language-none">hasShader(this::AbstractGraphicsShaderProgram, id::Symbol) = haskey(this.shaders,id)
+
+linked = nothing</code></pre><pre><code class="language-none">unlink() = link(nothing)
+#isValid(this::ShaderProgram) = this.created &amp;&amp; this.bound</code></pre><pre><code class="language-none">isValid(this::AbstractGraphicsShaderProgram) = this != nothing &amp;&amp; isa(this,ShaderProgram) &amp;&amp; this.created &amp;&amp; this.bound</code></pre><pre><code class="language-none">isLinked(this::AbstractGraphicsShaderProgram) =	isValid(this) &amp;&amp; this == linked</code></pre><pre><code class="language-none">function create(this::Shader)
+	if this.created return true end
+	this.created = true
+	println(&quot;create: &quot;, this.typ);
+	this.typid = LIST_SHADER[this.typ][:TYPE]
+	this.id = glCreateShader(this.typid)
+	hasNoError()
+end</code></pre><pre><code class="language-none">function delete(this::Shader)
+	if !this.created return true end
+	println(&quot;delete: &quot;, this.typ);
+	glDeleteShader(this.id)
+	this.created = false
+	hasNoError()
+end</code></pre><pre><code class="language-none">attach(this::Shader, programID::GLuint) = (println(&quot;attach: &quot;, this.typ); glAttachShader(programID, this.id); hasNoError())</code></pre><pre><code class="language-none">detach(this::Shader, programID::GLuint) = (println(&quot;detach: &quot;, this.typ); glDetachShader(programID, this.id); hasNoError())</code></pre><pre><code class="language-none">function link(this::AbstractGraphicsShaderProgram)
+	global linked
+	if linked == this return end
+	linked = this
+	result = isValid(this)
+	id = 0
+	if result	id = this.id end
+	glUseProgram(id)
+	if result	result=hasNoError() end
+	result
+end</code></pre><pre><code class="language-none">function create(this::ShaderProgram)
+	if this.created return true end
+	this.created = true
+	this.id = glCreateProgram()
+	hasNoError()
+end</code></pre><pre><code class="language-none">function delete(this::ShaderProgram)
+	if !this.created return true end
+	this.created = false
+	unlink()
+	glDeleteProgram(this.id)
+	hasNoError()
+end</code></pre><pre><code class="language-none">function bind(this::ShaderProgram)
+	glLinkProgram(this.id)
+  #result = validate(:PROGRAM, this.id, GL_LINK_STATUS)
+	#if !result	warn(&quot;OpenGL Error! Link ShaderProgram $(this.id): $(getInfoLog(:PROGRAM, this.id))&quot;)	end
+	#result
+	#this.bound=result
+	#result
+	this.bound=hasNoError()
+end</code></pre><pre><code class="language-none">function setUp(this::ShaderProgram)
+	result = (
+	(reset(this) ? true : true) &amp;&amp;
+	(create(this) &amp;&amp; detach(this) &amp;&amp; compile(this) &amp;&amp; attach(this) &amp;&amp; bind(this) &amp;&amp; clearList(this))
+	) ? true : (reset(this) ? false : false)
+	#if !result warn(&quot;OpenGL Error! SetUp ShaderProgram $(this.id): $(getInfoLog(:PROGRAM, this.id))&quot;) end
+	result
+end</code></pre><pre><code class="language-none">function invokeList(list::Dict, f::Function, args...)
+	if length(list) &lt;= 0 return false end;
+	for (k,e) in list
+		if !f(e,args...) return false end
+	end
+	true
+end</code></pre><pre><code class="language-none">reset() = unlink()
+#(create(this) &amp;&amp; compileAll(this) &amp;&amp; link(this, true) &amp;&amp; cleanAll(this))</code></pre><pre><code class="language-none">reset(this::ShaderProgram) = (unlink(); clearList(this) &amp;&amp; delete(this))</code></pre><pre><code class="language-none">compile(this::ShaderProgram) = invokeList(this.shaders, (s)-&gt;(create(s) &amp;&amp; compile(s)))</code></pre><pre><code class="language-none">detach(this::ShaderProgram) = (shader_ids = glGetAttachedShaders(this.id); foreach(glDetachShader, shader_ids); true)</code></pre><pre><code class="language-none">attach(this::ShaderProgram) = invokeList(this.shaders, attach, this.id)</code></pre><pre><code class="language-none">clearList(this::ShaderProgram) = invokeList(this.shaders, delete)</code></pre><pre><code class="language-none">clear(this::ShaderProgram) = (this.properties = Dict{String, ShaderProperty}())</code></pre><pre><code class="language-none">function render(this::ShaderProgram, buffer, data)
+	if !isLinked(this) return end
+	if !buffer.linked return end
+
+	mode = data.mode
+	if hasShader(this,:TESS_CONTROL) ||  hasShader(this,:TESS_EVALUATION)
+		mode=GL_PATCHES
+	end
+
+	if buffer.typ == GL_ELEMENT_ARRAY_BUFFER
+		glDrawElements(mode, data.elementsCount, data.typ, C_NULL)
+	else
+		glDrawArrays(mode, 0, data.elementsCount) #first::GLint
+	end
+end</code></pre><p>include(&quot;GLSLParser.jl&quot;)</p><footer><hr/><a class="previous" href="GLSLRessources.html"><span class="direction">Previous</span><span class="title">GLSLRessources.jl</span></a><a class="next" href="StorageManager.html"><span class="direction">Next</span><span class="title">GL/StorageManager.jl</span></a></footer></article></body></html>

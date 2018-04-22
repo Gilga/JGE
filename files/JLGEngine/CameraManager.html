@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>CameraManager.jl · JGE</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>JGE</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../index.html">Home</a></li><li><span class="toctext">Manual</span><ul><li><a class="toctext" href="../../manual/start.html">Start</a></li></ul></li><li><span class="toctext">Source Files</span><ul><li><a class="toctext" href="../App.html">App.jl</a></li><li><a class="toctext" href="../CoreExtended.html">CoreExtended.jl</a></li><li><a class="toctext" href="../Environment.html">Environment.jl</a></li><li><a class="toctext" href="../FileManager.html">FileManager.jl</a></li><li><a class="toctext" href="../JLScriptManager.html">JLScriptManager.jl</a></li><li><a class="toctext" href="../LoggerManager.html">LoggerManager.jl</a></li><li><a class="toctext" href="../MatrixMath.html">MatrixMath.jl</a></li><li><a class="toctext" href="../RessourceManager.html">RessourceManager.jl</a></li><li><a class="toctext" href="../ThreadFunctions.html">ThreadFunctions.jl</a></li><li><a class="toctext" href="../ThreadManager.html">ThreadManager.jl</a></li><li><a class="toctext" href="../TimeManager.html">TimeManager.jl</a></li><li><a class="toctext" href="../WindowManager.html">WindowManager.jl</a></li><li><a class="toctext" href="../JLGEngine.html">JLGEngine.jl</a></li><li class="current"><a class="toctext" href="CameraManager.html">CameraManager.jl</a><ul class="internal"></ul></li><li><a class="toctext" href="ChunkManager.html">ChunkManager.jl</a></li><li><a class="toctext" href="EntityManager.html">EntityManager.jl</a></li><li><a class="toctext" href="GameObjectManager.html">GameObjectManager.jl</a></li><li><a class="toctext" href="GraphicsManager.html">GraphicsManager.jl</a></li><li><a class="toctext" href="Management.html">Management.jl</a></li><li><a class="toctext" href="MeshManager.html">MeshManager.jl</a></li><li><a class="toctext" href="ModelManager.html">ModelManager.jl</a></li><li><a class="toctext" href="RenderManager.html">RenderManager.jl</a></li><li><a class="toctext" href="ShaderManager.html">ShaderManager.jl</a></li><li><a class="toctext" href="StorageManager.html">StorageManager.jl</a></li><li><a class="toctext" href="SzeneManager.html">SzeneManager.jl</a></li><li><a class="toctext" href="TextureManager.html">TextureManager.jl</a></li><li><a class="toctext" href="TransformManager.html">TransformManager.jl</a></li><li><a class="toctext" href="ModelManager/MeshData.html">MeshData.jl</a></li><li><a class="toctext" href="ModelManager/MeshFabric.html">MeshFabric.jl</a></li><li><a class="toctext" href="ModelManager/MeshLoader_OBJ.html">MeshLoader_OBJ.jl</a></li><li><a class="toctext" href="LibGL/LibGL.html">LibGL.jl</a></li><li><a class="toctext" href="LibGL/GLDebugControl.html">GLDebugControl.jl</a></li><li><a class="toctext" href="LibGL/GLExtendedFunctions.html">GLExtendedFunctions.jl</a></li><li><a class="toctext" href="LibGL/GLLists.html">GLLists.jl</a></li><li><a class="toctext" href="LibGL/GLSLParser.html">GLSLParser.jl</a></li><li><a class="toctext" href="LibGL/GLSLRessources.html">GLSLRessources.jl</a></li><li><a class="toctext" href="LibGL/ShaderManager.html">GL/ShaderManager.jl</a></li><li><a class="toctext" href="LibGL/StorageManager.html">GL/StorageManager.jl</a></li><li><a class="toctext" href="LibGL/TextureManager.html">GL/TextureManager.jl</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Source Files</li><li><a href="CameraManager.html">CameraManager.jl</a></li></ul><a class="edit-page" href="https://github.com/Gilga/JGE/blob/master/doc/src/files/JLGEngine/CameraManager.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>CameraManager.jl</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="CameraManager.jl-1" href="#CameraManager.jl-1">CameraManager.jl</a></h1><p>using CoreExtended using MatrixMath using JLGEngine</p><p>using ..TransformManager</p><p>const Transform = TransformManager.Typ</p><pre><code class="language-none">type Camera &lt;: JLGEngine.IComponent
+	id::Symbol
+	transform::Transform
+
+	ortho::Bool
+	fov::Float32
+	ratio::Float32
+	depth::Vec2f
+
+  viewport::Vec4f
+
+  viewMat::Mat4x4f
+  projectionMat::Mat4x4f
+	modelMat::Mat4x4f
+
+	translateMat::Mat4x4f
+	rotationMat::Mat4x4f
+	scalingMat::Mat4x4f
+
+	mvpMat::Mat4x4f
+
+	Camera(id=:_) = new(id,nothing,false,0,0,Vec2f(0,1),zeros(Vec4f),IMat4x4f,IMat4x4f,IMat4x4f,IMat4x4f,IMat4x4f,IMat4x4f,IMat4x4f)
+end</code></pre><pre><code class="language-none">function init(this::Camera)
+	this.transform=TransformManager.create(this.id)
+end</code></pre><pre><code class="language-none">function zoom(this::Camera, zf::Float32)
+	this.transform.scaling = ones(Vec3f) * (1+zoom*0.01f0)
+end</code></pre><pre><code class="language-none">function updateTranslation(this::Camera)
+	this.translateMat = MatrixMath.translationmatrix(this.transform.position)
+end</code></pre><pre><code class="language-none">function updateRotation(this::Camera)
+	this.rotationMat = MatrixMath.computeRotation(this.transform.rotation)
+end</code></pre><pre><code class="language-none">function updateScaling(this::Camera)
+	this.scalingMat = MatrixMath.scalingmatrix(this.transform.scaling)
+end</code></pre><pre><code class="language-none">function updateView(this::Camera)
+	updateTranslation(this)
+	updateRotation(this)
+	updateScaling(this)
+	this.viewMat = this.rotationMat * this.translateMat * this.scalingMat
+end</code></pre><pre><code class="language-none">function setRatio(this::Camera, ratio::Float32)
+	this.ratio=ratio
+end</code></pre><pre><code class="language-none">function setPerspective(this::Camera, fov::Float32,ratio::Float32,near::Float32,far::Float32, ortho=false) #(60.0f0, Float32(windowsize[1]/windowsize[2]), 0.1f0, 10.0f0)
+	this.fov=fov
+	this.ratio=ratio
+	this.depth=Vec2f(near,far)
+	this.ortho=ortho
+end</code></pre><pre><code class="language-none">function updateProjection(this::Camera)
+	if !this.ortho this.projectionMat = MatrixMath.perspectiveprojection(this.fov, this.ratio, this.depth[1], this.depth[2])
+	else this.projectionMat = MatrixMath.orthographicprojection(this.fov, this.ratio, this.depth[1], this.depth[2])
+	end
+end</code></pre><pre><code class="language-none">function updateMVP(this::Camera)
+	this.mvpMat = this.projectionMat * this.viewMat * this.modelMat
+end</code></pre><pre><code class="language-none">function updateModel(this::Camera, transform::Transform)
+	if transform == nothing return end
+	this.modelMat = MatrixMath.translationmatrix(transform.position) * MatrixMath.computeRotation(transform.rotation) * MatrixMath.scalingmatrix(transform.scaling)
+end</code></pre><pre><code class="language-none">function update(this::Camera, transform::Transform)
+	updateProjection(this)
+	updateView(this)
+	updateModel(this, transform)
+	updateMVP(this)
+end</code></pre><footer><hr/><a class="previous" href="../JLGEngine.html"><span class="direction">Previous</span><span class="title">JLGEngine.jl</span></a><a class="next" href="ChunkManager.html"><span class="direction">Next</span><span class="title">ChunkManager.jl</span></a></footer></article></body></html>
