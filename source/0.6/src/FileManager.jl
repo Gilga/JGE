@@ -13,9 +13,7 @@ export watchFileUpdate
 export registerFileUpdate
 export runOnFileUpdate
 
-"""
-TODO
-"""
+""" TODO """
 type FileSource
   path  ::String
 	cache ::String
@@ -23,9 +21,7 @@ type FileSource
   FileSource(path="") = new(path,"")
 end
 
-"""
-TODO
-"""
+""" TODO """
 type FileSourcePart
 	source ::FileSource
   range  ::UnitRange{Int64}
@@ -34,9 +30,7 @@ type FileSourcePart
 	FileSourcePart(source::FileSource,range=range(1,stat(source.path).size)) = new(source,range,"")
 end
 
-"""
-TODO
-"""
+""" TODO """
 type FileUpdateEntry
   source::FileSource
   OnUpdate::Function
@@ -46,9 +40,7 @@ type FileUpdateEntry
   FileUpdateEntry(source::FileSource, OnUpdate::Function, args) = new(source, OnUpdate, args, 0)
 end
 
-"""
-TODO
-"""
+""" TODO """
 function getCache(source::FileSource)
 	if source.cache == ""
 		reload(source)
@@ -56,30 +48,22 @@ function getCache(source::FileSource)
 	source.cache
 end
 
-"""
-TODO
-"""
+""" TODO """
 reload(source::FileSource) = (source.cache=fileGetContents(source.path))
 
 FILES_TO_UPDATE = Dict{String, FileUpdateEntry}()
 
-"""
-TODO
-"""
+""" TODO """
 readFileSource(path::String) = FileSource(path,fileGetContents(path))
 
-"""
-TODO
-"""
+""" TODO """
 function splitFileName(path::String)
   (dir, filename) = splitdir(path) #splitdrive
   (name, ext) = splitext(filename)
   (addDirSlash(dir),name,ext)
 end
 
-"""
-TODO
-"""
+""" TODO """
 function waitForFileReady(path::String, func::Function, tryCount=100, tryWait=0.1)
 	result=false
 	for i = 1:tryCount
@@ -97,33 +81,23 @@ function waitForFileReady(path::String, func::Function, tryCount=100, tryWait=0.
 	result
 end
 
-"""
-TODO
-"""
+""" TODO """
 function fileGetContents(path::String, tryCount=100, tryWait=0.1)
 	content=nothing
 	waitForFileReady(path,(x)->(content=readstring(x); content != nothing),tryCount,tryWait)
 	content
 end
 
-"""
-TODO
-"""
+""" TODO """
 addDirSlash(path::String) = string(path,(path != "" && path[length(path)] != '/') ? "/" : "")
 
-"""
-TODO
-"""
+""" TODO """
 registerFileUpdate(source::FileSource, OnUpdate::Function, args...) = FILES_TO_UPDATE[source.path]=FileUpdateEntry(source,OnUpdate,(source, args...))
 
-"""
-TODO
-"""
+""" TODO """
 unregisterFileUpdate(source::FileSource) = delete!(FILES_TO_UPDATE, source.path)
 
-"""
-TODO
-"""
+""" TODO """
 runOnFileUpdate(threshold=0.01) = for (key,entry) in FILES_TO_UPDATE
 	time_edited = mtime(entry.source.path)
 	edited = time_edited - entry.editedTime
@@ -138,22 +112,16 @@ runOnFileUpdate(threshold=0.01) = for (key,entry) in FILES_TO_UPDATE
 end
 
 #reads from the file and updates the source whenever the file gets edited
-"""
-TODO
-"""
+""" TODO """
 function watchFileUpdate(path::String, OnUpdate::Function)
   preserve(map( isUpdated(query(path)) ) do _unused OnUpdate(path) end)
   #map( isUpdated(query(path))) do _unused OnUpdate(path) end
 end
 
-"""
-TODO
-"""
+""" TODO """
 watchFileUpdate(path::FileSource, OnUpdate::Function) = watchFileUpdate(o.path, OnUpdate)
 
-"""
-TODO
-"""
+""" TODO """
 function isUpdated(file::File, tickrate=0.001)
   fn = filename(file)
   ticks=fpswhen(Signal(true), 1.0/tickrate)

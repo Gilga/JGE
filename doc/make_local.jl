@@ -4,6 +4,7 @@ push!(LOAD_PATH,"../source/0.6/src/")
 info("Include all...")
 try
   include("../source/0.6/src/App.jl")
+  include("../source/0.6/src/ThreadManager.jl")
 catch e # do not exit this run!
   warn(e)
 end
@@ -14,7 +15,20 @@ using Documenter, App
 
 makedocs(
   build     = joinpath(@__DIR__, "../build/docs"),
-  modules   = [CoreExtended,TimeManager,LoggerManager,RessourceManager,FileManager,Environment,JLScriptManager,WindowManager,MatrixMath,JLGEngine,App],
+  modules   = [
+    CoreExtended,
+    TimeManager,
+    LoggerManager,
+    RessourceManager,
+    FileManager,
+    Environment,
+    JLScriptManager,
+    WindowManager,
+    MatrixMath,
+    JLGEngine,
+    App,
+    ThreadManager
+  ],
   clean     = true,
   doctest   = true, # :fix
   #linkcheck = true,

@@ -26,18 +26,16 @@ function __init__()
 	open(LOGGER_ERROR, "w+")
 end
 
+""" TODO """
+macro printf(xs...) open(f -> (:(Base.@printf(f, $xs...)); :(Base.@printf(:STDOUT, $xs...))),LOGGER_OUT, "a+") end 
 
 @suppress begin print(xs...) = open(f -> (print(f, xs...); print(STDOUT, xs...)), LOGGER_OUT, "a+") end
-macro printf(xs...) open(f -> (:(Base.@printf(f, $xs...)); :(Base.@printf(:STDOUT, $xs...))),LOGGER_OUT, "a+") end 
 @suppress begin println(xs...) = open(f -> (println(f, programTimeStr(), " ", xs...); println(STDOUT, xs...)), LOGGER_OUT, "a+") end
-
 @suppress begin info(xs...) = open(f -> (info(f, programTimeStr(), " ", xs...); info(STDOUT, xs...)), LOGGER_OUT, "a+") end
 @suppress begin error(xs...) = open(f -> (error(f, programTimeStr()," ", xs...); error(STDERR, xs...)), LOGGER_ERROR, "a+") end
 @suppress begin warn(xs...) = open(f -> (warn(f, programTimeStr()," ", xs...); warn(STDERR, xs...)), LOGGER_ERROR, "a+") end
 
-"""
-TODO
-"""
+""" TODO """
 function logException(ex::Exception)
 	t=programTimeStr()
 

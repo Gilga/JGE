@@ -5,21 +5,16 @@ using FileManager.FileSource
 
 export JLComponent
 
-"""
-TODO
-"""
+""" TODO """
 abstract type JLComponent <: AbstractObjectReference end
 
-"""
-TODO
-"""
+""" TODO """
 type JLInvalidComponent <: JLComponent end
 
+""" TODO """
 const JL_INVALID_COMPONENT = JLInvalidComponent()
 
-"""
-TODO
-"""
+""" TODO """
 type JLStateListComponent <: JLComponent
 	isInitalized	::Bool
 	isRunning			::Bool
@@ -30,9 +25,7 @@ end
 
 export JLScriptFunction
 
-"""
-TODO
-"""
+""" TODO """
 type JLScriptFunction
 	func::Function
 	JLScriptFunction(f::Function) = new(stabilize(f))
@@ -40,9 +33,7 @@ end
 
 export JLScript
 
-"""
-TODO
-"""
+""" TODO """
 type JLScript
   id        ::Symbol
 	mod				::Module
@@ -58,14 +49,10 @@ type JLScript
 	events		::JLComponent
 end
 
-"""
-TODO
-"""
+""" TODO """
 JLScript(id::Symbol) = JLScript(id,FileSource())
 
-"""
-TODO
-"""
+""" TODO """
 function JLScript(id::Symbol, source::FileSource)
   this=JLScript(id,Module(id),source,(),Dict(),Dict(),Dict(),JLStateListComponent(),JL_INVALID_COMPONENT,JL_INVALID_COMPONENT,JL_INVALID_COMPONENT)
   JLSCRIPTS[id]=this
@@ -74,19 +61,13 @@ end
 
 JLSCRIPTS = Dict{Symbol,JLScript}()
 
-"""
-TODO
-"""
+""" TODO """
 loop(f::Function) = for (k,s) in JLSCRIPTS f(s) end
 
-"""
-TODO
-"""
+""" TODO """
 listen(this::JLScript, k::Symbol, f::Function) = (this.listener[k]=f)
 
-"""
-TODO
-"""
+""" TODO """
 function run(this::JLScript, args...)
 	debug("run $(this.id)")
 	#Module(:__anon__)
@@ -97,19 +78,13 @@ function run(this::JLScript, args...)
   result
 end
 
-"""
-TODO
-"""
+""" TODO """
 (this::JLScript)(s::Symbol, args...) = CoreExtended.execute(this.mod,s,args...) #@eval $f($args...)
 
-"""
-TODO
-"""
+""" TODO """
 exists(this::JLScript, s::Symbol) = CoreExtended.exists(this.mod,s)
 
-"""
-TODO
-"""
+""" TODO """
 function execute(this::JLScript, compile_args=[], args...)
   debug("execute $(this.id)")
 	result = compile(this, compile_args...)
@@ -117,14 +92,10 @@ function execute(this::JLScript, compile_args=[], args...)
 	result
 end
 
-"""
-TODO
-"""
+""" TODO """
 execute(f::JLScriptFunction, args...) = (debug("execute function("*string(args...)*")"); f.func(args...))
 
-"""
-TODO
-"""
+""" TODO """
 function compile(this::JLScript, args...)
 	debug("compile $(this.id)")
 	result = (false, nothing)
@@ -146,9 +117,7 @@ function compile(this::JLScript, args...)
 	result
 end
 
-"""
-TODO
-"""
+""" TODO """
 function cleanCode(code::String)
 	
 	# problem using match(): only "function (name)" will be detected!
@@ -167,9 +136,7 @@ function cleanCode(code::String)
 	code=Base.replace(code, r"\n", ";")
 end
 
-"""
-TODO
-"""
+""" TODO """
 function eval(this::JLScript, args...)
 	
 	this.mod = Module(this.id) #reset modul

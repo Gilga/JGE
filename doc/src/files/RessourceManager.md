@@ -1,22 +1,22 @@
 # [RessourceManager.jl](@id RessourceManager.jl)
 
 
-```
-SetWorkingDir() = (PATHS[:ROOT] = string(dirname(Base.source_path()),"/"))
-```
-
-```
-RessourcePath(path::AbstractString) = (!in(':',path) ? path = string(PATHS[:ROOT], path, path[length(path)] != '/' ? "/" : "") : path)
+```@docs
+RessourceManager.SetWorkingDir()
 ```
 
-```
-AddPath(id::Any, path::AbstractString) = PATHS[id] = RessourcePath(path)
-```
-
-```
-GetPath(key::Any)
+```@docs
+RessourceManager.RessourcePath(path::AbstractString)
 ```
 
+```@docs
+RessourceManager.AddPath(id::Any, path::AbstractString)
 ```
-CurrentDay()
+
+```@docs
+RessourceManager.GetPath(key::Any)
+```
+
+```@docs
+RessourceManager.CurrentDay()
 ```

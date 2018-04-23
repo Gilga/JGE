@@ -1,40 +1,17 @@
 # [ThreadManager.jl](@id ThreadManager.jl)
 
-```
-type Thread
-	id::Integer
-	mutex::Threads.Mutex
-	Thread(id, m) = new(id, m)
-end
+```@docs
+ThreadManager.Thread
 ```
 
-```
-function safe_call(t::Thread, f::Function)
-	Threads.lock(t.mutex)
-	f(t)
-	Threads.unlock(t.mutex)
-end
+```@docs
+ThreadManager.safe_call(t::ThreadManager.Thread, f::Function)
 ```
 
-```
-function reset()
-	global Mutex
-	global List
-	Mutex = Threads.Mutex()
-	List = Thread[]
-end
+```@docs
+ThreadManager.reset()
 ```
 
-```
-function run(a = Function[])
-	reset()
-	max=Threads.nthreads()
-	i=0; Threads.@threads for f in a
-		t=Thread(Threads.threadid(), Mutex)
-		push!(List, t)
-		f(t)
-		if i >= max break end
-		i+=1
-  end
-end
+```@docs
+ThreadManager.run(a = Function[])
 ```
