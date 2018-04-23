@@ -45,8 +45,10 @@ function glGetActiveUniformsiv(program::GLuint, index::Integer, variable::GLenum
 		#glGetActiveUniformBlockiv(program, index, variable, result)
     result[]
 end
+```
 
-""" display information for a program's attributes """
+## display information for a program's attributes
+```
 function getAttributesInfo(program::GLuint)
 	# how many attribs?
 	@show activeAttr = glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES)
@@ -56,8 +58,10 @@ function getAttributesInfo(program::GLuint)
 		@show loc = glGetAttribLocation(program, name)
 	end
 end
+```
 
-""" display info for all active uniforms in a program """
+## display info for all active uniforms in a program
+```
 function getUniformsInfo(program::GLuint)
 	# Get uniforms info (not in named blocks)
 	@show activeUnif = glGetProgramiv(program, GL_ACTIVE_UNIFORMS)
@@ -104,9 +108,9 @@ function getUniformsInfo(program::GLuint)
 		end
 	end
 end
+```
 
-# display the values for a uniform in a named block```
-
+## display the values for a uniform in a named block```
 ```
 function getUniformInBlockInfo(program::GLuint, blockName, uniName)
 	@show index = glGetUniformBlockIndex(program, blockName)
@@ -123,9 +127,9 @@ function getUniformInBlockInfo(program::GLuint, blockName, uniName)
 	@show uniArrayStride 	= glGetActiveUniformsiv(program, uniIndex, GL_UNIFORM_ARRAY_STRIDE)
 	@show uniMatStride 		= glGetActiveUniformsiv(program, uniIndex, GL_UNIFORM_MATRIX_STRIDE)
 end
+```
 
-# display program's information```
-
+## display program's information
 ```
 function getProgramInfo(program::GLuint)
 	# check if name is really a program
@@ -214,17 +218,6 @@ end
 ```
 
 ```
-function getValsByRef(f::Function, args...)
-	#refs=Array{Base.RefValue{Any},1}() # problem: different types
-	#for arg in args push!(refs, Ref(arg)) end
-	#f(refs...)
-	#if length(refs) == 1 return refs[1] end
-	#refs
-	[]
-end
-```
-
-```
 glString(name::GLenum) = unsafe_string(glGetString(name))
 ```
 
@@ -306,9 +299,7 @@ function glGet(typ::DataType, name::GLenum, index::GLuint)
 	if fn != nothing return fn(name,index) end #getValByRef((r)->(fn)(name,index,r), typ(-1))	end
 	nothing
 end
-
-#glGetInternalformati64v
-#glGetInternalformativ```
+```
 
 ```
 setFragLocation(id::GLuint, name::String, colorNumber=GLuint(0)) = glFragLocation(id, name, colorNumber)

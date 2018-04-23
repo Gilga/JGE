@@ -40,9 +40,9 @@ function clear(sc::ShapeCoordinates)
 	sc.origin = Vec3f()
 	sc.scale = Vec3f()
 end
+```
 
-# for std::map```
-
+## for std::map
 ```
 function isSmaller(a::VertexIndex, b::VertexIndex)
 	if a.v != b.v return (a.v < b.v) end
@@ -82,18 +82,6 @@ function getScale(min_BBOX::Vec3f, max_BBOX::Vec3f)
 	end
 	scale_value
 end
-
-#function parseval(T::DataType, str::String, start=1)
-#	t = search(str, r"[\+\-]?[0-9]+(\.[0-9]+)?", start)
-#	
-##	v = 0
-#	try
-#		v = parse(T, str[t.start:t.stop])
-##	catch(e)
-#	end
-#	
-#	(v, t.stop)
-#end
 ```
 
 ```
@@ -104,8 +92,7 @@ function parseVal(T::DataType, str::AbstractString, default=T(0))
 	end
 	default
 end
-
-#for m in eachmatch(Regex("([0-9]+) ([0-9]+) ([0-9]+)"),"1 2 3s") println(m.captures) end```
+```
 
 ```
 function parseArray(T::DataType, str::AbstractString)
@@ -138,9 +125,9 @@ function parseVec(linenr::Number, str::AbstractString, count::Number)
 	end
 	result
 end
+```
 
-# Make index zero-base, and also support relative index.```
-
+## Make index zero-base, and also support relative index.
 ```
 function parseIndex(str::AbstractString, n::Integer)
 	#a = parseArray(Integer, str)
@@ -154,9 +141,9 @@ end
 
 ```
 has(str::AbstractString, index::Integer, c::Char) = index>0 && index<=length(str) && str[index] == c
+```
 
-# Parse triples: i, i/j/k, i//k, i/j```
-
+# Parse triples: i, i/j/k, i//k, i/j
 ```
 function parseTriple(line::AbstractString, vsize::Integer, vnsize::Integer, vtsize::Integer)
 	vi = VertexIndex()
@@ -221,9 +208,6 @@ function updateVertex2(vi::VertexIndex, vCache::Dict{VertexIndex, Integer}, coor
 	vCache[vi] = idx
 	idx
 end
-
-const MinUInt32 = UInt32(0)
-const MaxUInt32 = UInt32(2^32 - 1)
 ```
 
 ```

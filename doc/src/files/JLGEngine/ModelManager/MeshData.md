@@ -9,7 +9,9 @@ const MeshDataPlaneQuad = rotr90flipdim2(Float32[
 	1 1 0 0	# downright
 	-1 1 0 0	# downleft
 ])
+```
 
+```
 const MeshDataPlaneVertex = rotr90flipdim2(Float32[
 	-1.0 -1.0 0.0 1.0 0.0
 	1.0 -1.0 0.0 0.0 0.0
@@ -25,7 +27,9 @@ const MeshDataPlaneVertex = rotr90flipdim2(Float32[
 	1.0 1.0 0.0 0.0 1.0
 	-1.0 1.0 0.0 1.0 1.0
 ])
+```
 
+```
 const MeshDataCube = Float32[
 	#  X, Y, Z, U, V
 	# Bottom
@@ -76,7 +80,9 @@ const MeshDataCube = Float32[
 	1.0, 1.0, -1.0, 0.0, 0.0,
 	1.0, 1.0, 1.0, 0.0, 1.0,
 ]
+```
 
+```
 MeshDataCubeVertices_small = [
 1f0,  1,  1, # 0
 -1,  1,  1, # 1
@@ -87,7 +93,9 @@ MeshDataCubeVertices_small = [
 -1,  1, -1, # 6
 1,  1, -1, # 7
 ]
+```
 
+```
 MeshDataCubeIndices = Int32[
 0, 1, 2, 2, 3, 0,           # Front face
 7, 4, 5, 5, 6, 7,           # Back face
