@@ -69,7 +69,103 @@ var documenterSearchIndex = {"docs": [
     "page": "App.jl",
     "title": "App.jl",
     "category": "section",
-    "text": "include(\"JLGEngine.jl\") importall LoggerManagermodule App\n\nusing Images\nusing ImageMagick\nusing Quaternions\n#using Mustache\nusing ModernGL\n#using Reactive\nusing FixedPointNumbers\nusing ColorTypes\nusing Compat\nusing FileIO\n\nusing CoreExtended\nusing RessourceManager\nusing TimeManager\nusing FileManager\nusing Environment\nusing JLScriptManager\nusing WindowManager\n\nusing JLGEngine\nusing JLGEngine.GraphicsManager\nusing JLGEngine.LibGL\nusing JLGEngine.RenderManagertype ScriptRefs <: JLComponent\n	WINDOW	::Any\n	GD		::Any\n\n	ScriptRefs() = new()\nendtype ScriptState <: JLComponent\n	isInitalized		::Bool\n	isRunning			::Bool\n	isTerminated		::Bool\n	isRenderRunOnce		::Bool\n	isRenderOn			::Bool\n	ticks				::Integer\n	ticksTotal			::Integer\n	ticksTime			::Base.RefValue{Float64}\n	startTime			::Real\n	currentTime			::Real\n\n	ScriptState() = new(false,false,false,false,true,0,0,Ref(0.0),0.0,0.0)\nendfunction start()\n	JLGEngine.init()\n\n	RessourceManager.AddPath(:LOGS,\"logs\")\n	RessourceManager.AddPath(:SCRIPTS,\"scripts\")\n	RessourceManager.AddPath(:SHADERS,\"shaders\")\n\n	println(\"---------------------------------------------------------------------\")\n	println(\"Start Program @ \", now())\n	versioninfo()\n\n	WINDOW = WindowManager.create(\"Julia GLFW Window\",(800,600))\n\n	WindowManager.open(WINDOW, [(:OPENGL_DEBUG_CONTEXT,true),(:SAMPLES, 4),(:CONTEXT_VERSION_MAJOR,3),(:CONTEXT_VERSION_MINOR,3)])\n\n	println(GRAPHICSDRIVER().GetVersion(:VERSION))\n	println(\"---------------------------------------------------------------------\")\n\n	GRAPHICSDRIVER().init()\n\n	RenderManager.init()\n\n	programTick=0.1\n\n  \"\"\"\n  TODO\n  \"\"\"\n	function tickUpdate(script::JLScript)\n		script.state.currentTime = currentTime(script.state.startTime)\n		script.state.ticks+=1\n		if OnTime(1.0,script.state.ticksTime)\n			script.state.ticksTotal=script.state.ticks\n			script.state.ticks=0\n		end\n	end\n\n  \"\"\"\n  TODO\n  \"\"\"\n	function reload(script::JLScript)\n		script.state.isRunning=false\n		script.state.isRenderRunOnce=false\n		script.state.isRenderOn=true\n		\n		JLScriptManager.run(script)\n\n		if !script.state.isInitalized\n			script(:OnInit)\n			\n			OnRender=JLScriptManager.exists(script,:OnRender) ? () -> script(:OnRender) : nothing\n			RenderManager.setOnRender(() -> script(:OnPreRender),() -> script(:OnPostRender),OnRender)\n			RenderManager.setOnDraw(() -> script(:OnPreDraw),() -> script(:OnPostDraw))\n			\n			script.state.isInitalized=true\n		end\n		\n		script(:OnReload)\n	end\n\n  \"\"\"\n  TODO\n  \"\"\"\n	function create(id::Symbol,path::String)\n		script = JLScript(id, FileSource(path))\n		script.state = ScriptState()\n		script.objref = ScriptRefs()\n		script.objref.WINDOW = WINDOW\n		script.objref.GD = GRAPHICSDRIVER()\n\n		WindowManager.setListener(WINDOW,script.id,(args...)->script(args...))\n\n		list=Dict{Symbol,Function}(\n			 :scriptTime => () -> script.state.currentTime\n			,:OnTick => function(tick::Real)\n				m=modf(tick)\n				t=m[1]>0?1/m[1]:0\n				g=m[2]>0?(TimeManager.now() % m[2]) :0\n				println(m,\" | \", t,\" | \",g,\" | \",script.state.ticks/script.state.ticksTotal)\n				g < 1 && (script.state.ticksTotal==0?true:(script.state.ticks/script.state.ticksTotal == t))\n			end\n			,:reload => function()\n				println(\"Reload Script...\")\n				programTick=0.1\n				RenderManager.reset()\n				GRAPHICSDRIVER().resetRegisters()\n				reload(script)\n			end\n			,:setProgramTick => (tick::Real) -> programTick = tick\n			,:setRenderUpdate => (turn::Bool) -> script.state.isRenderOn = turn\n		)\n\n		script.extern = merge(script.extern,list)\n\n		registerFileUpdate(script.source, (source::FileSource) -> list[:reload]())\n	end\n\n  \"\"\"\n  TODO\n  \"\"\"\n	function run(script::JLScript)\n		if !script.state.isRunning\n			script(:OnStart)\n			RenderManager.start()\n			script.state.isRunning=true\n		end\n\n		tickUpdate(script)\n		script(:OnUpdate)\n		RenderManager.update()\n\n		if script.state.isRenderOn\n			RenderManager.render()\n			if !script.state.isRenderRunOnce script.state.isRenderRunOnce=true end\n		end\n	end\n\n	# create script\n	create(:input, \"scripts/input.jl\")\n\n	WindowManager.loop(WINDOW, function()\n		Libc.systemsleep(programTick)\n		runOnFileUpdate()\n		JLScriptManager.loop(run)\n	end)\n\nend"
+    "text": "Uses libraries\nUses Core files\nUses Engine files\nCode\nLoop\nTimer\nCreate Script\nReload Script\nRun Script"
+},
+
+{
+    "location": "files/App.html#Uses-libraries-1",
+    "page": "App.jl",
+    "title": "Uses libraries",
+    "category": "section",
+    "text": "Images\nImageMagick\nQuaternions\nMustache\nModernGL\nReactive\nFixedPointNumbers\nColorTypes\nCompat\nFileIO"
+},
+
+{
+    "location": "files/App.html#Uses-Core-files-1",
+    "page": "App.jl",
+    "title": "Uses Core files",
+    "category": "section",
+    "text": "CoreExtended.jl\nTimeManager.jl\nLoggerManager.jl (importall)\nRessourceManager.jl\nFileManager.jl\nEnvironment.jl\nJLScriptManager.jl\nWindowManager.jl\nMatrixMath.jl"
+},
+
+{
+    "location": "files/App.html#Uses-Engine-files-1",
+    "page": "App.jl",
+    "title": "Uses Engine files",
+    "category": "section",
+    "text": "JLGEngine.jl (include)\nGraphicsManager.jl\nLibGL.jl\nRenderManager.jl"
+},
+
+{
+    "location": "files/App.html#App.ScriptRefs",
+    "page": "App.jl",
+    "title": "App.ScriptRefs",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/App.html#App.ScriptState",
+    "page": "App.jl",
+    "title": "App.ScriptState",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/App.html#App.start-Tuple{}",
+    "page": "App.jl",
+    "title": "App.start",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/App.html#Code-1",
+    "page": "App.jl",
+    "title": "Code",
+    "category": "section",
+    "text": "App.ScriptRefsApp.ScriptStateApp.start()"
+},
+
+{
+    "location": "files/App.html#Loop-1",
+    "page": "App.jl",
+    "title": "Loop",
+    "category": "section",
+    "text": "WindowManager.loop(WINDOW, function()\r\n  Libc.systemsleep(programTick)\r\n  runOnFileUpdate()\r\n  JLScriptManager.loop(run)\r\nend)"
+},
+
+{
+    "location": "files/App.html#Timer-1",
+    "page": "App.jl",
+    "title": "Timer",
+    "category": "section",
+    "text": "function tickUpdate(script::JLScript)\r\n  script.state.currentTime = currentTime(script.state.startTime)\r\n  script.state.ticks+=1\r\n  if OnTime(1.0,script.state.ticksTime)\r\n    script.state.ticksTotal=script.state.ticks\r\n    script.state.ticks=0\r\n  end\r\nend"
+},
+
+{
+    "location": "files/App.html#Create-Script-1",
+    "page": "App.jl",
+    "title": "Create Script",
+    "category": "section",
+    "text": "function create(id::Symbol,path::String)\r\n  script = JLScript(id, FileSource(path))\r\n  script.state = ScriptState()\r\n  script.objref = ScriptRefs()\r\n  script.objref.WINDOW = WINDOW\r\n  script.objref.GD = GRAPHICSDRIVER()\r\n\r\n  WindowManager.setListener(WINDOW,script.id,(args...)->script(args...))\r\n\r\n  list=Dict{Symbol,Function}(\r\n     :scriptTime => () -> script.state.currentTime\r\n    ,:OnTick => function(tick::Real)\r\n      m=modf(tick)\r\n      t=m[1]>0?1/m[1]:0\r\n      g=m[2]>0?(TimeManager.now() % m[2]) :0\r\n      println(m,\" | \", t,\" | \",g,\" | \",script.state.ticks/script.state.ticksTotal)\r\n      g < 1 && (script.state.ticksTotal==0?true:(script.state.ticks/script.state.ticksTotal == t))\r\n    end\r\n    ,:reload => function()\r\n      println(\"Reload Script...\")\r\n      programTick=0.1\r\n      RenderManager.reset()\r\n      GRAPHICSDRIVER().resetRegisters()\r\n      reload(script)\r\n    end\r\n    ,:setProgramTick => (tick::Real) -> programTick = tick\r\n    ,:setRenderUpdate => (turn::Bool) -> script.state.isRenderOn = turn\r\n  )\r\n\r\n  script.extern = merge(script.extern,list)\r\n\r\n  registerFileUpdate(script.source, (source::FileSource) -> list[:reload]())\r\nend\r\n\r\ncreate(:input, \"scripts/input.jl\")"
+},
+
+{
+    "location": "files/App.html#Reload-Script-1",
+    "page": "App.jl",
+    "title": "Reload Script",
+    "category": "section",
+    "text": "function reload(script::JLScript)\r\n  script.state.isRunning=false\r\n  script.state.isRenderRunOnce=false\r\n  script.state.isRenderOn=true\r\n  \r\n  JLScriptManager.run(script)\r\n\r\n  if !script.state.isInitalized\r\n    script(:OnInit)\r\n    \r\n    OnRender=JLScriptManager.exists(script,:OnRender) ? () -> script(:OnRender) : nothing\r\n    RenderManager.setOnRender(() -> script(:OnPreRender),() -> script(:OnPostRender),OnRender)\r\n    RenderManager.setOnDraw(() -> script(:OnPreDraw),() -> script(:OnPostDraw))\r\n    \r\n    script.state.isInitalized=true\r\n  end\r\n  \r\n  script(:OnReload)\r\nend"
+},
+
+{
+    "location": "files/App.html#Run-Script-1",
+    "page": "App.jl",
+    "title": "Run Script",
+    "category": "section",
+    "text": "function run(script::JLScript)   if !script.state.isRunning     script(:OnStart)     RenderManager.start()     script.state.isRunning=true   endtickUpdate(script)   script(:OnUpdate)   RenderManager.update()if script.state.isRenderOn     RenderManager.render()     if !script.state.isRenderRunOnce script.state.isRenderRunOnce=true end   end end ```"
 },
 
 {
@@ -85,15 +181,255 @@ var documenterSearchIndex = {"docs": [
     "page": "CoreExtended.jl",
     "title": "CoreExtended.jl",
     "category": "section",
-    "text": "const EMPTY_FUNCTION = () -> nothingiscallable(f) = !isempty(methods(f))exists(m::Module, s::Symbol) = isdefined(m,s) #&& iscallable(catchException(()->eval(e)))\r\nexecute(m::Module, s::Symbol, args...) = isdefined(m,s) ? execute(:($m.$s),args...) : nothing #(if isdefined(m,s) return execute(eval(m,s),args...); end; nothing)\r\n#execute(o::Any, s::Symbol, args...) = isdefined(o,s) ? execute(:($o.$s),args...) : nothing\r\nexecute(e::Expr, args...) = execute(catchException(()->eval(e)),args...)\r\nexecute(f::Function, args...) = iscallable(f) ? invoke(f,args...) : nothing\r\n#execute(f::Function, args...) = (debug(\"execute function(\"*string(args...)*\")\"); if iscallable(f) return invoke(f, args...); end; nothing)\r\nexecute(t::Tuple{Bool,Any}, args...) = execute(t[1]?t[2]:nothing,args...)\r\nexecute(r::Any, args...) = (debug(\"result \"*string(typeof(r))); r)\r\nexecute(r::Void, args...) = (warn(\"Cannot execute nothing\"); r)function invoke(f::Function, args...)\r\n	result = nothing\r\n	catchException(()	-> result = @eval $f($(args...)))\r\n	result\r\nendstabilize(f::Function) = (args...) -> invoke(f, args...)abstract type AbstractObjectReference endtype EmptyObject <: AbstractObjectReference\r\n	EmptyObject() = new() \r\nendconst EMPTY_OBJECT = EmptyObject()OnException = (x)->nothingfunction linkToException(f::Function)\r\n	global OnException = f\r\nendfunction backTraceException(ex::Exception)\r\n	println(\"--- [ BACKTRACE ] ---\")\r\n	Base.showerror(STDERR, ex, catch_backtrace())\r\n	println(\"\\n---------------------\")\r\nendfunction catchException(f::Function, exf=OnException)\r\n	try return f()\r\n	catch ex exf(ex)\r\n	end\r\n	nothing\r\nendfunction hasVal(a::AbstractArray, getindex::Function)\r\n	i=0; for v in a\r\n		i+=1\r\n		if getindex(v) return (i,v) end\r\n	end\r\n	#found=find(f,a)\r\n	(0,nothing)\r\nendfunction replace(a::AbstractArray, f::Function, v::Any)\r\n	found=hasVal(f,a)\r\n	if found[1] == 0 push!(a, v)\r\n	else a[found[1]]=v\r\n	end\r\nendfunction update(a::AbstractArray, getindex::Function, f::Function)\r\n	found=hasVal(getindex,a)\r\n	if found[1] == 0 push!(a, f((false,nothing)))\r\n	else a[found[1]]=f((true,found[2]))\r\n	end\r\nendfunction update(dict::Dict, index::Any, f::Function)\r\n	v=nothing\r\n	try\r\n		v=(true,dict[index])\r\n	catch error\r\n		if isa(error, KeyError) v=(false,nothing) end\r\n	end\r\n	if v != nothing dict[index]=f(v) end\r\nend"
+    "text": "Execute\nDebug\nFunction\nObject\nPreset"
 },
 
 {
-    "location": "files/CoreExtended.html#obsolete-1",
+    "location": "files/CoreExtended.html#CoreExtended.execute-Tuple{Module,Symbol,Vararg{Any,N} where N}",
     "page": "CoreExtended.jl",
-    "title": "obsolete",
+    "title": "CoreExtended.execute",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.execute-Tuple{Expr,Vararg{Any,N} where N}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.execute",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.execute-Tuple{Function,Vararg{Any,N} where N}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.execute",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.execute-Tuple{Tuple{Bool,Any},Vararg{Any,N} where N}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.execute",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.execute-Tuple{Any,Vararg{Any,N} where N}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.execute",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.execute-Tuple{Void,Vararg{Any,N} where N}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.execute",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#Execute-1",
+    "page": "CoreExtended.jl",
+    "title": "Execute",
     "category": "section",
-    "text": "export presetManager\r\nfunction presetManager(T::DataType, S=T)\r\n	mod=T.name.module\r\n	#mname=Base.replace(string(S),r\"\\..*\",\"\")\r\n	#mod=Module(Symbol(mname))\r\n	#typ=\"EMPTY_\"*uppercase(Base.replace(string(S),r\"[^\\.]+\\.\",\"\"))\r\n	reset = isdefined(mod,:resets) ? mod.resets : ()->nothing\r\n	link = isdefined(mod,:link) ? mod.link : (x)->nothing\r\n	unlink = isdefined(mod,:unlinks) ? mod.unlinks : ()->nothing\r\n	\r\n	eval(mod,\r\n		Expr(:toplevel,\r\n			:(\r\n				const Typ = Union{Void,$T};\r\n				list = SortedDict{Symbol, $S}(Forward);\r\n			\r\n				function create(k::Symbol);\r\n					if !haskey(list,k);\r\n						e=$S(k);\r\n						list[k]=e;\r\n						setSelected(e);\r\n						if isdefined($mod,:init) init(e) end;\r\n					else\r\n						e=list[k];\r\n						setSelected(e);\r\n					end;\r\n					e;\r\n				end;\r\n			\r\n				selected = nothing;\r\n				getSelected() = selected;\r\n				setSelected(obj::Typ) = global selected = obj;\r\n				\r\n				get(k::Symbol) = list[k];\r\n				set(k::Symbol, obj::Typ) = (list[k] = obj);\r\n	\r\n				function reset();\r\n					unlink();\r\n					$reset();\r\n				end;\r\n\r\n				isInvalid(obj::Typ) = obj == nothing || !isa(obj,$S);\r\n				isLinked(obj::Typ) =	!isInvalid(obj) && obj == getSelected();\r\n\r\n				function unlink() setSelected(nothing); $unlink(); end;\r\n\r\n				function link();\r\n					obj=getSelected();\r\n					if !isInvalid(obj); $link(obj) else unlink() end;\r\n				end;\r\n\r\n				function linkTo(obj::Typ);\r\n					other=getSelected();\r\n					if other == obj return end;\r\n					setSelected(obj);\r\n					link();\r\n				end;\r\n			)\r\n		)\r\n	)\r\nend"
+    "text": "CoreExtended.execute(m::Module, s::Symbol, args...)CoreExtended.execute(e::Expr, args...)CoreExtended.execute(f::Function, args...)CoreExtended.execute(t::Tuple{Bool,Any}, args...)CoreExtended.execute(r::Any, args...)CoreExtended.execute(r::Void, args...)"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.exists-Tuple{Module,Symbol}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.exists",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.debug-Tuple{String}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.debug",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.iscallable-Tuple{Any}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.iscallable",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#Debug-1",
+    "page": "CoreExtended.jl",
+    "title": "Debug",
+    "category": "section",
+    "text": "CoreExtended.exists(m::Module, s::Symbol)CoreExtended.debug(msg::String)CoreExtended.iscallable(f)"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.invoke-Tuple{Function,Vararg{Any,N} where N}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.invoke",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.stabilize-Tuple{Function}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.stabilize",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#Function-1",
+    "page": "CoreExtended.jl",
+    "title": "Function",
+    "category": "section",
+    "text": "CoreExtended.invoke(f::Function, args...)CoreExtended.stabilize(f::Function)"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.AbstractObjectReference",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.AbstractObjectReference",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.EmptyObject",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.EmptyObject",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.EMPTY_OBJECT",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.EMPTY_OBJECT",
+    "category": "constant",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.EMPTY_FUNCTION",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.EMPTY_FUNCTION",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#Object-1",
+    "page": "CoreExtended.jl",
+    "title": "Object",
+    "category": "section",
+    "text": "CoreExtended.AbstractObjectReferenceCoreExtended.EmptyObject CoreExtended.EMPTY_OBJECTCoreExtended.EMPTY_FUNCTION"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.hasVal-Tuple{AbstractArray,Function}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.hasVal",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.replace-Tuple{AbstractArray,Function,Any}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.replace",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.update-Tuple{AbstractArray,Function,Function}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.update",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.update-Tuple{Dict,Any,Function}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.update",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#Update-1",
+    "page": "CoreExtended.jl",
+    "title": "Update",
+    "category": "section",
+    "text": "CoreExtended.hasVal(a::AbstractArray, getindex::Function)CoreExtended.replace(a::AbstractArray, f::Function, v::Any)CoreExtended.update(a::AbstractArray, getindex::Function, f::Function)CoreExtended.update(dict::Dict, index::Any, f::Function)"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.OnException",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.OnException",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.linkToException",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.linkToException",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.backTraceException-Tuple{Exception}",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.backTraceException",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.catchException",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.catchException",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#Exception-1",
+    "page": "CoreExtended.jl",
+    "title": "Exception",
+    "category": "section",
+    "text": "CoreExtended.OnExceptionCoreExtended.linkToExceptionCoreExtended.backTraceException(ex::Exception)CoreExtended.catchException(f::Function, exf=OnException)"
+},
+
+{
+    "location": "files/CoreExtended.html#CoreExtended.presetManager",
+    "page": "CoreExtended.jl",
+    "title": "CoreExtended.presetManager",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/CoreExtended.html#Preset-1",
+    "page": "CoreExtended.jl",
+    "title": "Preset",
+    "category": "section",
+    "text": "(Obsolete)CoreExtended.presetManager(T::DataType, S=T)"
 },
 
 {
@@ -121,11 +457,139 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "files/FileManager.html#FileManager.FileSource",
+    "page": "FileManager.jl",
+    "title": "FileManager.FileSource",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.FileSourcePart",
+    "page": "FileManager.jl",
+    "title": "FileManager.FileSourcePart",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.FileUpdateEntry",
+    "page": "FileManager.jl",
+    "title": "FileManager.FileUpdateEntry",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.getCache-Tuple{FileManager.FileSource}",
+    "page": "FileManager.jl",
+    "title": "FileManager.getCache",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.reload-Tuple{FileManager.FileSource}",
+    "page": "FileManager.jl",
+    "title": "FileManager.reload",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.readFileSource-Tuple{String}",
+    "page": "FileManager.jl",
+    "title": "FileManager.readFileSource",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.splitFileName-Tuple{String}",
+    "page": "FileManager.jl",
+    "title": "FileManager.splitFileName",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.waitForFileReady",
+    "page": "FileManager.jl",
+    "title": "FileManager.waitForFileReady",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.fileGetContents",
+    "page": "FileManager.jl",
+    "title": "FileManager.fileGetContents",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.addDirSlash-Tuple{String}",
+    "page": "FileManager.jl",
+    "title": "FileManager.addDirSlash",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.registerFileUpdate-Tuple{FileManager.FileSource,Function,Vararg{Any,N} where N}",
+    "page": "FileManager.jl",
+    "title": "FileManager.registerFileUpdate",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.unregisterFileUpdate-Tuple{FileManager.FileSource}",
+    "page": "FileManager.jl",
+    "title": "FileManager.unregisterFileUpdate",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.runOnFileUpdate",
+    "page": "FileManager.jl",
+    "title": "FileManager.runOnFileUpdate",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.watchFileUpdate-Tuple{String,Function}",
+    "page": "FileManager.jl",
+    "title": "FileManager.watchFileUpdate",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.watchFileUpdate-Tuple{FileManager.FileSource,Function}",
+    "page": "FileManager.jl",
+    "title": "FileManager.watchFileUpdate",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/FileManager.html#FileManager.isUpdated",
+    "page": "FileManager.jl",
+    "title": "FileManager.isUpdated",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
     "location": "files/FileManager.html#FileManager.jl-1",
     "page": "FileManager.jl",
     "title": "FileManager.jl",
     "category": "section",
-    "text": "using FileIOtype FileSource\r\n  path  ::String\r\n	cache ::String\r\n	\r\n  FileSource(path=\"\") = new(path,\"\")\r\nendtype FileSourcePart\r\n	source ::FileSource\r\n  range  ::UnitRange{Int64}\r\n	cache ::String\r\n	\r\n	FileSourcePart(source::FileSource,range=range(1,stat(source.path).size)) = new(source,range,\"\")\r\nendtype FileUpdateEntry\r\n  source::FileSource\r\n  OnUpdate::Function\r\n	args::Tuple\r\n	editedTime::Float64\r\n\r\n  FileUpdateEntry(source::FileSource, OnUpdate::Function, args) = new(source, OnUpdate, args, 0)\r\nendfunction getCache(source::FileSource)\r\n	if source.cache == \"\"\r\n		reload(source)\r\n	end\r\n	source.cache\r\nendreload(source::FileSource) = (source.cache=fileGetContents(source.path))readFileSource(path::String) = FileSource(path,fileGetContents(path))function splitFileName(path::String)\r\n  (dir, filename) = splitdir(path) #splitdrive\r\n  (name, ext) = splitext(filename)\r\n  (addDirSlash(dir),name,ext)\r\nendfunction waitForFileReady(path::String, func::Function, tryCount=100, tryWait=0.1)\r\n	result=false\r\n	for i = 1:tryCount\r\n\r\n		#try reading file\r\n		if stat(path).size > 0\r\n			open(path) do file\r\n				 result=func(file)\r\n			end\r\n			if result break end\r\n		end\r\n\r\n		Libc.systemsleep(tryWait) #wait\r\n	end\r\n	result\r\nendfunction fileGetContents(path::String, tryCount=100, tryWait=0.1)\r\n	content=nothing\r\n	waitForFileReady(path,(x)->(content=readstring(x); content != nothing),tryCount,tryWait)\r\n	content\r\nendaddDirSlash(path::String) = string(path,(path != \"\" && path[length(path)] != \'/\') ? \"/\" : \"\")registerFileUpdate(source::FileSource, OnUpdate::Function, args...) = FILES_TO_UPDATE[source.path]=FileUpdateEntry(source,OnUpdate,(source, args...))unregisterFileUpdate(source::FileSource) = delete!(FILES_TO_UPDATE, source.path)runOnFileUpdate(threshold=0.01) = for (key,entry) in FILES_TO_UPDATE\r\n	time_edited = mtime(entry.source.path)\r\n	edited = time_edited - entry.editedTime\r\n	#if edited!=0\r\n	#println(entry.source.path,\": \",time_edited)\r\n	#end\r\n	if edited > threshold  #!isapprox(0.0, entry.editedTime - time_edited)\r\n		#println(\"Time: \", entry.editedTime, \" == \", time_edited)\r\n		entry.OnUpdate(entry.args...)\r\n		entry.editedTime=time_edited\r\n	end\r\nend\r\nfunction watchFileUpdate(path::String, OnUpdate::Function)   preserve(map( isUpdated(query(path)) ) do _unused OnUpdate(path) end)   #map( isUpdated(query(path))) do _unused OnUpdate(path) end endwatchFileUpdate(path::FileSource, OnUpdate::Function) = watchFileUpdate(o.path, OnUpdate)function isUpdated(file::File, tickrate=0.001)   fn = filename(file)   ticks=fpswhen(Signal(true), 1.0/tickrate)   file_edited=foldp((false, mtime(fn)), ticks) do v0, v1     time_edited = mtime(fn)     (!isapprox(0.0, v0[2] - time_edited), time_edited)   end   filter(identity, true, map(first, file_edited)) end ```"
+    "text": "using FileIO.jlFileManager.FileSourceFileManager.FileSourcePartFileManager.FileUpdateEntryFileManager.getCache(source::FileManager.FileSource)FileManager.reload(source::FileManager.FileSource)FileManager.readFileSource(path::String)FileManager.splitFileName(path::String)FileManager.waitForFileReady(path::String, func::Function, tryCount=100, tryWait=0.1)FileManager.fileGetContents(path::String, tryCount=100, tryWait=0.1)FileManager.addDirSlash(path::String)FileManager.registerFileUpdate(source::FileManager.FileSource, OnUpdate::Function, args...)FileManager.unregisterFileUpdate(source::FileManager.FileSource)FileManager.runOnFileUpdate(threshold=0.01)FileManager.watchFileUpdate(path::String, OnUpdate::Function)FileManager.watchFileUpdate(path::FileManager.FileSource, OnUpdate::Function)FileManager.isUpdated(file::FileIO.File, tickrate=0.001)"
 },
 
 {
@@ -141,7 +605,143 @@ var documenterSearchIndex = {"docs": [
     "page": "JLScriptManager.jl",
     "title": "JLScriptManager.jl",
     "category": "section",
-    "text": "using CoreExtended using FileManager.FileSourceabstract type JLComponent <: AbstractObjectReference endtype JLInvalidComponent <: JLComponent end\n\nconst JL_INVALID_COMPONENT = JLInvalidComponent()type JLStateListComponent <: JLComponent\n	isInitalized	::Bool\n	isRunning			::Bool\n	isTerminated	::Bool\n	\n	JLStateListComponent() = new(false,false,false)\nend\n\nexport JLScriptFunctiontype JLScriptFunction\n	func::Function\n	JLScriptFunction(f::Function) = new(stabilize(f))\nend\n\nexport JLScripttype JLScript\n  id        ::Symbol\n	mod				::Module\n  source    ::FileSource\n	\n	args			::Tuple # arguments passed on main()\n  cache			::Dict{Symbol, Any}\n  listener	::Dict{Symbol, Function}\n	extern		::Dict{Symbol, Function}\n	state			::JLComponent\n	objref		::JLComponent\n	funcs			::JLComponent\n	events		::JLComponent\nendJLScript(id::Symbol) = JLScript(id,FileSource())function JLScript(id::Symbol, source::FileSource)\n  this=JLScript(id,Module(id),source,(),Dict(),Dict(),Dict(),JLStateListComponent(),JL_INVALID_COMPONENT,JL_INVALID_COMPONENT,JL_INVALID_COMPONENT)\n  JLSCRIPTS[id]=this\n  this\nend\n\nJLSCRIPTS = Dict{Symbol,JLScript}()loop(f::Function) = for (k,s) in JLSCRIPTS f(s) endlisten(this::JLScript, k::Symbol, f::Function) = (this.listener[k]=f)function run(this::JLScript, args...)\n	debug(\"run $(this.id)\")\n	#Module(:__anon__)\n	result = execute(this)\n	if !result[1] result = nothing\n	else result = result[2]\n	end\n  result\nend(this::JLScript)(s::Symbol, args...) = CoreExtended.execute(this.mod,s,args...) #@eval $f($args...)exists(this::JLScript, s::Symbol) = CoreExtended.exists(this.mod,s)function execute(this::JLScript, compile_args=[], args...)\n  debug(\"execute $(this.id)\")\n	result = compile(this, compile_args...)\n	if result[1] result = (true, execute(result[2], args...)) end\n	result\nendexecute(f::JLScriptFunction, args...) = (debug(\"execute function(\"*string(args...)*\")\"); f.func(args...))function compile(this::JLScript, args...)\n	debug(\"compile $(this.id)\")\n	result = (false, nothing)\n	\n	catchException(function()\n		#if length(args)>0\n			result = eval(this, args...)\n		#else\n		#	result = evalfile(this.source.path)\n		#end\n		\n		if isa(result, Function) result = JLScriptFunction(result)\n		else warn(\"Main Function not found.\")\n		end\n\n		result = (true, result)\n	end)\n	\n	result\nendfunction cleanCode(code::String)\n	\n	# problem using match(): only \"function (name)\" will be detected!\n	# for x in eachmatch(r\"function \\s(\\w)\", code) println(x.captures[1]) end\n\n	# TODO merge code lines\n	code=Base.replace(code, \"\\r\", \"\")\n	#code=Base.replace(code, r\"\\#\\=(?(?=\\=\\#)then|else)*\\=\\#\", \"\")\n	code=Base.replace(code, r\"(?s)(?<=\\#\\=)(.*?)(?=\\=\\#)\", \"\")\n	code=Base.replace(code, r\"(\\#[^\\n]+)\", \"\")\n	code=Base.replace(code, r\"\\n\\s+\\n\", \"\\n\")\n	code=Base.replace(code, r\"\\n+\", \"\\n\")\n	code=Base.replace(code, r\"\\s*(,)\\s*\", s\"\\1\")\n	code=Base.replace(code, r\"(\\()\\s*\", s\"\\1\")\n	code=Base.replace(code, r\"\\s*(\\))\", s\"\\1\")\n	code=Base.replace(code, r\"\\n\", \";\")\nendfunction eval(this::JLScript, args...)\n	\n	this.mod = Module(this.id) #reset modul\n\n	debug(\"eval $(this.id)\")\n	\n	# parse\n	#################################################\n	\n	code = \"\"\n	open(this.source.path) do f	code = readstring(f) end\n	code=cleanCode(code)\n	code=parse(code)\n	\n	#################################################\n	\n	funcs = \"\"\n	funcsext = \"\" #\"_(x) = (args...)->execute(x,args...);\"\n	\n	xTypBody = \"\"\n	xTypCall = \"\"\n	fTypBody = \"\"\n	fTypCall = \"\"\n	eTypBody = \"\"\n	eTypCall = \"\"\n	\n	def = (name) -> \"$name::Function;\"\n	dec = (name) -> \"(args...)->execute($name,args...)\"\n	\n	for (name,f) in this.extern\n		funcsext *= \"global $name = this.extern[:$name];\"\n		#xTypBody *= def(name)\n		#xTypCall *= (xTypCall != \"\" ? \",\" : \"\") * dec(name)\n	end\n	\n	#################################################\n	\n	for x in code.args\n		if x.head == Symbol(\"function\")\n			name=Symbol(Base.replace(string(x.args[1]), r\"\\(.*\", \"\"))\n\n			if ismatch(r\"^On\\w+\", string(name))\n				# event functions\n				eTypBody *= def(name)\n				eTypCall *= (eTypCall != \"\" ? \",\" : \"\") * dec(name)\n			else\n				# other functions\n				fTypBody *= def(name)\n				fTypCall *= (fTypCall != \"\" ? \",\" : \"\") * dec(name)\n			end\n\n		end\n	end\n	\n	#################################################\n	\n	imports = \"\"\n	imports *= \"using CoreExtended;\"\n	imports *= \"using JLScriptManager;\"\n	\n	typs = \"\"\n	typ = string(this.mod) #*\"_JLFunctionListComponent\"\n	#if createExtFuncList typs *= \"type \"*typ*\"_EXTFUNCTIONS <: JLComponent;\"*xTypBody*\";end;\" end\n	typs *= \"type \"*typ*\"_FUNCTIONS <: JLComponent;\"*fTypBody*\";end;\"\n	typs *= \"type \"*typ*\"_EVENTS <: JLComponent;\"*eTypBody*\";end;\"\n	\n	mainFunc = \"function main(args...);\"\n	mainFunc *= \"this.args=args;\"\n	mainFunc *= funcsext\n	#if createExtFuncList mainFunc *= \"this.extfuncs = \"*typ*\"_EXTFUNCTIONS(\"*xTypCall*\");\" end\n	mainFunc *= \"this.funcs = \"*typ*\"_FUNCTIONS(\"*fTypCall*\");\"\n	mainFunc *= \"this.events = \"*typ*\"_EVENTS(\"*eTypCall*\");\"\n	mainFunc *= \"end;\"\n	\n	#################################################\n\n	ex=Expr(:toplevel,\n		:(const ARGS = $(this.args)),\n		:(eval(x) = Main.Core.eval($(this.mod),x)),\n		#:(eval(m,x) = Main.Core.eval(m,x)),\n		:(this=$this),\n		args...,\n		:(Main.Base.include($(this.source.path))), #which is faster?\n		#code, #which is faster?\n		parse(imports*typs*funcs*mainFunc),\n	)\n	\n	#################################################\n	\n	#println(\"EXTFUNCS:\\n\", Base.replace(extfuncs, \",(\", \"\\n(\"),\"\\n\")\n	#println(\"FUNCS: \", fTypBody)\n	#println(\"EVENTS: \", eTypBody)\n	#dump(ex)\n	\n	#################################################\n	\n	eval(this.mod, ex)\nend"
+    "text": ""
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.JLComponent",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.JLComponent",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.JLInvalidComponent",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.JLInvalidComponent",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.JL_INVALID_COMPONENT",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.JL_INVALID_COMPONENT",
+    "category": "constant",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.JLStateListComponent",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.JLStateListComponent",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.JLScriptFunction",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.JLScriptFunction",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.JLScript-Tuple{Symbol}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.JLScript",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.JLScript-Tuple{Symbol,FileManager.FileSource}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.JLScript",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.loop-Tuple{Function}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.loop",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.listen-Tuple{JLScriptManager.JLScript,Symbol,Function}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.listen",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.run-Tuple{JLScriptManager.JLScript,Vararg{Any,N} where N}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.run",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.exists-Tuple{JLScriptManager.JLScript,Symbol}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.exists",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.execute",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.execute",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.execute-Tuple{JLScriptManager.JLScriptFunction,Vararg{Any,N} where N}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.execute",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.compile-Tuple{JLScriptManager.JLScript,Vararg{Any,N} where N}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.compile",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.cleanCode-Tuple{String}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.cleanCode",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#JLScriptManager.eval-Tuple{JLScriptManager.JLScript,Vararg{Any,N} where N}",
+    "page": "JLScriptManager.jl",
+    "title": "JLScriptManager.eval",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLScriptManager.html#using-1",
+    "page": "JLScriptManager.jl",
+    "title": "using",
+    "category": "section",
+    "text": "CoreExtended\nFileManager.FileSourceJLScriptManager.JLComponentJLScriptManager.JLInvalidComponentJLScriptManager.JL_INVALID_COMPONENTJLScriptManager.JLStateListComponentJLScriptManager.JLScriptFunctionJLScriptManager.JLScript(id::Symbol)JLScriptManager.JLScript(id::Symbol, source::FileManager.FileSource)JLScriptManager.loop(f::Function)JLScriptManager.listen(this::JLScriptManager.JLScript, k::Symbol, f::Function)JLScriptManager.run(this::JLScriptManager.JLScript, args...)(this::JLScript)(s::Symbol, args...) = CoreExtended.execute(this.mod,s,args...)JLScriptManager.exists(this::JLScriptManager.JLScript, s::Symbol)JLScriptManager.execute(this::JLScriptManager.JLScript, compile_args=[], args...)JLScriptManager.execute(f::JLScriptManager.JLScriptFunction, args...)JLScriptManager.compile(this::JLScriptManager.JLScript, args...)JLScriptManager.cleanCode(code::String)JLScriptManager.eval(this::JLScriptManager.JLScript, args...)"
 },
 
 {
@@ -157,7 +757,63 @@ var documenterSearchIndex = {"docs": [
     "page": "LoggerManager.jl",
     "title": "LoggerManager.jl",
     "category": "section",
-    "text": "import Base.print, Base.println, Base.info, Base.warn, Base.error\r\n\r\nexport @printf # cannot replace Base.@printf\r\n\r\nusing Suppressor\r\nusing TimeManager\r\nusing CoreExtended\r\n\r\nexport LOGGER_OUT\r\nexport LOGGER_ERROR\r\n\r\nexport print\r\nexport printf\r\nexport println\r\nexport info\r\nexport warn\r\nexport error\r\n\r\nLOGGER_OUT = \"out.log\"\r\nLOGGER_ERROR = \"error.log\"\r\n\r\nfunction __init__()\r\n	open(LOGGER_OUT, \"w+\")\r\n	open(LOGGER_ERROR, \"w+\")\r\nend\r\n\r\n\r\n@suppress begin print(xs...) = open(f -> (print(f, xs...); print(STDOUT, xs...)), LOGGER_OUT, \"a+\") end\r\nmacro printf(xs...) open(f -> (:(Base.@printf(f, $xs...)); :(Base.@printf(:STDOUT, $xs...))),LOGGER_OUT, \"a+\") end \r\n@suppress begin println(xs...) = open(f -> (println(f, programTimeStr(), \" \", xs...); println(STDOUT, xs...)), LOGGER_OUT, \"a+\") end\r\n\r\n@suppress begin info(xs...) = open(f -> (info(f, programTimeStr(), \" \", xs...); info(STDOUT, xs...)), LOGGER_OUT, \"a+\") end\r\n@suppress begin error(xs...) = open(f -> (error(f, programTimeStr(),\" \", xs...); error(STDERR, xs...)), LOGGER_ERROR, \"a+\") end\r\n@suppress begin warn(xs...) = open(f -> (warn(f, programTimeStr(),\" \", xs...); warn(STDERR, xs...)), LOGGER_ERROR, \"a+\") end\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction logException(ex::Exception)\r\n	t=programTimeStr()\r\n\r\n	println(STDERR, \"[ ERROR ] EXCEPTION! See \'$LOGGER_ERROR\' for more info.\")\r\n	open(f -> println(f, t, \" [ ERROR ] EXCEPTION! See \'$LOGGER_ERROR\' for more info.\"), LOGGER_OUT, \"a+\")\r\n	open(function(f)\r\n			println(f, t, \" --- [ BACKTRACE ] ---\")\r\n			Base.showerror(f, ex, catch_backtrace())\r\n			println(f, \"\\n---------------------\")\r\n	end, LOGGER_ERROR, \"a+\")\r\nend\r\n\r\nCoreExtended.linkToException(logException)\r\n\r\n#messageToString(mode::String, time::String, name::String, msg::String) = string(time, \" \", mode != \"\" ? string(\"[\",mode,\"] \"): \"\" , name != \"\" ? string(name, \" \") : \"\" , \": \", msg, \"\\n\")\r\n#logMsg(mode::Symbol, name::String, msg::String) = messageToString(string(mode), programTimeStr(), name, msg)\r\n"
+    "text": ""
+},
+
+{
+    "location": "files/LoggerManager.html#import-1",
+    "page": "LoggerManager.jl",
+    "title": "import",
+    "category": "section",
+    "text": "Base.print\nBase.println\nBase.warn\nBase.error"
+},
+
+{
+    "location": "files/LoggerManager.html#export-1",
+    "page": "LoggerManager.jl",
+    "title": "export",
+    "category": "section",
+    "text": "LOGGER_OUT\nLOGGER_ERROR\nprint\nprintf\nprintln\ninfo\nwarn\nerror"
+},
+
+{
+    "location": "files/LoggerManager.html#LoggerManager.logException-Tuple{Exception}",
+    "page": "LoggerManager.jl",
+    "title": "LoggerManager.logException",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/LoggerManager.html#LoggerManager.@printf-Tuple",
+    "page": "LoggerManager.jl",
+    "title": "LoggerManager.@printf",
+    "category": "macro",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/LoggerManager.html#using-1",
+    "page": "LoggerManager.jl",
+    "title": "using",
+    "category": "section",
+    "text": "Suppressor.jl\nTimeManager.jl\nCoreExtended.jlLoggerManager.logException(ex::Exception)LoggerManager.@printf(xs...)"
+},
+
+{
+    "location": "files/LoggerManager.html#Files-1",
+    "page": "LoggerManager.jl",
+    "title": "Files",
+    "category": "section",
+    "text": "LOGGER_OUT = \"out.log\"\r\nLOGGER_ERROR = \"error.log\""
+},
+
+{
+    "location": "files/LoggerManager.html#Overwrite-1",
+    "page": "LoggerManager.jl",
+    "title": "Overwrite",
+    "category": "section",
+    "text": "@suppress begin print(xs...) = open(f -> (print(f, xs...); print(STDOUT, xs...)), LOGGER_OUT, \"a+\") end\r\n@suppress begin println(xs...) = open(f -> (println(f, programTimeStr(), \" \", xs...); println(STDOUT, xs...)), LOGGER_OUT, \"a+\") end\r\n@suppress begin info(xs...) = open(f -> (info(f, programTimeStr(), \" \", xs...); info(STDOUT, xs...)), LOGGER_OUT, \"a+\") end\r\n@suppress begin error(xs...) = open(f -> (error(f, programTimeStr(),\" \", xs...); error(STDERR, xs...)), LOGGER_ERROR, \"a+\") end\r\n@suppress begin warn(xs...) = open(f -> (warn(f, programTimeStr(),\" \", xs...); warn(STDERR, xs...)), LOGGER_ERROR, \"a+\") end"
 },
 
 {
@@ -173,7 +829,167 @@ var documenterSearchIndex = {"docs": [
     "page": "MatrixMath.jl",
     "title": "MatrixMath.jl",
     "category": "section",
-    "text": "import Base: +, -, *, /, \\, ^, %, normalize \r\n\r\nusing StaticArrays\r\n#using StaticArrays.ImmutableArrays\r\nusing Quaternions\r\n\r\nexport array\r\nexport avec\r\n\r\n# converts to normal array\r\narray(x::AbstractArray) = convert(array(typeof(x)),vec(x))\r\narray{T<:AbstractArray}(::Type{T}) = Array{array(eltype(T)),1};\r\narray{T}(::Type{T}) = T;\r\n\r\n# converts to one-dim normal array (faster than using vcat(x...) only! you need to convert into normal array first!)\r\navec(x::AbstractArray) = vcat(array(x)...)\r\n\r\nexport Vec\r\nexport Mat\r\n\r\nVec = SVector\r\nMat = SMatrix\r\n\r\nexport Vec1f\r\nexport Vec2f\r\nexport Vec3f\r\nexport Vec4f\r\n\r\nmutable  struct Vec1{T} <: FieldVector{1, T}\r\n		x::T\r\nend\r\n\r\nmutable  struct Vec2{T} <: FieldVector{2, T}\r\n		x::T\r\n		y::T\r\nend\r\n\r\nmutable  struct Vec3{T} <: FieldVector{3, T}\r\n		x::T\r\n		y::T\r\n		z::T\r\nend\r\n\r\nmutable struct Vec4{T} <: FieldVector{4, T}\r\n		x::T\r\n		y::T\r\n		z::T\r\n		w::T\r\nend\r\n\r\nVec1{T}() where T = Vec1{T}(0)\r\nVec1{T}(v::T) where T = Vec1{T}(v)\r\nVec1{T}(v::Number) where T<:Number = Vec1{T}(v)\r\n#Vec1{T}(v::Vec1{T}) where T = Vec1{T}(v.x)\r\n\r\nVec2{T}() where T = Vec2{T}(0,0)\r\nVec2{T}(v::T) where T = Vec2{T}(v,v)\r\nVec2{T}(v::Number) where T<:Number = Vec2{T}(v,v)\r\n#Vec2{T}(v::Vec2{T}) where T = Vec2{T}(v.x,v.y)\r\n\r\nVec3{T}() where T = Vec3{T}(0,0,0)\r\nVec3{T}(v::T) where T = Vec3{T}(v,v,v)\r\nVec3{T}(v::Number) where T<:Number = Vec3{T}(v,v,v)\r\n#Vec3{T}(v::Vec3{T}) where T = Vec3{T}(v.x,v.y,v.z)\r\n\r\nVec4{T}() where T = Vec4{T}(0,0,0,0)\r\nVec4{T}(v::T) where T = Vec4{T}(v,v,v,v)\r\nVec4{T}(v::Number) where T<:Number = Vec4{T}(v,v,v,v)\r\n#Vec4{T}(v::Vec4{T}) where T = Vec4{T}(v.x,v.y,v.z,v.w)\r\n\r\nVec1f = Vec1{Float32}\r\nVec2f = Vec2{Float32}\r\nVec3f = Vec3{Float32}\r\nVec4f = Vec4{Float32}\r\n\r\n+{T}(a::Vec2{T}, b::Vec2{T}) = Vec2(SVector(a)+SVector(b))\r\n+{T}(a::Vec3{T}, b::Vec3{T}) = Vec3(SVector(a)+SVector(b))\r\n\r\n-{T}(a::Vec2{T}, b::Vec2{T}) = Vec2(SVector(a)+SVector(b))\r\n-{T}(a::Vec3{T}, b::Vec3{T}) = Vec3(SVector(a)+SVector(b))\r\n\r\nnormalize{T}(v::Vec2{T}) = Vec2(normalize(SVector(v)))\r\nnormalize{T}(v::Vec3{T}) = Vec3(normalize(SVector(v)))\r\n\r\nfunction operator{N, T}(op::Function,a::SVector{N, T}, b::SVector{N, T})\r\n	m = zeros(T,N,N)\r\n	for ai=1:N\r\n		for bi=1:N\r\n			r = op(a[ai],b[bi])\r\n			if !isa(r,T) r = round(r) end # fix: round(Int / Int = Float)\r\n			m[ai,bi]=r\r\n		end\r\n	end\r\n	SMatrix{N,N,T,N*N}(m) #* ones(SVector{N, T})\r\nend\r\n\r\nfunction operator2{N, T}(op::Function,a::SVector{N, T}, b::SVector{N, T})\r\n	v = zeros(T,N)\r\n	for ai=1:N\r\n		r = op(a[ai],b[ai])\r\n		if !isa(r,T) r = round(r) end # fix: round(Int / Int = Float)\r\n		v[ai]=r\r\n	end\r\n	SVector(v...)\r\nend\r\n\r\n# works only for multiplication\r\n#a = repmat(a, 1, N)\r\n#b = flipdim(rotr90(repmat(b, 1, N)),2) #rotr90flipdim2(repmat(b, 1, N))\r\n#op(a,b) #/ 2\r\n\r\n*{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(*,a,b)\r\n/{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(/,a,b)\r\n\\{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(\\,a,b)\r\n^{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(^,a,b)\r\n%{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(%,a,b)\r\n\r\nexport scale\r\nscale{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator2(*,a,b)\r\n\r\nscale{T}(a::Vec2{T}, b::Vec2{T}) = Vec2(scale(SVector(a),SVector(b)))\r\nscale{T}(a::Vec3{T}, b::Vec3{T}) = Vec3(scale(SVector(a),SVector(b)))\r\n\r\nexport Vec1i\r\nexport Vec2i\r\nexport Vec3i\r\nexport Vec4i\r\n\r\nVec1i = Vec2{Int32}\r\nVec2i = Vec2{Int32}\r\nVec3i = Vec3{Int32}\r\nVec4i = Vec4{Int32}\r\n\r\nexport Vec1u\r\nexport Vec2u\r\nexport Vec3u\r\nexport Vec4u\r\n\r\nVec1u = Vec1{UInt32}\r\nVec2u = Vec2{UInt32}\r\nVec3u = Vec3{UInt32}\r\nVec4u = Vec4{UInt32}\r\n\r\nexport AIndex\r\nAIndex = Array{UInt32,1}\r\n\r\nexport AVec1f\r\nexport AVec2f\r\nexport AVec3f\r\nexport AVec4f\r\n\r\nAVec1f = Array{Vec1f,1}\r\nAVec2f = Array{Vec2f,1}\r\nAVec3f = Array{Vec3f,1}\r\nAVec4f = Array{Vec4f,1}\r\n\r\nMat1x1{T} = SMatrix{1,1,T,1}\r\nMat1x2{T} = SMatrix{1,2,T,2}\r\nMat1x3{T} = SMatrix{1,3,T,3}\r\nMat1x4{T} = SMatrix{1,4,T,4}\r\n\r\nMat2x1{T} = SMatrix{2,1,T,2}\r\nMat2x2{T} = SMatrix{2,2,T,4}\r\nMat2x3{T} = SMatrix{2,3,T,6}\r\nMat2x4{T} = SMatrix{2,4,T,8}\r\n\r\nMat3x1{T} = SMatrix{3,1,T,3}\r\nMat3x2{T} = SMatrix{3,2,T,6}\r\nMat3x3{T} = SMatrix{3,3,T,9}\r\nMat3x4{T} = SMatrix{3,4,T,12}\r\n\r\nMat4x1{T} = SMatrix{4,1,T,4}\r\nMat4x2{T} = SMatrix{4,2,T,8}\r\nMat4x3{T} = SMatrix{4,3,T,12}\r\nMat4x4{T} = SMatrix{4,4,T,16}\r\n\r\nexport Mat1x1f\r\nexport Mat1x2f\r\nexport Mat1x3f\r\nexport Mat1x4f\r\n\r\nexport Mat2x1f\r\nexport Mat2x2f\r\nexport Mat2x3f\r\nexport Mat2x4f\r\n\r\nexport Mat3x1f\r\nexport Mat3x2f\r\nexport Mat3x3f\r\nexport Mat3x4f\r\n\r\nexport Mat4x1f\r\nexport Mat4x2f\r\nexport Mat4x3f\r\nexport Mat4x4f\r\n\r\nMat1x1f = Mat1x1{Float32}\r\nMat1x2f = Mat1x2{Float32}\r\nMat1x3f = Mat1x3{Float32}\r\nMat1x4f = Mat1x4{Float32}\r\n\r\nMat2x1f = Mat2x1{Float32}\r\nMat2x2f = Mat2x2{Float32}\r\nMat2x3f = Mat2x3{Float32}\r\nMat2x4f = Mat2x4{Float32}\r\n\r\nMat3x1f = Mat3x1{Float32}\r\nMat3x2f = Mat3x2{Float32}\r\nMat3x3f = Mat3x3{Float32}\r\nMat3x4f = Mat3x4{Float32}\r\n\r\nMat4x1f = Mat4x1{Float32}\r\nMat4x2f = Mat4x2{Float32}\r\nMat4x3f = Mat4x3{Float32}\r\nMat4x4f = Mat4x4{Float32}\r\n\r\nexport IMat1x1f\r\nexport IMat2x2f\r\nexport IMat3x3f\r\nexport IMat4x4f\r\n\r\nconst IMat1x1f = @SMatrix [\r\n	1f0;\r\n]\r\n\r\nconst IMat2x2f = @SMatrix [\r\n	1f0 0 ;\r\n	0 1f0 ;\r\n]\r\n\r\nconst IMat3x3f = @SMatrix [\r\n	1f0 0 0 ;\r\n	0 1f0 0 ;\r\n	0 0 1f0 ;\r\n]\r\n\r\nconst IMat4x4f = @SMatrix [\r\n	1f0 0 0 0 ;\r\n	0 1f0 0 0 ;\r\n	0 0 1f0 0 ;\r\n	0 0 0 1f0 ;\r\n]\r\n\r\n#t = MatrixMath.translationmatrix(Vec3f(0,0,-5))\r\n#c = MatrixMath.lookat(Vec3f(sin(-(cursorpos[1])*6.3),0,1-cos((cursorpos[1])*6.3)),Vec3f(0,0,1), Vec3f(0,1,0))\r\n#c = MatrixMath.rotate(-sin(-0.5f0+cursorpos[1]),Vec3f(0,1,0))\r\n\r\nexport rotr90flipdim2\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nrotr90flipdim2(x::AbstractArray) = flipdim(rotr90(x),2)\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction convertMatrixToArray(values::AbstractArray)\r\n	dims=ndims(values)\r\n	elems=dims > 1 ? size(values)[dims] : 1\r\n	values=avec(values) #wow! < 0.05 sec for > 1000 vertices!\r\n	#print(\"vcat: \"); @time v=vcat(values...) #end # convert to one dimensional array\r\n	#print(\"convert: \"); @time c=convert(Array{typeof(v[1]),1},v)\r\n	(values, elems)\r\nend\r\n\r\n#c = FPSViewRH(normalize(Vec3f(0,0,1)),(cursorpos[1]-0.5f0)*3,(cursorpos[2]-0.5f0) * 3)\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction FPSViewRH(eye::Any, yaw::Float32, pitch::Float32)\r\n    # If the pitch and yaw angles are in degrees,\r\n    # they need to be converted to radians. Here\r\n    # I assume the values are already converted to radians.\r\n    cosPitch = cos(pitch)\r\n    sinPitch = sin(pitch)\r\n    cosYaw = cos(yaw)\r\n    sinYaw = sin(yaw)\r\n\r\n    xaxis = Vec3f( cosYaw, 0, -sinYaw )\r\n    yaxis = Vec3f( sinYaw * sinPitch, cosPitch, cosYaw * sinPitch )\r\n    zaxis = Vec3f( sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw )\r\n\r\n    # Create a 4x4 view matrix from the right, up, forward and eye position vectors\r\n    Mat{4,4,Float32}([\r\n      xaxis[1] yaxis[1] zaxis[1] -dot(xaxis,eye)*0;\r\n      xaxis[2] yaxis[2] zaxis[2] -dot(yaxis,eye)*0;\r\n      xaxis[3] yaxis[3] zaxis[3] -dot(zaxis,eye)*0;\r\n      -dot(xaxis,eye) -dot(yaxis,eye) -dot(zaxis,eye) 1;\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction perspectiveprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)\r\n		(znear == zfar) && error(\"znear ($znear) must be different from tfar ($zfar)\")\r\n\r\n		t = tan(fovy * 0.5)\r\n    h = T(tan(fovy * pi / 360) * znear)\r\n    w = T(h * aspect)\r\n\r\n		left = -w\r\n		right = w\r\n		bottom = -h\r\n		top = h\r\n\r\n		frustum(-w, w, -h, h, znear, zfar)\r\n\r\n		#		zfn = 1/(zfar-znear)\r\n    #Mat4x4{T}([\r\n    #    1/(aspect*t) 0 0 0;\r\n    #    0 1/t 0 0;\r\n    #    0 0 -(zfar+znear)*zfn -(2*zfar*znear)*zfn;\r\n		#		0 0 -1 0;\r\n    # ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction frustum{T}(left::T, right::T, bottom::T, top::T, znear::T, zfar::T)\r\n    (right == left || bottom == top || znear == zfar) && return eye(Mat4x4{T})\r\n    Mat4x4{T}([\r\n        2*znear/(right-left) 0 0 0;\r\n        0 2*znear/(top-bottom) 0 0;\r\n        (right+left)/(right-left) (top+bottom)/(top-bottom) (-(zfar+znear)/(zfar-znear)) -(2*znear*zfar) / (zfar-znear);\r\n        0 0 -1 0\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction orthographicprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)\r\n		(znear == zfar) && error(\"znear ($znear) must be different from tfar ($zfar)\")\r\n	\r\n		t = tan(fovy * 0.5)\r\n    h = T(tan(fovy * pi / 360) * znear)\r\n    w = T(h * aspect)\r\n\r\n		left = -w\r\n		right = w\r\n		bottom = -h\r\n		top = h\r\n\r\n		orthographicprojection(-w, w, -h, h, znear, zfar)\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction orthographicprojection{T}(left::T,right::T,bottom::T,top::T,znear::T,zfar::T)\r\n    (right==left || bottom==top || znear==zfar) && return eye(Mat4x4{T})\r\n    Mat4x4{T}([\r\n        2/(right-left) 0 0 0;\r\n        0 2/(top-bottom) 0 0;\r\n        0 0 -2/(zfar-znear) 0;\r\n				-(right+left)/(right-left) -(top+bottom)/(top-bottom) -(zfar+znear)/(zfar-znear) 1;\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction translationmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        1 0 0 t[1];\r\n        0 1 0 t[2];\r\n        0 0 1 t[3];\r\n				0 0 0 1;\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction inverse_translationmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        1 0 0 0;\r\n        0 1 0 0;\r\n        0 0 1 0;\r\n				t[1] t[2] t[3] 1;\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction rotationmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        1 0 0 0;\r\n        0 1 0 0;\r\n        0 0 1 0;\r\n				t[1] t[2] t[3] 1;\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction scalingmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        t[2] 0 0 0;\r\n        0 t[2] 0 0;\r\n        0 0 t[3] 0;\r\n				0 0 0 1;\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction lookat{T}(eye::Vec3{T}, lookAt::Vec3{T}, up::Vec3{T})\r\n    zaxis  = normalize(eye-lookAt)\r\n    xaxis  = normalize(cross(up,    zaxis))\r\n    yaxis  = normalize(cross(zaxis, xaxis))\r\n    Mat4x4{T}([\r\n        xaxis[1] yaxis[1] zaxis[1] 0;\r\n        xaxis[2] yaxis[2] zaxis[2] 0;\r\n        xaxis[3] yaxis[3] zaxis[3] 0;\r\n        -dot(xaxis,eye) -dot(yaxis,eye) -dot(zaxis,eye) 1\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nrotate{T}(angle::T, axis::Vec3{T}) = rotationmatrix4(Quaternions.qrotation(convert(Array, axis), angle))\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nrotate{T}(v::Vec2{T}, angle::T) = Vec2{T}(v[1] * cos(angle) - v[2] * sin(angle), v[1] * sin(angle) + v[1] * cos(angle))\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction rotationmatrix4{T}(q::Quaternions.Quaternion{T})\r\n    sx, sy, sz = 2q.s*q.v1,  2q.s*q.v2,   2q.s*q.v3\r\n    xx, xy, xz = 2q.v1^2,    2q.v1*q.v2,  2q.v1*q.v3\r\n    yy, yz, zz = 2q.v2^2,    2q.v2*q.v3,  2q.v3^2\r\n    Mat4x4{T}([\r\n        1-(yy+zz)	xy+sz				xz-sy				0;\r\n        xy-sz				1-(xx+zz)	yz+sx				0;\r\n        xz+sy				yz-sx				1-(xx+yy)	0;\r\n        0 0 0 1\r\n    ])\r\nend\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nforwardVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[3,1],m[3,2],m[3,3])\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nrightVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[1,1],m[1,2],m[1,3])\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nupVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[2,1],m[2,2],m[2,3])\r\n\r\n\"\"\"\r\nTODO\r\n\"\"\"\r\nfunction computeRotation{T}(rot::Vec3{T})\r\n	dirBackwards= Vec3{T}(-1,0,0)\r\n	dirRight = Vec3{T}(0,0,1)\r\n	dirUp = Vec3{T}(0,1,0) #cross(dirRight, dirBackwards)\r\n\r\n	q = Quaternions.qrotation(convert(Array, dirRight), rot[3]) *\r\n	Quaternions.qrotation(convert(Array, dirUp), rot[1]) *\r\n	Quaternions.qrotation(convert(Array, dirBackwards), rot[2])\r\n\r\n	rotationmatrix4(q)\r\nend"
+    "text": "Imports, Exports, Uses\nConversion\nValues\nVector, Vector Operations, Vector Types\nMatrix, Matrix Types, Matrix Values\nView Matrix, Frustum Matrix, LookAt Matrix\nPerspective Projection Matrix, Orthographic Projection Matrix\nTranslation Matrix, Rotation Matrix, Scaling Matrix\nFunctions"
+},
+
+{
+    "location": "files/MatrixMath.html#Imports-1",
+    "page": "MatrixMath.jl",
+    "title": "Imports",
+    "category": "section",
+    "text": "Base: +, -, *, /, \\, ^, %, normalize "
+},
+
+{
+    "location": "files/MatrixMath.html#Exports-1",
+    "page": "MatrixMath.jl",
+    "title": "Exports",
+    "category": "section",
+    "text": "array, avec, scale, rotr90flipdim2\nVec, Mat, AIndex\nVec1f, Vec2f, Vec3f, Vec4f,\nVec1i, Vec2i, Vec3i, Vec4i\nVec1u, Vec2u, Vec3u, Vec4u\nAVec1f, AVec2f, AVec3f, AVec4f\nMat1x1f, Mat1x2f, Mat1x3f, Mat1x4f\nMat2x1f, Mat2x2f, Mat2x3f, Mat2x4f\nMat3x1f, Mat3x2f, Mat3x3f, Mat3x4f\nMat4x1f, Mat4x2f, Mat4x3f, Mat4x4f\nIMat1x1f, IMat2x2f, IMat3x3f, IMat4x4f"
+},
+
+{
+    "location": "files/MatrixMath.html#Uses-1",
+    "page": "MatrixMath.jl",
+    "title": "Uses",
+    "category": "section",
+    "text": "StaticArrays\nQuaternions"
+},
+
+{
+    "location": "files/MatrixMath.html#Conversion-1",
+    "page": "MatrixMath.jl",
+    "title": "Conversion",
+    "category": "section",
+    "text": "converts to normal arrayarray(x::AbstractArray) = convert(array(typeof(x)),vec(x))\r\narray{T<:AbstractArray}(::Type{T}) = Array{array(eltype(T)),1};\r\narray{T}(::Type{T}) = T;converts to one-dim normal array (faster than using vcat(x...) only! you need to convert into normal array first!)avec(x::AbstractArray) = vcat(array(x)...)"
+},
+
+{
+    "location": "files/MatrixMath.html#Values-1",
+    "page": "MatrixMath.jl",
+    "title": "Values",
+    "category": "section",
+    "text": "AIndex = Array{UInt32,1}"
+},
+
+{
+    "location": "files/MatrixMath.html#Vector-1",
+    "page": "MatrixMath.jl",
+    "title": "Vector",
+    "category": "section",
+    "text": "Vec = SVectormutable  struct Vec1{T} <: FieldVector{1, T}\r\n		x::T\r\nendmutable  struct Vec2{T} <: FieldVector{2, T}\r\n		x::T\r\n		y::T\r\nendmutable  struct Vec3{T} <: FieldVector{3, T}\r\n		x::T\r\n		y::T\r\n		z::T\r\nendmutable struct Vec4{T} <: FieldVector{4, T}\r\n		x::T\r\n		y::T\r\n		z::T\r\n		w::T\r\nendVec1{T}() where T = Vec1{T}(0)\r\nVec1{T}(v::T) where T = Vec1{T}(v)\r\nVec1{T}(v::Number) where T<:Number = Vec1{T}(v)\r\n#Vec1{T}(v::Vec1{T}) where T = Vec1{T}(v.x)Vec2{T}() where T = Vec2{T}(0,0)\r\nVec2{T}(v::T) where T = Vec2{T}(v,v)\r\nVec2{T}(v::Number) where T<:Number = Vec2{T}(v,v)Vec3{T}() where T = Vec3{T}(0,0,0)\r\nVec3{T}(v::T) where T = Vec3{T}(v,v,v)\r\nVec3{T}(v::Number) where T<:Number = Vec3{T}(v,v,v)Vec4{T}() where T = Vec4{T}(0,0,0,0)\r\nVec4{T}(v::T) where T = Vec4{T}(v,v,v,v)\r\nVec4{T}(v::Number) where T<:Number = Vec4{T}(v,v,v,v)"
+},
+
+{
+    "location": "files/MatrixMath.html#Vector-Operations-1",
+    "page": "MatrixMath.jl",
+    "title": "Vector Operations",
+    "category": "section",
+    "text": "+{T}(a::Vec2{T}, b::Vec2{T}) = Vec2(SVector(a)+SVector(b))\r\n+{T}(a::Vec3{T}, b::Vec3{T}) = Vec3(SVector(a)+SVector(b))\r\n-{T}(a::Vec2{T}, b::Vec2{T}) = Vec2(SVector(a)+SVector(b))\r\n-{T}(a::Vec3{T}, b::Vec3{T}) = Vec3(SVector(a)+SVector(b))normalize{T}(v::Vec2{T}) = Vec2(normalize(SVector(v)))\r\nnormalize{T}(v::Vec3{T}) = Vec3(normalize(SVector(v)))function operator{N, T}(op::Function,a::SVector{N, T}, b::SVector{N, T})\r\n	m = zeros(T,N,N)\r\n	for ai=1:N\r\n		for bi=1:N\r\n			r = op(a[ai],b[bi])\r\n			if !isa(r,T) r = round(r) end # fix: round(Int / Int = Float)\r\n			m[ai,bi]=r\r\n		end\r\n	end\r\n	SMatrix{N,N,T,N*N}(m) #* ones(SVector{N, T})\r\nend\r\n\r\nfunction operator2{N, T}(op::Function,a::SVector{N, T}, b::SVector{N, T})\r\n	v = zeros(T,N)\r\n	for ai=1:N\r\n		r = op(a[ai],b[ai])\r\n		if !isa(r,T) r = round(r) end # fix: round(Int / Int = Float)\r\n		v[ai]=r\r\n	end\r\n	SVector(v...)\r\nendoperations*{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(*,a,b)\r\n/{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(/,a,b)\r\n\\{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(\\,a,b)\r\n^{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(^,a,b)\r\n%{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator(%,a,b)scale{N, T}(a::SVector{N, T}, b::SVector{N, T}) = operator2(*,a,b)\r\nscale{T}(a::Vec2{T}, b::Vec2{T}) = Vec2(scale(SVector(a),SVector(b)))\r\nscale{T}(a::Vec3{T}, b::Vec3{T}) = Vec3(scale(SVector(a),SVector(b)))"
+},
+
+{
+    "location": "files/MatrixMath.html#Vector-Types-1",
+    "page": "MatrixMath.jl",
+    "title": "Vector Types",
+    "category": "section",
+    "text": "Vec1f = Vec1{Float32}\r\nVec2f = Vec2{Float32}\r\nVec3f = Vec3{Float32}\r\nVec4f = Vec4{Float32}Vec1i = Vec2{Int32}\r\nVec2i = Vec2{Int32}\r\nVec3i = Vec3{Int32}\r\nVec4i = Vec4{Int32}Vec1u = Vec1{UInt32}\r\nVec2u = Vec2{UInt32}\r\nVec3u = Vec3{UInt32}\r\nVec4u = Vec4{UInt32}AVec1f = Array{Vec1f,1}\r\nAVec2f = Array{Vec2f,1}\r\nAVec3f = Array{Vec3f,1}\r\nAVec4f = Array{Vec4f,1}"
+},
+
+{
+    "location": "files/MatrixMath.html#Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "Matrix",
+    "category": "section",
+    "text": "Mat = SMatrixMat1x1{T} = SMatrix{1,1,T,1}\r\nMat1x2{T} = SMatrix{1,2,T,2}\r\nMat1x3{T} = SMatrix{1,3,T,3}\r\nMat1x4{T} = SMatrix{1,4,T,4}Mat2x1{T} = SMatrix{2,1,T,2}\r\nMat2x2{T} = SMatrix{2,2,T,4}\r\nMat2x3{T} = SMatrix{2,3,T,6}\r\nMat2x4{T} = SMatrix{2,4,T,8}Mat3x1{T} = SMatrix{3,1,T,3}\r\nMat3x2{T} = SMatrix{3,2,T,6}\r\nMat3x3{T} = SMatrix{3,3,T,9}\r\nMat3x4{T} = SMatrix{3,4,T,12}Mat4x1{T} = SMatrix{4,1,T,4}\r\nMat4x2{T} = SMatrix{4,2,T,8}\r\nMat4x3{T} = SMatrix{4,3,T,12}\r\nMat4x4{T} = SMatrix{4,4,T,16}"
+},
+
+{
+    "location": "files/MatrixMath.html#Matrix-Types-1",
+    "page": "MatrixMath.jl",
+    "title": "Matrix Types",
+    "category": "section",
+    "text": "Mat1x1f = Mat1x1{Float32}\r\nMat1x2f = Mat1x2{Float32}\r\nMat1x3f = Mat1x3{Float32}\r\nMat1x4f = Mat1x4{Float32}Mat2x1f = Mat2x1{Float32}\r\nMat2x2f = Mat2x2{Float32}\r\nMat2x3f = Mat2x3{Float32}\r\nMat2x4f = Mat2x4{Float32}Mat3x1f = Mat3x1{Float32}\r\nMat3x2f = Mat3x2{Float32}\r\nMat3x3f = Mat3x3{Float32}\r\nMat3x4f = Mat3x4{Float32}Mat4x1f = Mat4x1{Float32}\r\nMat4x2f = Mat4x2{Float32}\r\nMat4x3f = Mat4x3{Float32}\r\nMat4x4f = Mat4x4{Float32}"
+},
+
+{
+    "location": "files/MatrixMath.html#Matrix-Values-1",
+    "page": "MatrixMath.jl",
+    "title": "Matrix Values",
+    "category": "section",
+    "text": "const IMat1x1f = @SMatrix [\r\n	1f0;\r\n]const IMat2x2f = @SMatrix [\r\n	1f0 0 ;\r\n	0 1f0 ;\r\n]const IMat3x3f = @SMatrix [\r\n	1f0 0 0 ;\r\n	0 1f0 0 ;\r\n	0 0 1f0 ;\r\n]const IMat4x4f = @SMatrix [\r\n	1f0 0 0 0 ;\r\n	0 1f0 0 0 ;\r\n	0 0 1f0 0 ;\r\n	0 0 0 1f0 ;\r\n]"
+},
+
+{
+    "location": "files/MatrixMath.html#View-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "View Matrix",
+    "category": "section",
+    "text": "function FPSViewRH(eye::Any, yaw::Float32, pitch::Float32)\r\n    # If the pitch and yaw angles are in degrees,\r\n    # they need to be converted to radians. Here\r\n    # I assume the values are already converted to radians.\r\n    cosPitch = cos(pitch)\r\n    sinPitch = sin(pitch)\r\n    cosYaw = cos(yaw)\r\n    sinYaw = sin(yaw)\r\n\r\n    xaxis = Vec3f( cosYaw, 0, -sinYaw )\r\n    yaxis = Vec3f( sinYaw * sinPitch, cosPitch, cosYaw * sinPitch )\r\n    zaxis = Vec3f( sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw )\r\n\r\n    # Create a 4x4 view matrix from the right, up, forward and eye position vectors\r\n    Mat{4,4,Float32}([\r\n      xaxis[1] yaxis[1] zaxis[1] -dot(xaxis,eye)*0;\r\n      xaxis[2] yaxis[2] zaxis[2] -dot(yaxis,eye)*0;\r\n      xaxis[3] yaxis[3] zaxis[3] -dot(zaxis,eye)*0;\r\n      -dot(xaxis,eye) -dot(yaxis,eye) -dot(zaxis,eye) 1;\r\n    ])\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#Frustum-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "Frustum Matrix",
+    "category": "section",
+    "text": "function frustum{T}(left::T, right::T, bottom::T, top::T, znear::T, zfar::T)\r\n    (right == left || bottom == top || znear == zfar) && return eye(Mat4x4{T})\r\n    Mat4x4{T}([\r\n        2*znear/(right-left) 0 0 0;\r\n        0 2*znear/(top-bottom) 0 0;\r\n        (right+left)/(right-left) (top+bottom)/(top-bottom) (-(zfar+znear)/(zfar-znear)) -(2*znear*zfar) / (zfar-znear);\r\n        0 0 -1 0\r\n    ])\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#LookAt-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "LookAt Matrix",
+    "category": "section",
+    "text": "function lookat{T}(eye::Vec3{T}, lookAt::Vec3{T}, up::Vec3{T})\r\n    zaxis  = normalize(eye-lookAt)\r\n    xaxis  = normalize(cross(up,    zaxis))\r\n    yaxis  = normalize(cross(zaxis, xaxis))\r\n    Mat4x4{T}([\r\n        xaxis[1] yaxis[1] zaxis[1] 0;\r\n        xaxis[2] yaxis[2] zaxis[2] 0;\r\n        xaxis[3] yaxis[3] zaxis[3] 0;\r\n        -dot(xaxis,eye) -dot(yaxis,eye) -dot(zaxis,eye) 1\r\n    ])\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#Perspective-Projection-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "Perspective Projection Matrix",
+    "category": "section",
+    "text": "function perspectiveprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)\r\n		(znear == zfar) && error(\"znear ($znear) must be different from tfar ($zfar)\")\r\n\r\n		t = tan(fovy * 0.5)\r\n    h = T(tan(fovy * pi / 360) * znear)\r\n    w = T(h * aspect)\r\n\r\n		left = -w\r\n		right = w\r\n		bottom = -h\r\n		top = h\r\n\r\n		frustum(-w, w, -h, h, znear, zfar)\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#Orthographic-Projection-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "Orthographic Projection Matrix",
+    "category": "section",
+    "text": "function orthographicprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)\r\n		(znear == zfar) && error(\"znear ($znear) must be different from tfar ($zfar)\")\r\n	\r\n		t = tan(fovy * 0.5)\r\n    h = T(tan(fovy * pi / 360) * znear)\r\n    w = T(h * aspect)\r\n\r\n		left = -w\r\n		right = w\r\n		bottom = -h\r\n		top = h\r\n\r\n		orthographicprojection(-w, w, -h, h, znear, zfar)\r\nendfunction orthographicprojection{T}(left::T,right::T,bottom::T,top::T,znear::T,zfar::T)\r\n    (right==left || bottom==top || znear==zfar) && return eye(Mat4x4{T})\r\n    Mat4x4{T}([\r\n        2/(right-left) 0 0 0;\r\n        0 2/(top-bottom) 0 0;\r\n        0 0 -2/(zfar-znear) 0;\r\n				-(right+left)/(right-left) -(top+bottom)/(top-bottom) -(zfar+znear)/(zfar-znear) 1;\r\n    ])\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#Translation-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "Translation Matrix",
+    "category": "section",
+    "text": "function translationmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        1 0 0 t[1];\r\n        0 1 0 t[2];\r\n        0 0 1 t[3];\r\n				0 0 0 1;\r\n    ])\r\nendfunction inverse_translationmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        1 0 0 0;\r\n        0 1 0 0;\r\n        0 0 1 0;\r\n				t[1] t[2] t[3] 1;\r\n    ])\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#Rotation-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "Rotation Matrix",
+    "category": "section",
+    "text": "function rotationmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        1 0 0 0;\r\n        0 1 0 0;\r\n        0 0 1 0;\r\n				t[1] t[2] t[3] 1;\r\n    ])\r\nendfunction rotationmatrix4{T}(q::Quaternions.Quaternion{T})\r\n    sx, sy, sz = 2q.s*q.v1,  2q.s*q.v2,   2q.s*q.v3\r\n    xx, xy, xz = 2q.v1^2,    2q.v1*q.v2,  2q.v1*q.v3\r\n    yy, yz, zz = 2q.v2^2,    2q.v2*q.v3,  2q.v3^2\r\n    Mat4x4{T}([\r\n        1-(yy+zz)	xy+sz				xz-sy				0;\r\n        xy-sz				1-(xx+zz)	yz+sx				0;\r\n        xz+sy				yz-sx				1-(xx+yy)	0;\r\n        0 0 0 1\r\n    ])\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#Scaling-Matrix-1",
+    "page": "MatrixMath.jl",
+    "title": "Scaling Matrix",
+    "category": "section",
+    "text": "function scalingmatrix{T}(t::Vec3{T})\r\n    Mat4x4{T}([\r\n        t[2] 0 0 0;\r\n        0 t[2] 0 0;\r\n        0 0 t[3] 0;\r\n				0 0 0 1;\r\n    ])\r\nend"
+},
+
+{
+    "location": "files/MatrixMath.html#Functions-1",
+    "page": "MatrixMath.jl",
+    "title": "Functions",
+    "category": "section",
+    "text": "rotr90flipdim2(x::AbstractArray) = flipdim(rotr90(x),2)function convertMatrixToArray(values::AbstractArray)\r\n	dims=ndims(values)\r\n	elems=dims > 1 ? size(values)[dims] : 1\r\n	values=avec(values) #wow! < 0.05 sec for > 1000 vertices!\r\n	#print(\"vcat: \"); @time v=vcat(values...) #end # convert to one dimensional array\r\n	#print(\"convert: \"); @time c=convert(Array{typeof(v[1]),1},v)\r\n	(values, elems)\r\nendrotate{T}(angle::T, axis::Vec3{T}) = rotationmatrix4(Quaternions.qrotation(convert(Array, axis), angle))rotate{T}(v::Vec2{T}, angle::T) = Vec2{T}(v[1] * cos(angle) - v[2] * sin(angle), v[1] * sin(angle) + v[1] * cos(angle))forwardVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[3,1],m[3,2],m[3,3])rightVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[1,1],m[1,2],m[1,3])upVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[2,1],m[2,2],m[2,3])function computeRotation{T}(rot::Vec3{T})\r\n	dirBackwards= Vec3{T}(-1,0,0)\r\n	dirRight = Vec3{T}(0,0,1)\r\n	dirUp = Vec3{T}(0,1,0) #cross(dirRight, dirBackwards)\r\n\r\n	q = Quaternions.qrotation(convert(Array, dirRight), rot[3]) *\r\n	Quaternions.qrotation(convert(Array, dirUp), rot[1]) *\r\n	Quaternions.qrotation(convert(Array, dirBackwards), rot[2])\r\n\r\n	rotationmatrix4(q)\r\nend"
 },
 
 {
@@ -185,11 +1001,51 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "files/RessourceManager.html#RessourceManager.SetWorkingDir-Tuple{}",
+    "page": "RessourceManager.jl",
+    "title": "RessourceManager.SetWorkingDir",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/RessourceManager.html#RessourceManager.RessourcePath-Tuple{AbstractString}",
+    "page": "RessourceManager.jl",
+    "title": "RessourceManager.RessourcePath",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/RessourceManager.html#RessourceManager.AddPath-Tuple{Any,AbstractString}",
+    "page": "RessourceManager.jl",
+    "title": "RessourceManager.AddPath",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/RessourceManager.html#RessourceManager.GetPath-Tuple{Any}",
+    "page": "RessourceManager.jl",
+    "title": "RessourceManager.GetPath",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/RessourceManager.html#RessourceManager.CurrentDay-Tuple{}",
+    "page": "RessourceManager.jl",
+    "title": "RessourceManager.CurrentDay",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
     "location": "files/RessourceManager.html#RessourceManager.jl-1",
     "page": "RessourceManager.jl",
     "title": "RessourceManager.jl",
     "category": "section",
-    "text": "SetWorkingDir() = (PATHS[:ROOT] = string(dirname(Base.source_path()),\"/\"))RessourcePath(path::AbstractString) = (!in(\':\',path) ? path = string(PATHS[:ROOT], path, path[length(path)] != \'/\' ? \"/\" : \"\") : path)AddPath(id::Any, path::AbstractString) = PATHS[id] = RessourcePath(path)GetPath(key::Any)CurrentDay()"
+    "text": "RessourceManager.SetWorkingDir()RessourceManager.RessourcePath(path::AbstractString)RessourceManager.AddPath(id::Any, path::AbstractString)RessourceManager.GetPath(key::Any)RessourceManager.CurrentDay()"
 },
 
 {
@@ -205,7 +1061,7 @@ var documenterSearchIndex = {"docs": [
     "page": "ThreadFunctions.jl",
     "title": "ThreadFunctions.jl",
     "category": "section",
-    "text": "thread_println(t::ThreadManager.Thread, msg)thread_push(t::ThreadManager.Thread, a, e)thread_sleep(sec::Real)thread_init(p::Tuple{String,Function})"
+    "text": "thread_println(t::ThreadManager.Thread, msg) = ThreadManager.safe_call(t, (x) -> print(msg))thread_push(t::ThreadManager.Thread, a, e) = ThreadManager.safe_call(t, (x) -> push!(a, e))thread_sleep(sec::Real) = Libc.systemsleep(sec)thread_init(p::Tuple{String,Function}) = function(t::ThreadManager.Thread)\r\n	thread_println(t, LogManager.logMsg(:Debug, p[1], \"start\"))\r\n	p[2](t)\r\nend"
 },
 
 {
@@ -217,11 +1073,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "files/ThreadManager.html#ThreadManager.Thread",
+    "page": "ThreadManager.jl",
+    "title": "ThreadManager.Thread",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/ThreadManager.html#ThreadManager.safe_call-Tuple{ThreadManager.Thread,Function}",
+    "page": "ThreadManager.jl",
+    "title": "ThreadManager.safe_call",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/ThreadManager.html#ThreadManager.reset-Tuple{}",
+    "page": "ThreadManager.jl",
+    "title": "ThreadManager.reset",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/ThreadManager.html#ThreadManager.run",
+    "page": "ThreadManager.jl",
+    "title": "ThreadManager.run",
+    "category": "function",
+    "text": "TODO \n\n\n\n"
+},
+
+{
     "location": "files/ThreadManager.html#ThreadManager.jl-1",
     "page": "ThreadManager.jl",
     "title": "ThreadManager.jl",
     "category": "section",
-    "text": "type Thread\r\n	id::Integer\r\n	mutex::Threads.Mutex\r\n	Thread(id, m) = new(id, m)\r\nendfunction safe_call(t::Thread, f::Function)\r\n	Threads.lock(t.mutex)\r\n	f(t)\r\n	Threads.unlock(t.mutex)\r\nendfunction reset()\r\n	global Mutex\r\n	global List\r\n	Mutex = Threads.Mutex()\r\n	List = Thread[]\r\nendfunction run(a = Function[])\r\n	reset()\r\n	max=Threads.nthreads()\r\n	i=0; Threads.@threads for f in a\r\n		t=Thread(Threads.threadid(), Mutex)\r\n		push!(List, t)\r\n		f(t)\r\n		if i >= max break end\r\n		i+=1\r\n  end\r\nend"
+    "text": "ThreadManager.ThreadThreadManager.safe_call(t::ThreadManager.Thread, f::Function)ThreadManager.reset()ThreadManager.run(a = Function[])"
 },
 
 {
@@ -233,11 +1121,59 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "files/TimeManager.html#TimeManager.now-Tuple{}",
+    "page": "TimeManager.jl",
+    "title": "TimeManager.now",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/TimeManager.html#TimeManager.programStartTime",
+    "page": "TimeManager.jl",
+    "title": "TimeManager.programStartTime",
+    "category": "constant",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/TimeManager.html#TimeManager.currentTime-Tuple{Real}",
+    "page": "TimeManager.jl",
+    "title": "TimeManager.currentTime",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/TimeManager.html#TimeManager.programTime-Tuple{}",
+    "page": "TimeManager.jl",
+    "title": "TimeManager.programTime",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/TimeManager.html#TimeManager.programTimeStr-Tuple{}",
+    "page": "TimeManager.jl",
+    "title": "TimeManager.programTimeStr",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/TimeManager.html#TimeManager.OnTime-Tuple{Float64,Base.RefValue{Float64}}",
+    "page": "TimeManager.jl",
+    "title": "TimeManager.OnTime",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
     "location": "files/TimeManager.html#TimeManager.jl-1",
     "page": "TimeManager.jl",
     "title": "TimeManager.jl",
     "category": "section",
-    "text": "now() = Dates.time()programStartTime = now()currentTime(startTime::Real)programTime()programTimeStr()function OnTime(milisec::Float64, prevTime::Base.RefValue{Float64})\r\n	time=now()\r\n	r=(time - Base.getindex(prevTime)) >= milisec\r\n	if r Base.setindex!(prevTime, time) end\r\n	r\r\nend"
+    "text": "TimeManager.now()TimeManager.programStartTimeTimeManager.currentTime(startTime::Real)TimeManager.programTime()TimeManager.programTimeStr()TimeManager.OnTime(milisec::Float64, prevTime::Base.RefValue{Float64})"
 },
 
 {
@@ -245,6 +1181,14 @@ var documenterSearchIndex = {"docs": [
     "page": "WindowManager.jl",
     "title": "WindowManager.jl",
     "category": "page",
+    "text": ""
+},
+
+{
+    "location": "files/WindowManager.html#WindowManager.jl-1",
+    "page": "WindowManager.jl",
+    "title": "WindowManager.jl",
+    "category": "section",
     "text": ""
 },
 
@@ -513,11 +1457,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "files/WindowManager.html#WindowManager.jl-1",
+    "location": "files/WindowManager.html#WindowManager.loop-Tuple{WindowManager.WindowHandler,Function}",
     "page": "WindowManager.jl",
-    "title": "WindowManager.jl",
+    "title": "WindowManager.loop",
+    "category": "method",
+    "text": "Loop until the user closes the window \n\n\n\n"
+},
+
+{
+    "location": "files/WindowManager.html#import-1",
+    "page": "WindowManager.jl",
+    "title": "import",
     "category": "section",
-    "text": "import GLFW import GLFW.WindowWindowManager.WindowHandlerWindowManager.getWindowHandler()WindowManager.setWindowHandler(this::WindowManager.WindowHandler)WindowManager.terminate()WindowManager.setListener(this::WindowManager.WindowHandler, key::Symbol, listener::Function)WindowManager.OnWindowResize(window::WindowManager.Window, width::Number, height::Number)WindowManager.OnWindowIconify(window::WindowManager.Window, iconified::Number)WindowManager.OnWindowClose(window::WindowManager.Window)WindowManager.OnWindowFocus(window::WindowManager.Window, focused::Number)WindowManager.OnWindowRefresh(window::WindowManager.Window)WindowManager.OnFramebufferResize(window::WindowManager.Window, width::Number, height::Number)WindowManager.OnCursorEnter(window::WindowManager.Window, entered::Number)WindowManager.OnDroppedFiles(window::WindowManager.Window, files::AbstractArray)WindowManager.OnWindowPos(window::WindowManager.Window, x::Number, y::Number)WindowManager.OnCursorPos(window::WindowManager.Window, x::Number, y::Number)WindowManager.OnScroll(window::WindowManager.Window, x::Number, y::Number)WindowManager.OnCharMods(window::WindowManager.Window, code::Char, mods::Number)WindowManager.OnUpdateEvents()WindowManager.OnKey(window::WindowManager.Window, key::Number, scancode::Number, action::Number, mods::Number)WindowManager.OnMouseKey(window::WindowManager.Window, key::Number, action::Number, mods::Number)WindowManager.OnUnicodeChar(window::WindowManager.Window, unicode::Char)WindowManager.ShowError(debugging::Bool)WindowManager.OnEvent(this::WindowManager.WindowHandler, eventName::Symbol, args...)WindowManager.title(this::WindowManager.WindowHandler, name::String)WindowManager.cursor(this::WindowManager.WindowHandler, mode::Symbol)WindowManager.fullscreen(this::WindowManager.WindowHandler, full::Bool)WindowManager.SetWindowMonitor(window::WindowManager.Window, monitor::GLFW.Monitor, xpos, ypos, width, height, refreshRate)WindowManager.open(this::WindowManager.WindowHandler, windowhints=[])WindowManager.isClosing(this::WindowManager.Window)WindowManager.create(name::AbstractString, size::Tuple{Number,Number})WindowManager.close(this::WindowManager.WindowHandler)WindowManager.swap(this::WindowManager.WindowHandler)WindowManager.update(this::WindowManager.WindowHandler)loop(this::WindowHandler, repeat::Function)"
+    "text": "GLFW.jl - Docs here\nGLFW.WindowWindowManager.WindowHandlerWindowManager.getWindowHandler()WindowManager.setWindowHandler(this::WindowManager.WindowHandler)WindowManager.terminate()WindowManager.setListener(this::WindowManager.WindowHandler, key::Symbol, listener::Function)WindowManager.OnWindowResize(window::WindowManager.Window, width::Number, height::Number)WindowManager.OnWindowIconify(window::WindowManager.Window, iconified::Number)WindowManager.OnWindowClose(window::WindowManager.Window)WindowManager.OnWindowFocus(window::WindowManager.Window, focused::Number)WindowManager.OnWindowRefresh(window::WindowManager.Window)WindowManager.OnFramebufferResize(window::WindowManager.Window, width::Number, height::Number)WindowManager.OnCursorEnter(window::WindowManager.Window, entered::Number)WindowManager.OnDroppedFiles(window::WindowManager.Window, files::AbstractArray)WindowManager.OnWindowPos(window::WindowManager.Window, x::Number, y::Number)WindowManager.OnCursorPos(window::WindowManager.Window, x::Number, y::Number)WindowManager.OnScroll(window::WindowManager.Window, x::Number, y::Number)WindowManager.OnCharMods(window::WindowManager.Window, code::Char, mods::Number)WindowManager.OnUpdateEvents()WindowManager.OnKey(window::WindowManager.Window, key::Number, scancode::Number, action::Number, mods::Number)WindowManager.OnMouseKey(window::WindowManager.Window, key::Number, action::Number, mods::Number)WindowManager.OnUnicodeChar(window::WindowManager.Window, unicode::Char)WindowManager.ShowError(debugging::Bool)WindowManager.OnEvent(this::WindowManager.WindowHandler, eventName::Symbol, args...)WindowManager.title(this::WindowManager.WindowHandler, name::String)WindowManager.cursor(this::WindowManager.WindowHandler, mode::Symbol)WindowManager.fullscreen(this::WindowManager.WindowHandler, full::Bool)WindowManager.SetWindowMonitor(window::WindowManager.Window, monitor::GLFW.Monitor, xpos, ypos, width, height, refreshRate)WindowManager.open(this::WindowManager.WindowHandler, windowhints=[])WindowManager.isClosing(this::WindowManager.Window)WindowManager.create(name::AbstractString, size::Tuple{Number,Number})WindowManager.close(this::WindowManager.WindowHandler)WindowManager.swap(this::WindowManager.WindowHandler)WindowManager.update(this::WindowManager.WindowHandler)WindowManager.loop(this::WindowManager.WindowHandler, repeat::Function)"
 },
 
 {
@@ -533,7 +1485,47 @@ var documenterSearchIndex = {"docs": [
     "page": "JLGEngine.jl",
     "title": "JLGEngine.jl",
     "category": "section",
-    "text": "include(\"CoreExtended.jl\") include(\"TimeManager.jl\") include(\"LoggerManager.jl\")include(\"RessourceManager.jl\") include(\"FileManager.jl\") include(\"Environment.jl\") include(\"JLScriptManager.jl\") include(\"WindowManager.jl\")include(\"MatrixMath.jl\")module JLGEngine\nusing CoreExtendedabstract type IComponent end\n\ninclude(dir*\"GraphicsManager.jl\")\ninclude(dir*\"LibGL/LibGL.jl\")\n\ninclude(dir*\"Management.jl\")\ninclude(dir*\"StorageManager.jl\")\ninclude(dir*\"MeshManager.jl\")\ninclude(dir*\"ModelManager.jl\")\ninclude(dir*\"ShaderManager.jl\")\ninclude(dir*\"TransformManager.jl\")\ninclude(dir*\"EntityManager.jl\")\ninclude(dir*\"CameraManager.jl\")\ninclude(dir*\"TextureManager.jl\")\ninclude(dir*\"GameObjectManager.jl\")\ninclude(dir*\"RenderManager.jl\")\n\nusing .GraphicsManager\n\n# set api references```\nfunction init()     GraphicsManager.setGraphicsDriver(LibGL)     ShaderManager.init()     StorageManager.init() 		TextureManager.init() end ```"
+    "text": "Includes Core files\nIncludes Engine files\nCode"
+},
+
+{
+    "location": "files/JLGEngine.html#Includes-Core-files-1",
+    "page": "JLGEngine.jl",
+    "title": "Includes Core files",
+    "category": "section",
+    "text": "CoreExtended.jl\nTimeManager.jl\nLoggerManager.jl\nRessourceManager.jl\nFileManager.jl\nEnvironment.jl\nJLScriptManager.jl\nWindowManager.jl\nMatrixMath.jl"
+},
+
+{
+    "location": "files/JLGEngine.html#Includes-Engine-files-1",
+    "page": "JLGEngine.jl",
+    "title": "Includes Engine files",
+    "category": "section",
+    "text": "LibGL.jl\nGraphicsManager.jl\nManagement.jl\nStorageManager.jl\nMeshManager.jl\nModelManager.jl\nShaderManager.jl\nTransformManager.jl\nEntityManager.jl\nCameraManager.jl\nTextureManager.jl\nGameObjectManager.jl\nRenderManager.jl"
+},
+
+{
+    "location": "files/JLGEngine.html#JLGEngine.IComponent",
+    "page": "JLGEngine.jl",
+    "title": "JLGEngine.IComponent",
+    "category": "type",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLGEngine.html#JLGEngine.init-Tuple{}",
+    "page": "JLGEngine.jl",
+    "title": "JLGEngine.init",
+    "category": "method",
+    "text": "TODO \n\n\n\n"
+},
+
+{
+    "location": "files/JLGEngine.html#Code-1",
+    "page": "JLGEngine.jl",
+    "title": "Code",
+    "category": "section",
+    "text": "JLGEngine.IComponentJLGEngine.init()"
 },
 
 {
