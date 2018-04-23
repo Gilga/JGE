@@ -1,49 +1,41 @@
 # [JLGEngine.jl](@id JLGEngine.jl)
 
-include("CoreExtended.jl")
-include("TimeManager.jl")
-include("LoggerManager.jl")
+* [Includes Core files](#Includes-Core-files-1)
+* [Includes Engine files](#Includes-Engine-files-1)
+* [Code](#Code-1)
 
-include("RessourceManager.jl")
-include("FileManager.jl")
-include("Environment.jl")
-include("JLScriptManager.jl")
-include("WindowManager.jl")
+## Includes Core files
+* [CoreExtended.jl] (@ref CoreExtended.jl)
+* [TimeManager.jl] (@ref TimeManager.jl)
+* [LoggerManager.jl] (@ref LoggerManager.jl)
+* [RessourceManager.jl] (@ref RessourceManager.jl)
+* [FileManager.jl] (@ref FileManager.jl)
+* [Environment.jl] (@ref Environment.jl)
+* [JLScriptManager.jl] (@ref JLScriptManager.jl)
+* [WindowManager.jl] (@ref WindowManager.jl)
+* [MatrixMath.jl] (@ref MatrixMath.jl)
 
-include("MatrixMath.jl")
+## Includes Engine files
+* [LibGL.jl] (@ref LibGL.jl)
+* [GraphicsManager.jl] (@ref GraphicsManager.jl)
+* [Management.jl] (@ref Management.jl)
+* [StorageManager.jl] (@ref StorageManager.jl)
+* [MeshManager.jl] (@ref MeshManager.jl)
+* [ModelManager.jl] (@ref ModelManager.jl)
+* [ShaderManager.jl] (@ref ShaderManager.jl)
+* [TransformManager.jl] (@ref TransformManager.jl)
+* [EntityManager.jl] (@ref EntityManager.jl)
+* [CameraManager.jl] (@ref CameraManager.jl)
+* [TextureManager.jl] (@ref TextureManager.jl)
+* [GameObjectManager.jl] (@ref GameObjectManager.jl)
+* [RenderManager.jl] (@ref RenderManager.jl)
 
+## Code
+
+```@docs
+JLGEngine.IComponent
 ```
-module JLGEngine
-using CoreExtended
-```
 
-```
-abstract type IComponent end
-
-include(dir*"GraphicsManager.jl")
-include(dir*"LibGL/LibGL.jl")
-
-include(dir*"Management.jl")
-include(dir*"StorageManager.jl")
-include(dir*"MeshManager.jl")
-include(dir*"ModelManager.jl")
-include(dir*"ShaderManager.jl")
-include(dir*"TransformManager.jl")
-include(dir*"EntityManager.jl")
-include(dir*"CameraManager.jl")
-include(dir*"TextureManager.jl")
-include(dir*"GameObjectManager.jl")
-include(dir*"RenderManager.jl")
-
-using .GraphicsManager
-
-# set api references```
-
-```
-function init()
-    GraphicsManager.setGraphicsDriver(LibGL)
-    ShaderManager.init()
-    StorageManager.init()
-		TextureManager.init()
-end
+```@docs
+JLGEngine.init()
 ```

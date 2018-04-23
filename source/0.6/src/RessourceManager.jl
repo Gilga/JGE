@@ -10,26 +10,19 @@ export CurrentDay
 
 PATHS = Dict{Any,Any}(:ROOT => "")
 
-"""
-TODO
-"""
+""" TODO """
 SetWorkingDir() = (PATHS[:ROOT] = string(dirname(Base.source_path()),"/"))
 
-"""
-TODO
-"""
+""" TODO """
 RessourcePath(path::AbstractString) = (!in(':',path) ? path = string(PATHS[:ROOT], path, path[length(path)] != '/' ? "/" : "") : path)
 
-"""
-TODO
-"""
+""" TODO """
 AddPath(id::Any, path::AbstractString) = PATHS[id] = RessourcePath(path)
 
-"""
-TODO
-"""
+""" TODO """
 GetPath(key::Any) = PATHS[haskey(PATHS, key) ? key : :ROOT]
 
+""" TODO """
 CurrentDay() = replace(replace(string(Dates.now()),":","-"),"T","_")
 
 SetWorkingDir()

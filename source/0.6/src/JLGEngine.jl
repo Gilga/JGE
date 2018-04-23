@@ -10,9 +10,7 @@ include("WindowManager.jl")
 
 include("MatrixMath.jl")
 
-"""
-TODO
-"""
+""" TODO """
 module JLGEngine
 
 const ENGINE = JLGEngine
@@ -64,9 +62,7 @@ print("include"); @time eval(ex)
 println("---------------");
 =#
 
-"""
-TODO
-"""
+""" TODO """
 abstract type IComponent end
 
 include(dir*"GraphicsManager.jl")
@@ -87,9 +83,7 @@ include(dir*"RenderManager.jl")
 using .GraphicsManager
 
 # set api references
-"""
-TODO
-"""
+""" TODO """
 function init()
     GraphicsManager.setGraphicsDriver(LibGL)
     ShaderManager.init()

@@ -1,7 +1,8 @@
 # [WindowManager.jl](@id WindowManager.jl)
 
-import GLFW
-import GLFW.Window
+## import
+* [GLFW.jl](https://github.com/JuliaGL/GLFW.jl) - Docs [here](http://www.glfw.org/docs/latest/)
+* GLFW.Window
 
 ```@docs
 WindowManager.WindowHandler
@@ -135,7 +136,7 @@ WindowManager.swap(this::WindowManager.WindowHandler)
 WindowManager.update(this::WindowManager.WindowHandler)
 ```
 
-```
-loop(this::WindowHandler, repeat::Function)
+```@docs
+WindowManager.loop(this::WindowManager.WindowHandler, repeat::Function)
 ```
 

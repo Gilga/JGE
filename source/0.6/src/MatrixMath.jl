@@ -249,14 +249,10 @@ const IMat4x4f = @SMatrix [
 
 export rotr90flipdim2
 
-"""
-TODO
-"""
+""" TODO """
 rotr90flipdim2(x::AbstractArray) = flipdim(rotr90(x),2)
 
-"""
-TODO
-"""
+""" TODO """
 function convertMatrixToArray(values::AbstractArray)
 	dims=ndims(values)
 	elems=dims > 1 ? size(values)[dims] : 1
@@ -267,9 +263,7 @@ function convertMatrixToArray(values::AbstractArray)
 end
 
 #c = FPSViewRH(normalize(Vec3f(0,0,1)),(cursorpos[1]-0.5f0)*3,(cursorpos[2]-0.5f0) * 3)
-"""
-TODO
-"""
+""" TODO """
 function FPSViewRH(eye::Any, yaw::Float32, pitch::Float32)
     # If the pitch and yaw angles are in degrees,
     # they need to be converted to radians. Here
@@ -292,9 +286,7 @@ function FPSViewRH(eye::Any, yaw::Float32, pitch::Float32)
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function perspectiveprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)
 		(znear == zfar) && error("znear ($znear) must be different from tfar ($zfar)")
 
@@ -318,9 +310,7 @@ function perspectiveprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)
     # ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function frustum{T}(left::T, right::T, bottom::T, top::T, znear::T, zfar::T)
     (right == left || bottom == top || znear == zfar) && return eye(Mat4x4{T})
     Mat4x4{T}([
@@ -331,9 +321,7 @@ function frustum{T}(left::T, right::T, bottom::T, top::T, znear::T, zfar::T)
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function orthographicprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)
 		(znear == zfar) && error("znear ($znear) must be different from tfar ($zfar)")
 	
@@ -349,9 +337,7 @@ function orthographicprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)
 		orthographicprojection(-w, w, -h, h, znear, zfar)
 end
 
-"""
-TODO
-"""
+""" TODO """
 function orthographicprojection{T}(left::T,right::T,bottom::T,top::T,znear::T,zfar::T)
     (right==left || bottom==top || znear==zfar) && return eye(Mat4x4{T})
     Mat4x4{T}([
@@ -362,9 +348,7 @@ function orthographicprojection{T}(left::T,right::T,bottom::T,top::T,znear::T,zf
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function translationmatrix{T}(t::Vec3{T})
     Mat4x4{T}([
         1 0 0 t[1];
@@ -374,9 +358,7 @@ function translationmatrix{T}(t::Vec3{T})
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function inverse_translationmatrix{T}(t::Vec3{T})
     Mat4x4{T}([
         1 0 0 0;
@@ -386,9 +368,7 @@ function inverse_translationmatrix{T}(t::Vec3{T})
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function rotationmatrix{T}(t::Vec3{T})
     Mat4x4{T}([
         1 0 0 0;
@@ -398,9 +378,7 @@ function rotationmatrix{T}(t::Vec3{T})
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function scalingmatrix{T}(t::Vec3{T})
     Mat4x4{T}([
         t[2] 0 0 0;
@@ -410,9 +388,7 @@ function scalingmatrix{T}(t::Vec3{T})
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 function lookat{T}(eye::Vec3{T}, lookAt::Vec3{T}, up::Vec3{T})
     zaxis  = normalize(eye-lookAt)
     xaxis  = normalize(cross(up,    zaxis))
@@ -425,19 +401,13 @@ function lookat{T}(eye::Vec3{T}, lookAt::Vec3{T}, up::Vec3{T})
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 rotate{T}(angle::T, axis::Vec3{T}) = rotationmatrix4(Quaternions.qrotation(convert(Array, axis), angle))
 
-"""
-TODO
-"""
+""" TODO """
 rotate{T}(v::Vec2{T}, angle::T) = Vec2{T}(v[1] * cos(angle) - v[2] * sin(angle), v[1] * sin(angle) + v[1] * cos(angle))
 
-"""
-TODO
-"""
+""" TODO """
 function rotationmatrix4{T}(q::Quaternions.Quaternion{T})
     sx, sy, sz = 2q.s*q.v1,  2q.s*q.v2,   2q.s*q.v3
     xx, xy, xz = 2q.v1^2,    2q.v1*q.v2,  2q.v1*q.v3
@@ -450,24 +420,16 @@ function rotationmatrix4{T}(q::Quaternions.Quaternion{T})
     ])
 end
 
-"""
-TODO
-"""
+""" TODO """
 forwardVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[3,1],m[3,2],m[3,3])
 
-"""
-TODO
-"""
+""" TODO """
 rightVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[1,1],m[1,2],m[1,3])
 
-"""
-TODO
-"""
+""" TODO """
 upVector4{T}(m::Mat4x4{T}) = Vec3{T}(m[2,1],m[2,2],m[2,3])
 
-"""
-TODO
-"""
+""" TODO """
 function computeRotation{T}(rot::Vec3{T})
 	dirBackwards= Vec3{T}(-1,0,0)
 	dirRight = Vec3{T}(0,0,1)
@@ -576,9 +538,7 @@ function frustum{T}(left::T, right::T, bottom::T, top::T, znear::T, zfar::T)
     )
 end
 
-"""
-TODO
-"""
+""" TODO """
 function perspectiveprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)
     (znear == zfar) && error("znear ($znear) must be different from tfar ($zfar)")
     h = T(tan(fovy / 360.0 * pi) * znear)
@@ -586,9 +546,7 @@ function perspectiveprojection{T}(fovy::T, aspect::T, znear::T, zfar::T)
     frustum(-w, w, -h, h, znear, zfar)
 end
 
-"""
-TODO
-"""
+""" TODO """
 function orthographicprojection{T}(
         left  ::T, right::T,
         bottom::T, top  ::T,
@@ -604,14 +562,10 @@ function orthographicprojection{T}(
     )
 end
 
-"""
-TODO
-"""
+""" TODO """
 perspectiveprojection{T}(wh::SimpleRectangle, fov::T, near::T, far::T) = perspectiveprojection(fov, T(wh.w/wh.h), near, far)
 
-"""
-TODO
-"""
+""" TODO """
 orthographicprojection{T}(wh::SimpleRectangle, near::T, far::T) = orthographicprojection(zero(T), T(wh.w), zero(T), T(wh.h), near, far)
 =#
 end #MatrixMath

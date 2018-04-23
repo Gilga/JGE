@@ -1,176 +1,114 @@
 # [CoreExtended.jl](@id CoreExtended.jl)
 
-const EMPTY_FUNCTION = () -> nothing
+* [Execute](#Execute-1)
+* [Debug](#Debug-1)
+* [Function](#Function-1)
+* [Object](#Object-1)
+* [Preset](#Preset-1)
 
-iscallable(f) = !isempty(methods(f))
-
-```
-exists(m::Module, s::Symbol) = isdefined(m,s) #&& iscallable(catchException(()->eval(e)))
-execute(m::Module, s::Symbol, args...) = isdefined(m,s) ? execute(:($m.$s),args...) : nothing #(if isdefined(m,s) return execute(eval(m,s),args...); end; nothing)
-#execute(o::Any, s::Symbol, args...) = isdefined(o,s) ? execute(:($o.$s),args...) : nothing
-execute(e::Expr, args...) = execute(catchException(()->eval(e)),args...)
-execute(f::Function, args...) = iscallable(f) ? invoke(f,args...) : nothing
-#execute(f::Function, args...) = (debug("execute function("*string(args...)*")"); if iscallable(f) return invoke(f, args...); end; nothing)
-execute(t::Tuple{Bool,Any}, args...) = execute(t[1]?t[2]:nothing,args...)
-execute(r::Any, args...) = (debug("result "*string(typeof(r))); r)
-execute(r::Void, args...) = (warn("Cannot execute nothing"); r)
+## Execute
+```@docs
+CoreExtended.execute(m::Module, s::Symbol, args...)
 ```
 
-```
-function invoke(f::Function, args...)
-	result = nothing
-	catchException(()	-> result = @eval $f($(args...)))
-	result
-end
+```@docs
+CoreExtended.execute(e::Expr, args...)
 ```
 
-```
-stabilize(f::Function) = (args...) -> invoke(f, args...)
-```
-
-```
-abstract type AbstractObjectReference end
+```@docs
+CoreExtended.execute(f::Function, args...)
 ```
 
-```
-type EmptyObject <: AbstractObjectReference
-	EmptyObject() = new() 
-end
+```@docs
+CoreExtended.execute(t::Tuple{Bool,Any}, args...)
 ```
 
-```
-const EMPTY_OBJECT = EmptyObject()
-```
-
-```
-OnException = (x)->nothing
+```@docs
+CoreExtended.execute(r::Any, args...)
 ```
 
-```
-function linkToException(f::Function)
-	global OnException = f
-end
+```@docs
+CoreExtended.execute(r::Void, args...)
 ```
 
-```
-function backTraceException(ex::Exception)
-	println("--- [ BACKTRACE ] ---")
-	Base.showerror(STDERR, ex, catch_backtrace())
-	println("\n---------------------")
-end
+## Debug
+
+```@docs
+CoreExtended.exists(m::Module, s::Symbol)
 ```
 
-```
-function catchException(f::Function, exf=OnException)
-	try return f()
-	catch ex exf(ex)
-	end
-	nothing
-end
+```@docs
+CoreExtended.debug(msg::String)
 ```
 
-```
-function hasVal(a::AbstractArray, getindex::Function)
-	i=0; for v in a
-		i+=1
-		if getindex(v) return (i,v) end
-	end
-	#found=find(f,a)
-	(0,nothing)
-end
+```@docs
+CoreExtended.iscallable(f)
 ```
 
-```
-function replace(a::AbstractArray, f::Function, v::Any)
-	found=hasVal(f,a)
-	if found[1] == 0 push!(a, v)
-	else a[found[1]]=v
-	end
-end
+## Function
+
+```@docs
+CoreExtended.invoke(f::Function, args...)
 ```
 
-```
-function update(a::AbstractArray, getindex::Function, f::Function)
-	found=hasVal(getindex,a)
-	if found[1] == 0 push!(a, f((false,nothing)))
-	else a[found[1]]=f((true,found[2]))
-	end
-end
+```@docs
+CoreExtended.stabilize(f::Function)
 ```
 
-```
-function update(dict::Dict, index::Any, f::Function)
-	v=nothing
-	try
-		v=(true,dict[index])
-	catch error
-		if isa(error, KeyError) v=(false,nothing) end
-	end
-	if v != nothing dict[index]=f(v) end
-end
+## Object
+
+```@docs
+CoreExtended.AbstractObjectReference
 ```
 
-# obsolete
+```@docs
+CoreExtended.EmptyObject 
 ```
-export presetManager
-function presetManager(T::DataType, S=T)
-	mod=T.name.module
-	#mname=Base.replace(string(S),r"\..*","")
-	#mod=Module(Symbol(mname))
-	#typ="EMPTY_"*uppercase(Base.replace(string(S),r"[^\.]+\.",""))
-	reset = isdefined(mod,:resets) ? mod.resets : ()->nothing
-	link = isdefined(mod,:link) ? mod.link : (x)->nothing
-	unlink = isdefined(mod,:unlinks) ? mod.unlinks : ()->nothing
-	
-	eval(mod,
-		Expr(:toplevel,
-			:(
-				const Typ = Union{Void,$T};
-				list = SortedDict{Symbol, $S}(Forward);
-			
-				function create(k::Symbol);
-					if !haskey(list,k);
-						e=$S(k);
-						list[k]=e;
-						setSelected(e);
-						if isdefined($mod,:init) init(e) end;
-					else
-						e=list[k];
-						setSelected(e);
-					end;
-					e;
-				end;
-			
-				selected = nothing;
-				getSelected() = selected;
-				setSelected(obj::Typ) = global selected = obj;
-				
-				get(k::Symbol) = list[k];
-				set(k::Symbol, obj::Typ) = (list[k] = obj);
-	
-				function reset();
-					unlink();
-					$reset();
-				end;
 
-				isInvalid(obj::Typ) = obj == nothing || !isa(obj,$S);
-				isLinked(obj::Typ) =	!isInvalid(obj) && obj == getSelected();
+```@docs
+CoreExtended.EMPTY_OBJECT
+```
 
-				function unlink() setSelected(nothing); $unlink(); end;
+```@docs
+CoreExtended.EMPTY_FUNCTION
+```
 
-				function link();
-					obj=getSelected();
-					if !isInvalid(obj); $link(obj) else unlink() end;
-				end;
+## Update
+```@docs
+CoreExtended.hasVal(a::AbstractArray, getindex::Function)
+```
 
-				function linkTo(obj::Typ);
-					other=getSelected();
-					if other == obj return end;
-					setSelected(obj);
-					link();
-				end;
-			)
-		)
-	)
-end
+```@docs
+CoreExtended.replace(a::AbstractArray, f::Function, v::Any)
+```
+
+```@docs
+CoreExtended.update(a::AbstractArray, getindex::Function, f::Function)
+```
+
+```@docs
+CoreExtended.update(dict::Dict, index::Any, f::Function)
+```
+
+## Exception
+```@docs
+CoreExtended.OnException
+```
+
+```@docs
+CoreExtended.linkToException
+```
+
+```@docs
+CoreExtended.backTraceException(ex::Exception)
+```
+
+```@docs
+CoreExtended.catchException(f::Function, exf=OnException)
+```
+
+## Preset
+(Obsolete)
+```@docs
+CoreExtended.presetManager(T::DataType, S=T)
 ```

@@ -6,34 +6,22 @@ export programTimeStr
 export programStartTime
 export OnTime
 
-"""
-TODO
-"""
+""" TODO """
 now() = Dates.time()
 
-"""
-TODO
-"""
+""" TODO """
 programStartTime = now()
 
-"""
-TODO
-"""
+""" TODO """
 currentTime(startTime::Real) = (now() - startTime)
 
-"""
-TODO
-"""
+""" TODO """
 programTime() = currentTime(programStartTime)
 
-"""
-TODO
-"""
+""" TODO """
 programTimeStr() = @sprintf("%.3f", programTime())
 
-"""
-TODO
-"""
+""" TODO """
 function OnTime(milisec::Float64, prevTime::Base.RefValue{Float64})
 	time=now()
 	r=(time - Base.getindex(prevTime)) >= milisec

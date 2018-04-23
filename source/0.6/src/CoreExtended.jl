@@ -3,18 +3,20 @@ module CoreExtended
 export debug
 
 global _debug = false
+
+""" TODO """
 debug(msg::String) = if _debug info(msg) end
 
 # -------------------------------------------------------------
 
 export EMPTY_FUNCTION
+
+""" TODO """
 const EMPTY_FUNCTION = () -> nothing
 
 export iscallable
 
-"""
-TODO
-"""
+""" TODO """
 iscallable(f) = !isempty(methods(f))
 
 # -------------------------------------------------------------
@@ -25,31 +27,37 @@ export execute
 export exists
 
 #method_exists(Symbol(script.mod, :OnRender))
-"""
-TODO
-"""
+""" TODO """
 exists(m::Module, s::Symbol) = isdefined(m,s) #&& iscallable(catchException(()->eval(e)))
+
+""" TODO """
 execute(m::Module, s::Symbol, args...) = isdefined(m,s) ? execute(:($m.$s),args...) : nothing #(if isdefined(m,s) return execute(eval(m,s),args...); end; nothing)
 #execute(o::Any, s::Symbol, args...) = isdefined(o,s) ? execute(:($o.$s),args...) : nothing
+
+""" TODO """
 execute(e::Expr, args...) = execute(catchException(()->eval(e)),args...)
+
+""" TODO """
 execute(f::Function, args...) = iscallable(f) ? invoke(f,args...) : nothing
 #execute(f::Function, args...) = (debug("execute function("*string(args...)*")"); if iscallable(f) return invoke(f, args...); end; nothing)
+
+""" TODO """
 execute(t::Tuple{Bool,Any}, args...) = execute(t[1]?t[2]:nothing,args...)
+
+""" TODO """
 execute(r::Any, args...) = (debug("result "*string(typeof(r))); r)
+
+""" TODO """
 execute(r::Void, args...) = (warn("Cannot execute nothing"); r)
 
-"""
-TODO
-"""
+""" TODO """
 function invoke(f::Function, args...)
 	result = nothing
 	catchException(()	-> result = @eval $f($(args...)))
 	result
 end
 
-"""
-TODO
-"""
+""" TODO """
 stabilize(f::Function) = (args...) -> invoke(f, args...)
 
 # -------------------------------------------------------------
@@ -57,18 +65,15 @@ stabilize(f::Function) = (args...) -> invoke(f, args...)
 export AbstractObjectReference
 export EMPTY_OBJECT
 
-"""
-TODO
-"""
+""" TODO """
 abstract type AbstractObjectReference end
 
-"""
-TODO
-"""
+""" TODO """
 type EmptyObject <: AbstractObjectReference
 	EmptyObject() = new() 
 end
 
+""" TODO """
 const EMPTY_OBJECT = EmptyObject()
 
 # -------------------------------------------------------------
@@ -86,30 +91,22 @@ export linkToException
 
 #Base.show_backtrace(STDOUT,backtrace())
 
-"""
-TODO
-"""
+""" TODO """
 OnException = (x)->nothing
 
-"""
-TODO
-"""
+""" TODO """
 function linkToException(f::Function)
 	global OnException = f
 end
 
-"""
-TODO
-"""
+""" TODO """
 function backTraceException(ex::Exception)
 	println("--- [ BACKTRACE ] ---")
 	Base.showerror(STDERR, ex, catch_backtrace())
 	println("\n---------------------")
 end
 
-"""
-TODO
-"""
+""" TODO """
 function catchException(f::Function, exf=OnException)
 	try return f()
 	catch ex exf(ex)
@@ -125,9 +122,7 @@ export hasVal
 export replace
 export update
 
-"""
-TODO
-"""
+""" TODO """
 function hasVal(a::AbstractArray, getindex::Function)
 	i=0; for v in a
 		i+=1
@@ -137,9 +132,7 @@ function hasVal(a::AbstractArray, getindex::Function)
 	(0,nothing)
 end
 
-"""
-TODO
-"""
+""" TODO """
 function replace(a::AbstractArray, f::Function, v::Any)
 	found=hasVal(f,a)
 	if found[1] == 0 push!(a, v)
@@ -150,9 +143,7 @@ end
 #found=find(x -> x.name == p.name,program.properties)
 #!haskey() push!(program.properties, p)
 
-"""
-TODO
-"""
+""" TODO """
 function update(a::AbstractArray, getindex::Function, f::Function)
 	found=hasVal(getindex,a)
 	if found[1] == 0 push!(a, f((false,nothing)))
@@ -160,9 +151,7 @@ function update(a::AbstractArray, getindex::Function, f::Function)
 	end
 end
 
-"""
-TODO
-"""
+""" TODO """
 function update(dict::Dict, index::Any, f::Function)
 	v=nothing
 	try
@@ -178,6 +167,7 @@ end
 #obsolete
 export presetManager
 #obsolete
+""" TODO """
 function presetManager(T::DataType, S=T)
 	mod=T.name.module
 	#mname=Base.replace(string(S),r"\..*","")

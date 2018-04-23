@@ -1,59 +1,46 @@
 # [LoggerManager.jl](@id LoggerManager.jl)
 
+## import
+* [Base.print](https://docs.julialang.org/en/stable/stdlib/io-network/#Base.print)
+* [Base.println](https://docs.julialang.org/en/stable/stdlib/io-network/#Base.println)
+* [Base.warn](https://docs.julialang.org/en/stable/stdlib/io-network/#Base.warn)
+* [Base.error](https://docs.julialang.org/en/stable/stdlib/io-network/#Base.error)
+
+## export
+* [LOGGER_OUT](#Files-1)
+* [LOGGER_ERROR](#Files-1)
+* [print](#Overwrite-1)
+* [printf](#LoggerManager.@printf-Tuple)
+* [println](#Overwrite-1)
+* [info](#Overwrite-1)
+* [warn](#Overwrite-1)
+* [error](#Overwrite-1)
+
+## using
+* [Suppressor.jl](https://github.com/JuliaIO/Suppressor.jl)
+* [TimeManager.jl](@ref TimeManager.jl)
+* [CoreExtended.jl](@ref CoreExtended.jl)
+
+
+```@docs
+LoggerManager.logException(ex::Exception)
 ```
-import Base.print, Base.println, Base.info, Base.warn, Base.error
 
-export @printf # cannot replace Base.@printf
+```@docs
+LoggerManager.@printf(xs...)
+```
 
-using Suppressor
-using TimeManager
-using CoreExtended
-
-export LOGGER_OUT
-export LOGGER_ERROR
-
-export print
-export printf
-export println
-export info
-export warn
-export error
-
+## Files
+```
 LOGGER_OUT = "out.log"
 LOGGER_ERROR = "error.log"
+```
 
-function __init__()
-	open(LOGGER_OUT, "w+")
-	open(LOGGER_ERROR, "w+")
-end
-
-
+## Overwrite
+```
 @suppress begin print(xs...) = open(f -> (print(f, xs...); print(STDOUT, xs...)), LOGGER_OUT, "a+") end
-macro printf(xs...) open(f -> (:(Base.@printf(f, $xs...)); :(Base.@printf(:STDOUT, $xs...))),LOGGER_OUT, "a+") end 
 @suppress begin println(xs...) = open(f -> (println(f, programTimeStr(), " ", xs...); println(STDOUT, xs...)), LOGGER_OUT, "a+") end
-
 @suppress begin info(xs...) = open(f -> (info(f, programTimeStr(), " ", xs...); info(STDOUT, xs...)), LOGGER_OUT, "a+") end
 @suppress begin error(xs...) = open(f -> (error(f, programTimeStr()," ", xs...); error(STDERR, xs...)), LOGGER_ERROR, "a+") end
 @suppress begin warn(xs...) = open(f -> (warn(f, programTimeStr()," ", xs...); warn(STDERR, xs...)), LOGGER_ERROR, "a+") end
-
-"""
-TODO
-"""
-function logException(ex::Exception)
-	t=programTimeStr()
-
-	println(STDERR, "[ ERROR ] EXCEPTION! See '$LOGGER_ERROR' for more info.")
-	open(f -> println(f, t, " [ ERROR ] EXCEPTION! See '$LOGGER_ERROR' for more info."), LOGGER_OUT, "a+")
-	open(function(f)
-			println(f, t, " --- [ BACKTRACE ] ---")
-			Base.showerror(f, ex, catch_backtrace())
-			println(f, "\n---------------------")
-	end, LOGGER_ERROR, "a+")
-end
-
-CoreExtended.linkToException(logException)
-
-#messageToString(mode::String, time::String, name::String, msg::String) = string(time, " ", mode != "" ? string("[",mode,"] "): "" , name != "" ? string(name, " ") : "" , ": ", msg, "\n")
-#logMsg(mode::Symbol, name::String, msg::String) = messageToString(string(mode), programTimeStr(), name, msg)
-
 ```
